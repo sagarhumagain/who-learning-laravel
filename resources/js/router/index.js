@@ -1,8 +1,8 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import * as Vue from 'vue'
+import * as VueRouter from 'vue-router'
 import store from '../store'
 
-Vue.use(VueRouter)
+// Vue.use(VueRouter)
 
 /* Guest Component */
 const Login = () => import('../components/Login.vue' /* webpackChunkName: "resource/js/components/login" */)
@@ -56,9 +56,9 @@ const Routes = [
     }
 ]
 
-var router  = new VueRouter({
-    mode: 'history',
-    routes: Routes
+const router = VueRouter.createRouter({
+  history: VueRouter.createWebHistory(),
+  routes: Routes
 })
 
 router.beforeEach((to, from, next) => {

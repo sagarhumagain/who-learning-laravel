@@ -3,16 +3,17 @@
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
+require('./bootstrap');
 
- require('./bootstrap');
-
- window.Vue = require('vue').default;
+import { createApp } from 'vue'
  
  import router from './router'
  import store from './store'
- 
- const app = new Vue({
-     el: '#app',
-     router:router,
-     store:store
- });
+
+const app = createApp({});
+// app.component('hello-world', HelloWorld)
+
+app.use(router);
+app.use(store);
+
+app.mount('#app')
