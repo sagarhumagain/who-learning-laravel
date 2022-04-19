@@ -10,6 +10,7 @@ import { createApp } from 'vue'
 import router from './router';
 import store from './store';
 import VueSidebarMenu from 'vue-sidebar-menu'
+import 'bootstrap';
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 
 const app = createApp({});

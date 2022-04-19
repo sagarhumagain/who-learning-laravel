@@ -1,0 +1,23 @@
+
+@use '../abstracts/variables';
+.sidebar-main {
+
+  .v-sidebar-menu {
+    background-color: $color-primary;
+    .vsm--menu {
+      .vsm--dropdown {
+        background-color: $color-primary;
+      }
+      .vsm--link_hover {
+        background-color: $color-sec-blue;
+      }
+      .vsm--link_open {
+        background-color: $color-sec-blue;
+      }
+    }
+
+    .vsm--badge_default, .vsm--toggle-btn {
+      background-color: $color-primary;
+    }
+  }
+}

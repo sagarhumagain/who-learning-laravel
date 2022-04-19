@@ -1,9 +1,11 @@
 <template>
     <div>
-      <sidebar-menu :collapsed="collapsed" :menu="menu" v-model:collapsed="collapsed"
-        @update:collapsed="onCollapse"
-        @item-click="onItemClick"/>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="sidebar-main">
+          <sidebar-menu :collapsed="collapsed" :menu="menu" v-model:collapsed="collapsed"
+            @update:collapsed="onCollapse"
+            @item-click="onItemClick"/>
+        </div>
+        <nav class="navbar navbar-expand-lg navbar-main" :class="[{'collapsed' : collapsed}, {'onmobile' : isOnMobile}]">
             <a href="/" class="navbar-brand">WHO Learning Tracker</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -17,7 +19,7 @@
                 <div class="ml-auto">
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ user.name }}
                             </a>
                             <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="navbarDropdownMenuLink">
@@ -83,13 +85,32 @@ export default {
                   icon: 'fa fa-user'
                 },
                 {
-                  href: '/charts',
-                  title: 'Charts',
+                  // href: '/courses',
+                  title: 'Courses',
                   icon: 'fa fa-chart-area',
                   child: [
                     {
-                      href: '/charts/sublink',
-                      title: 'Sub Link'
+                      href: '/courses/list',
+                      title: 'View Courses'
+                    },
+                    {
+                      href: '/courses/add',
+                      title: 'Add a New Course'
+                    }
+                  ]
+                },
+                {
+                  // href: '/users',
+                  title: 'Users',
+                  icon: 'fa fa-chart-area',
+                  child: [
+                    {
+                      href: '/users/list',
+                      title: 'View Users'
+                    },
+                    {
+                      href: '/users/add',
+                      title: 'Add a New User'
                     }
                   ]
                 }
