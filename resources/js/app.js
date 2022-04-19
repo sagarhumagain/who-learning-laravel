@@ -6,12 +6,13 @@
 require('./bootstrap');
 
 import { createApp } from 'vue'
- 
 import router from './router';
 import store from './store';
-import VueSidebarMenu from 'vue-sidebar-menu'
+import VueSidebarMenu from 'vue-sidebar-menu';
+import Toast, { POSITION } from "vue-toastification";
 import 'bootstrap';
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
+import "vue-toastification/dist/index.css";
 
 const app = createApp({});
 // app.component('hello-world', HelloWorld)
@@ -19,5 +20,11 @@ const app = createApp({});
 app.use(router);
 app.use(store);
 app.use(VueSidebarMenu);
+const toastOptions = {
+  position: POSITION.TOP_CENTER,
+  timeout: 2000,
+  shareAppContext: true
+};
+app.use(Toast, toastOptions);
 
 app.mount('#app')

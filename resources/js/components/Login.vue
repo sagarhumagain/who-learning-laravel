@@ -6,7 +6,7 @@
                     <div class="card-body">
                       <img src="/images/logo.svg" alt="WHO Logo" height="100">
 
-                        <h1 class="text-center">Login</h1>
+                        <h5 class="mt-8">Login</h5>
                         <hr/>
                         <form action="javascript:void(0)" class="row" method="post">
                             <div class="form-group col-12">
@@ -34,7 +34,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from 'vuex';
+import { useToast } from "vue-toastification";
 export default {
     name:"login",
     data(){
@@ -51,14 +52,16 @@ export default {
             signIn:'auth/login'
         }),
         async login(){
+          const toast = useToast();
             this.processing = true
             await axios.get('/sanctum/csrf-cookie')
             await axios.post('/login',this.auth).then(({data})=>{
                 this.signIn()
             }).catch(({response:{data}})=>{
-                alert(data.message)
+                toast.error(data.message);
             }).finally(()=>{
-                this.processing = false
+                this.processing = false;
+                // toast.success("Welcome!");
             })
         },
     }
