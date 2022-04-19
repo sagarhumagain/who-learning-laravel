@@ -1,7 +1,10 @@
 <template>
     <div>
+      <sidebar-menu :collapsed="collapsed" :menu="menu" v-model:collapsed="collapsed"
+        @update:collapsed="onCollapse"
+        @item-click="onItemClick"/>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a href="https://techvblogs.com/?ref=project" target="_blank" class="navbar-brand">TechvBlogs</a>
+            <a href="/" class="navbar-brand">WHO Learning Tracker</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -25,23 +28,27 @@
                 </div>
             </div>
         </nav>
-        <main class="mt-3">
+        <main class="main-view mt-3" :class="[{'collapsed' : collapsed}, {'onmobile' : isOnMobile}]">
             <router-view></router-view>
         </main>
     </div>
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import {mapActions} from 'vuex';
 export default {
-    name:"dashboard-layout",
-    data(){
-        return {
-            user:this.$store.state.auth.user
-        }
-    },
-    methods:{
-        ...mapActions({
+    name: "dashboard-layout",
+    methods: {
+      onCollapse (collapsed) {
+        console.log(collapsed)
+        // this.collapsed = collapsed
+      },
+      onItemClick (event, item) {
+        console.log('onItemClick')
+        // console.log(event)
+        // console.log(item)
+      },
+      ...mapActions({
             signOut:"auth/logout"
         }),
         async logout(){
@@ -49,6 +56,44 @@ export default {
                 this.signOut()
                 this.$router.push({name:"login"})
             })
+        },
+        onResize () {
+          if (window.innerWidth <= 767) {
+            this.isOnMobile = true
+            this.collapsed = true
+          } else {
+            this.isOnMobile = false
+            this.collapsed = false
+          }
+        }
+    },
+    data(){
+        return {
+            isOnMobile: false,
+            collapsed: false,
+            user:this.$store.state.auth.user,
+            menu: [
+                {
+                  header: 'Main Navigation',
+                  hiddenOnCollapse: true
+                },
+                {
+                  href: '/',
+                  title: 'Dashboard',
+                  icon: 'fa fa-user'
+                },
+                {
+                  href: '/charts',
+                  title: 'Charts',
+                  icon: 'fa fa-chart-area',
+                  child: [
+                    {
+                      href: '/charts/sublink',
+                      title: 'Sub Link'
+                    }
+                  ]
+                }
+              ]
         }
     }
 }

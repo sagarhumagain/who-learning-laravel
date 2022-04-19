@@ -7,13 +7,16 @@ require('./bootstrap');
 
 import { createApp } from 'vue'
  
- import router from './router'
- import store from './store'
+import router from './router';
+import store from './store';
+import VueSidebarMenu from 'vue-sidebar-menu'
+import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 
 const app = createApp({});
 // app.component('hello-world', HelloWorld)
 
 app.use(router);
 app.use(store);
+app.use(VueSidebarMenu);
 
 app.mount('#app')
