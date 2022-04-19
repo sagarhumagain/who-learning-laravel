@@ -1,0 +1,12 @@
+@use '../abstracts/variables';
+.btn-fill {
+  color: $color-white;
+  background-color: $color-primary;
+  transition: 0.3s;
+  font-weight: $font-weight-bold;
+  &:hover {
+    border-color: $color-primary;
+    background-color: $color-white;
+    color: $color-primary;
+  }
+}

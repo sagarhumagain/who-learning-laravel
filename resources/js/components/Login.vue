@@ -4,6 +4,8 @@
             <div class="col-12 col-md-6 offset-md-3">
                 <div class="card shadow sm">
                     <div class="card-body">
+                      <img src="/images/logo.svg" alt="WHO Logo" height="100">
+
                         <h1 class="text-center">Login</h1>
                         <hr/>
                         <form action="javascript:void(0)" class="row" method="post">
@@ -11,12 +13,12 @@
                                 <label for="email" class="font-weight-bold">Email</label>
                                 <input type="text" v-model="auth.email" name="email" id="email" class="form-control">
                             </div>
-                            <div class="form-group col-12">
+                            <div class="form-group col-12 mb-2">
                                 <label for="password" class="font-weight-bold">Password</label>
                                 <input type="password" v-model="auth.password" name="password" id="password" class="form-control">
                             </div>
                             <div class="col-12 mb-2">
-                                <button type="submit" :disabled="processing" @click="login" class="btn btn-primary btn-block">
+                                <button type="submit" :disabled="processing" @click="login" class="btn-fill">
                                     {{ processing ? "Please wait" : "Login" }}
                                 </button>
                             </div>

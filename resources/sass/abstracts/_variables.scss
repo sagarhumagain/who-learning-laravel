@@ -1,0 +1,36 @@
+// Body
+$body-bg: #f8fafc;
+
+//Colors
+$color-primary: #00205C;
+$color-white: #FFFFFF;
+
+$color-sec-blue: #009ADE;
+$color-sec-blue-tint1: rgb(121,181,227);
+
+$color-sec-orange: #F26829;
+$color-sec-orange-tint1: rgb(252,188,113);
+
+$color-sec-yellow: #F4A81D;
+$color-sec-yellow-tint1: rgb(248,195,112);
+
+$color-sec-magenta: #A6228C;
+$color-sec-magenta-tint1: rgb(190,115,173);
+
+$color-sec-purple: #5B2C86;
+$color-sec-purple-tint1: rgb(174,169,212);
+
+$color-sec-green: #80BC00;
+$color-sec-green-tint1: rgb(170,207,127);
+
+$color-black: #000000;
+$color-red: #EF3842;
+
+// Typography
+$font-family-who: 'Source Sans Pro', sans-serif;
+$font-size-large: clamp(2.5rem, 2.1519rem + 1.3263vw, 3.75rem);
+$font-size-title: clamp(1.563rem, 1.3709rem + 0.8537vw, 2.438rem);
+$font-size-normal: clamp(0.75rem, 0.6951rem + 0.2439vw, 1rem);
+
+$font-weight-normal: 400;
+$font-weight-bold: 700;
