@@ -1,20 +1,20 @@
 import * as Vue from 'vue'
 import * as VueRouter from 'vue-router'
-import store from '../store'
+import store from '@/store'
 
-// Vue.use(VueRouter)
+
 
 /* Guest Component */
-const Login = () => import('../components/Login.vue' /* webpackChunkName: "resource/js/components/login" */)
-const Register = () => import('../components/Register.vue' /* webpackChunkName: "resource/js/components/register" */)
+const Login = () => import('@/views/Login.vue' /* webpackChunkName: "resource/js/components/login" */)
+const Register = () => import('@/views/Register.vue' /* webpackChunkName: "resource/js/components/register" */)
 /* Guest Component */
 
 /* Layouts */
-const DahboardLayout = () => import('../components/Layouts/Dashboard.vue' /* webpackChunkName: "resource/js/components/layouts/dashboard" */)
+const DahboardLayout = () => import('@/layouts/Dashboard.vue' /* webpackChunkName: "resource/js/components/layouts/dashboard" */)
 /* Layouts */
 
 /* Authenticated Component */
-const Dashboard = () => import('../components/Dashboard.vue' /* webpackChunkName: "resource/js/components/dashboard" */)
+const Dashboard = () => import('@/views/Dashboard.vue' /* webpackChunkName: "resource/js/components/dashboard" */)
 /* Authenticated Component */
 
 

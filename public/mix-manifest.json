@@ -1,8 +1,8 @@
 {
-    "/js/app.js": "/js/app.js",
-    "/js/resource/js/components/login.js": "/js/resource/js/components/login.js",
-    "/js/resource/js/components/register.js": "/js/resource/js/components/register.js",
-    "/js/resource/js/components/layouts/dashboard.js": "/js/resource/js/components/layouts/dashboard.js",
-    "/js/resource/js/components/dashboard.js": "/js/resource/js/components/dashboard.js",
-    "/css/app.css": "/css/app.css"
+    "/js/app.js": "/js/app.js?id=6e196a24e0066eafd3011605b908a0d0",
+    "/js/resource/js/components/login.js": "/js/resource/js/components/login.js?id=18b9eb7988c874a6595f75e6dda2e166",
+    "/js/resource/js/components/register.js": "/js/resource/js/components/register.js?id=c6f8348a7fc81a5769a7cea8828a0896",
+    "/js/resource/js/components/layouts/dashboard.js": "/js/resource/js/components/layouts/dashboard.js?id=89a3f9f518c8ac8eb81b859cfe69b16d",
+    "/js/resource/js/components/dashboard.js": "/js/resource/js/components/dashboard.js?id=c499389e5efca17df4347773a7c8b2e5",
+    "/css/app.css": "/css/app.css?id=71cbd1a3631edcf90141a3b2d3a01725"
 }

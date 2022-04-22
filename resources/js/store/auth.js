@@ -1,5 +1,5 @@
 import axios from 'axios'
-import router from '../router'
+import router from '@/router'
 
 export default {
     namespaced: true,
@@ -25,7 +25,7 @@ export default {
     },
     actions:{
         login({commit}){
-            return axios.get('/api/user').then(({data})=>{
+            return this.$api.auth.getActiveUser().then(({data})=>{
                 commit('SET_USER',data)
                 commit('SET_AUTHENTICATED',true)
                 router.push({name:'dashboard'})

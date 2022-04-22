@@ -36,6 +36,7 @@
 <script>
 import { mapActions } from 'vuex';
 import { useToast } from "vue-toastification";
+
 export default {
     name:"login",
     data(){
@@ -52,11 +53,12 @@ export default {
             signIn:'auth/login'
         }),
         async login(){
+          
           const toast = useToast();
-            this.processing = true
-            await axios.get('/sanctum/csrf-cookie')
-            await axios.post('/login',this.auth).then(({data})=>{
-                this.signIn()
+            this.processing = true;
+            await this.$api.auth.getCsrfCookie();
+            await this.$api.auth.login(this.auth).then(({data})=>{
+                this.signIn();
             }).catch(({response:{data}})=>{
                 toast.error(data.message);
             }).finally(()=>{
