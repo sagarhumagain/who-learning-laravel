@@ -9,11 +9,10 @@ import Auth from "@/api/auth";
   //     context.$axios.setToken(token, "Bearer");
   //   }
   // }
-
+console.log(process.env);
   // Initialize API repositories
-  const baseUrl = process.env.MIX_APP_URL;
+  const baseUrl = process.env.APP_URL;
   const apiVersion = '/api/v1';
-  console.log(process.env);
   export const apiRepositories = {
     auth: Auth(baseUrl, apiVersion),
     // courses: Courses(baseUrl, apiVersion),

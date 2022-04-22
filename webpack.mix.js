@@ -6,7 +6,8 @@ console.log(process.env);
 let dotenvplugin = new webpack.DefinePlugin({
     'process.env': {
         APP_NAME: JSON.stringify(process.env.APP_NAME || 'Default app name'),
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
+        APP_URL: JSON.stringify(process.env.APP_URL || 'http://localhost:8000'),
     }
 });
 
@@ -16,7 +17,7 @@ mix.webpackConfig({
         dotenvplugin,
     ]
 });
-// console.log(process.env.toString());
+console.log(process.env.toString());
 mix.webpackConfig({
   resolve: {
     extensions: ['.js', '.vue', '.json'],
