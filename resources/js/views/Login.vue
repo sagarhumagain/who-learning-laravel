@@ -56,15 +56,16 @@ export default {
           
           const toast = useToast();
             this.processing = true;
-            await this.$api.auth.getCsrfCookie();
-            await this.$api.auth.login(this.auth).then(({data})=>{
-                this.signIn();
-            }).catch(({response:{data}})=>{
-                toast.error(data.message);
-            }).finally(()=>{
-                this.processing = false;
-                // toast.success("Welcome!");
-            })
+            
+            try {
+              await this.$api.auth.getCsrfCookie();
+              await this.$api.auth.login(this.auth);
+              this.signIn();
+            } catch (e) {
+              console.log(e);  
+              toast.error(e.response.data.message);
+            }
+            this.processing = false;
         },
     }
 }

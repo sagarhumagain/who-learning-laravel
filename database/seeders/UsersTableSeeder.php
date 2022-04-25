@@ -20,21 +20,24 @@ class UsersTableSeeder extends Seeder
         [
           'name' => 'Super Admin',
           'email' => 'superadmin@who.int',
-          'password' => FacadesHash::make('superadmin123')
+          'password' => FacadesHash::make('superadmin123'),
+          'is_first_time_login' => 1
         ]
       );
       User::factory()->create(
         [
           'name' => 'Course Admin',
           'email' => 'courseadmin@who.int',
-          'password' => FacadesHash::make('courseadmin123')
+          'password' => FacadesHash::make('courseadmin123'),
+          'is_first_time_login' => 1
         ]
       );
       User::factory()->create(
         [
           'name' => 'Normal User',
           'email' => 'normaluser@who.int',
-          'password' => FacadesHash::make('normaluser123')
+          'password' => FacadesHash::make('normaluser123'),
+          'is_first_time_login' => 1
         ]
       );
     }
