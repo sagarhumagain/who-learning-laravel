@@ -10,10 +10,14 @@
       }
       .vsm--link_hover {
         background-color: $color-sec-blue;
+        .vsm--icon {
+          background-color: $color-sec-blue !important;
+        }
       }
       .vsm--link_open {
         background-color: $color-sec-blue;
       }
+      
     }
 
     .vsm--badge_default, .vsm--toggle-btn {

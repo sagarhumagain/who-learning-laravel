@@ -1,11 +1,8 @@
-// Body
-$body-bg: #FFFFFF;
-
-
 //Colors
 $color-primary: #00205C;
 $color-primary-tint1: rgba(0,32,92,.65);
 $color-white: #FFFFFF;
+$color-grey: #F5F6FA;
 
 $color-sec-blue: #009ADE;
 $color-sec-blue-tint1: rgb(121,181,227);
@@ -36,3 +33,18 @@ $font-size-normal: clamp(0.75rem, 0.6951rem + 0.2439vw, 1rem);
 
 $font-weight-normal: 400;
 $font-weight-bold: 700;
+
+// Body
+$body-bg: $color-grey;
+
+// :export {
+//   colorPrimary: $color-primary;
+//   colorWhite: $color-white;
+//   colorSecBlue: $color-sec-blue;
+//   colorSecOrange: $color-sec-orange;
+//   colorSecYellow: $color-sec-yellow;
+//   colorSecMagenta: $color-sec-magenta;
+//   colorSecPurple: $color-sec-purple;
+//   colorSecGreen: $color-sec-green;
+//   colorRed: $color-red;
+// }
