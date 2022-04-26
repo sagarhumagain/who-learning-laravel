@@ -38,6 +38,7 @@
 
 <script>
 import {mapActions} from 'vuex';
+
 export default {
     name: "dashboard-layout",
     methods: {
@@ -82,27 +83,27 @@ export default {
                 {
                   href: '/',
                   title: 'Dashboard',
-                  icon: 'fa fa-user'
+                  icon: 'fa fa-gauge'
                 },
                 {
                   // href: '/courses',
                   title: 'Courses',
-                  icon: 'fa fa-chart-area',
+                  icon: 'fa fa-book',
                   child: [
                     {
-                      href: '/courses/list',
-                      title: 'View Courses'
+                      href: '/courses/',
+                      title: 'List Courses'
                     },
                     {
-                      href: '/courses/add',
-                      title: 'Add a New Course'
+                      href: '/courses/create',
+                      title: 'Create a New Course'
                     }
                   ]
                 },
                 {
                   // href: '/users',
                   title: 'Users',
-                  icon: 'fa fa-chart-area',
+                  icon: 'fa fa-user',
                   child: [
                     {
                       href: '/users/list',

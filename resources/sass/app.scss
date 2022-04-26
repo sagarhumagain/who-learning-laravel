@@ -11,9 +11,11 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 @import "vendors/vueToastification";
+@import "vendors/agGridCommunity";
 
 // Components
-@import "components/buttons";
+@import "components/card";
+@import "components/button";
 
 // Layout
 @import "layout/grid";

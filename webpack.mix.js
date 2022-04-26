@@ -17,10 +17,19 @@ mix.webpackConfig({
         dotenvplugin,
     ]
 });
-console.log(process.env.toString());
 mix.webpackConfig({
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        loader: "ts-loader",
+        options: { appendTsSuffixTo: [/\.vue$/] },
+        exclude: /node_modules/
+      }
+    ]
+  },
   resolve: {
-    extensions: ['.js', '.vue', '.json'],
+    extensions: [".js", ".jsx", ".vue", ".ts", ".tsx", ".json"],
     alias: {
       // 'vue$': 'vue/dist/vue.esm.js',
       '@': __dirname + '/resources/js'

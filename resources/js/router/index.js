@@ -15,6 +15,10 @@ const DahboardLayout = () => import('@/layouts/Dashboard.vue' /* webpackChunkNam
 
 /* Authenticated Component */
 const Dashboard = () => import('@/views/Dashboard.vue' /* webpackChunkName: "resource/js/components/dashboard" */)
+const CoursesList = () => import('@/views/courses/List.vue' /* webpackChunkName: "resource/js/components/courseslist" */)
+const CourseCreate = () => import('@/views/courses/Create.vue' /* webpackChunkName: "resource/js/components/coursecreate" */)
+const CourseView = () => import('@/views/courses/View.vue' /* webpackChunkName: "resource/js/components/courseview" */)
+const CourseEdit = () => import('@/views/courses/Edit.vue' /* webpackChunkName: "resource/js/components/courseedit" */)
 /* Authenticated Component */
 
 
@@ -51,9 +55,42 @@ const Routes = [
                 meta:{
                     title:`Dashboard`
                 }
+            },
+            {
+              name:"courses-list",
+              path: '/courses',
+              component: CoursesList,
+              meta:{
+                  title:`List Courses`
+              }
+            },
+            {
+              name:"course-create",
+              path: '/courses/create',
+              component: CourseCreate,
+              meta:{
+                  title:`Create Courses`
+              }
+            },
+            {
+              name:"course-view",
+              path: '/courses/:id',
+              component: CourseView,
+              meta:{
+                  title:`View Course`
+              }
+            },
+            {
+              name:"courses-edit",
+              path: '/courses/:id/edit',
+              component: CourseEdit,
+              meta:{
+                  title:`Edit Course`
+              }
             }
         ]
-    }
+    },
+    
 ]
 
 const router = VueRouter.createRouter({
