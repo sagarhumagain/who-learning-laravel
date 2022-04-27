@@ -19,6 +19,9 @@ const CoursesList = () => import('@/views/courses/List.vue' /* webpackChunkName:
 const CourseCreate = () => import('@/views/courses/Create.vue' /* webpackChunkName: "resource/js/components/coursecreate" */)
 const CourseView = () => import('@/views/courses/View.vue' /* webpackChunkName: "resource/js/components/courseview" */)
 const CourseEdit = () => import('@/views/courses/Edit.vue' /* webpackChunkName: "resource/js/components/courseedit" */)
+const Users = () => import('@/views/users/Users.vue' /* webpackChunkName: "resource/js/components/users" */)
+const Courses = () => import('@/views/courses/Courses.vue' /* webpackChunkName: "resource/js/components/courses" */)
+
 /* Authenticated Component */
 
 
@@ -59,7 +62,7 @@ const Routes = [
             {
               name:"courses-list",
               path: '/courses',
-              component: CoursesList,
+              component: Courses,
               meta:{
                   title:`List Courses`
               }
@@ -87,7 +90,15 @@ const Routes = [
               meta:{
                   title:`Edit Course`
               }
-            }
+            },
+            {
+                name:"users",
+                path: '/users',
+                component: Users,
+                meta:{
+                    title:`Users Management`
+                }
+              }
         ]
     },
     

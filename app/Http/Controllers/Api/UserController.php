@@ -25,10 +25,11 @@ class UserController extends Controller
 
     public function index()
     {
-        $data=[];
-        $data['data']=$this->user->with('roles:name')->latest()->paginate(1);
+        $data['data']= $this->user->with('roles:name', 'employee')->latest()->paginate(100);
         $data['roles'] = Role::select('name', 'id')->get();
-
+        // $data['groups'] = Group::pluck('group_name', 'id');
+        // $data['duty_stations'] = DutyStation::pluck('work_place', 'id');
+        $data['supervisors'] = User::role('supervisor')->pluck('name', 'id');
         return $data;
     }
 

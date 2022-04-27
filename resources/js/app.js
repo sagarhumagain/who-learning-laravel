@@ -13,9 +13,7 @@ import Toast, { POSITION } from "vue-toastification";
 import 'bootstrap';
 import {apiRepositories} from '@/services/api';
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
-import { plugin as Formkit, defaultConfig as formKitConfig } from '@formkit/vue';
 import moment from 'moment';
-// import '@formkit/themes/genesis'
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { fas } from '@fortawesome/free-solid-svg-icons'
@@ -26,6 +24,8 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 library.add(far);
 import { dom } from "@fortawesome/fontawesome-svg-core";
 dom.watch();
+
+// /*Sweet alert start*/
 
 const app = createApp({});
 
@@ -54,7 +54,6 @@ app.component(AlertErrors.name, AlertErrors)
 app.component(AlertSuccess.name, AlertSuccess)
 
 app.use(Toast, toastOptions);
-// app.use(Formkit, formKitConfig);
 
 //Vuee toastification
 app.use(Toast, toastOptions);
@@ -67,5 +66,35 @@ app.config.globalProperties.$filters = {
       return moment(created).toNow('UTC'); // April 7th 2019,(h:mm:ss a) 3:34:44 pm
   },
 }
+import VueProgressBar from "@aacassandra/vue3-progressbar";
+const option = {
+    color: '#008dc9',
+    failedColor: '#874b4b',
+    thickness: '5px',
+    transition: {
+      speed: '0.2s',
+      opacity: '0.6s',
+      termination: 300
+    },
+    autoRevert: true,
+    location: 'top',
+    inverse: false
+  }
+app.use(VueProgressBar, option)
 
+import mitt from 'mitt';
+const emitter = mitt();
+app.config.globalProperties.emitter = emitter;
+
+
+// /*Sweet alert start*/
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+
+const options = {
+    confirmButtonColor: '#41b882',
+    cancelButtonColor: '#ff7674',
+  };
+  
+app.use(VueSweetalert2, options);
 app.mount('#app');

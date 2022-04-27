@@ -11,6 +11,7 @@ use App\Http\Controllers\DesignationController;
 use App\Http\Controllers\PillarController;
 use App\Http\Controllers\StaffCategoryController;
 use App\Http\Controllers\StaffTypeController;
+use App\Http\Controllers\Api\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,10 +38,9 @@ Route::resource('staff-types/v1/', StaffTypeController::class);
 
 
 Route::group(
-    ['middleware' => ['auth:sanctum'], 'namespace'=>'Api\\'],
+    ['middleware' => ['auth:sanctum']],
     function () {
-        // Route::apiResources(['user'         =>'UserController']);
-
+        Route::apiResources(['user'         =>UserController::class]);
         // Route::apiResources(['role'         =>'RoleController']);
 
         // Route::apiResources(['permission'   =>'PermissionController']);

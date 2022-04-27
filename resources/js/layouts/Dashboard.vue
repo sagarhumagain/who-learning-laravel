@@ -112,19 +112,19 @@ export default {
                   ]
                 },
                 {
-                  // href: '/users',
+                  href: '/users',
                   title: 'Users',
                   icon: 'fa fa-user',
-                  child: [
-                    {
-                      href: '/users/list',
-                      title: 'View Users'
-                    },
-                    {
-                      href: '/users/add',
-                      title: 'Add a New User'
-                    }
-                  ]
+                  // child: [
+                  //   {
+                  //     href: '/users/list',
+                  //     title: 'View Users'
+                  //   },
+                  //   {
+                  //     href: '/users/add',
+                  //     title: 'Add a New User'
+                  //   }
+                  // ]
                 }
               ]
         }

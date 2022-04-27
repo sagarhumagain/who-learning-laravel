@@ -23,6 +23,7 @@ class RolesTableSeeder extends Seeder
         $superAdmin = Role::create(['name' => 'super-admin','guard_name'=>'web']);
         $courseAdmin = Role::create(['name' => 'course-admin','guard_name'=>'web']);
         $normalUser = Role::create(['name' => 'normal-user','guard_name'=>'web']);
+        $supervisor = Role::create(['name' => 'supervisor','guard_name'=>'web']);
 
         $sa_user = User::where('email', 'superadmin@who.int')->first();
         $sa_user->assignRole($superAdmin);
