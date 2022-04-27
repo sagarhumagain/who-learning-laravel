@@ -35,7 +35,11 @@
         "ag-grid-vue3": "^27.2.1",
         "chart.js": "^3.7.1",
         "dotenv": "^16.0.0",
+<<<<<<< HEAD
         "vform": "^2.1.2",
+=======
+        "moment": "^2.29.3",
+>>>>>>> notification feature on registration
         "vue-chartjs": "^4.0.5",
         "vue-multiselect": "^2.1.6",
         "vue-router": "^4.0.14",

@@ -1,0 +1,25 @@
+@use '../abstracts/variables';
+
+.notification{
+  color: $color-black !important;
+  .notification-text {
+    color: $color-grey;
+  }
+  .notification-content{
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+  }
+}
+
+
+// .notifications{
+//   min-width: 300px;
+//   max-width: 500px;
+// }
+.black{
+  color: $color-black;
+}
+.profile-dropdown-menu{
+  min-width: 140px;
+}

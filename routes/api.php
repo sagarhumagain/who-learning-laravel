@@ -1,5 +1,7 @@
 <?php
+namespace Api;
 
+use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContractController;
@@ -32,3 +34,22 @@ Route::resource('designations/v1/', DesignationController::class);
 Route::resource('pillars/v1/', PillarController::class);
 Route::resource('staff-categories/v1/', StaffCategoryController::class);
 Route::resource('staff-types/v1/', StaffTypeController::class);
+
+
+Route::group(
+    ['middleware' => ['auth:sanctum'], 'namespace'=>'Api\\'],
+    function () {
+        // Route::apiResources(['user'         =>'UserController']);
+
+        // Route::apiResources(['role'         =>'RoleController']);
+
+        // Route::apiResources(['permission'   =>'PermissionController']);
+        // Route::post('updatePassword', 'ProfileController@updatePassword');
+        // Route::apiResources(['profile'      =>'ProfileController']);
+
+        Route::post('v1/read_all', [BaseController::class, 'readAll']);
+        Route::post('v1/read_notification', [BaseController::class, 'read']);
+        Route::post('v1/unread_notification', [BaseController::class, 'unread']);
+        Route::get('v1/notifications', [BaseController::class, 'notifications']);
+    }
+);

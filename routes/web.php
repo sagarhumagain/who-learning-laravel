@@ -14,15 +14,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('{any}', function () {
-  return view('welcome');
+    return view('welcome');
 })->where('any', '.*');
 
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::group(['middleware' => ['auth']], function() {
-  // Route::resource('roles', RoleController::class);
+Route::group(['middleware' => ['auth']], function () {
+    // Route::resource('roles', RoleController::class);
   // Route::resource('users', UserController::class);
   // Route::resource('products', ProductController::class);
 });
