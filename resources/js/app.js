@@ -25,6 +25,8 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 library.add(far);
 import { dom } from "@fortawesome/fontawesome-svg-core";
 import VCalendar from 'v-calendar';
+import 'v-calendar/dist/style.css';
+
 dom.watch();
 
 import Functions from "./functions";
@@ -68,6 +70,9 @@ app.use(Toast, toastOptions);
 //fontawsome
 app.component("font-awesome-icon", FontAwesomeIcon);
 app.config.globalProperties.$api = apiRepositories;
+//mitt
+// const emitter = mitt();
+// app.config.globalProperties.emitter = emitter;
 
 app.config.globalProperties.$filters = {
   duration(created) {

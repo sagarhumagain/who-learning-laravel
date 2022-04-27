@@ -1,19 +1,17 @@
 export default (baseUrl, apiVersion) => ({
-  async createCourse(body) {
-    return await axios.post(`${baseUrl}${apiVersion}/courses/create`, body);
+  async create(body) {
+    return await axios.post(`${baseUrl}${apiVersion}/courses`, body);
   },
 
-  async viewCourse(id) {
+  async view(id) {
     return await axios.get(`${baseUrl}${apiVersion}/courses/${id}`);
   },
 
-  async updateCourse(body) {
+  async update(body) {
     return await axios.patch(`${baseUrl}${apiVersion}/courses/${id}`, body);
   },
 
-  async listCourses() {
+  async list() {
     return await axios.get(`${baseUrl}${apiVersion}/courses`);
   }
-
-
 });
