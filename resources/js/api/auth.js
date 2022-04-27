@@ -8,7 +8,7 @@ export default (baseUrl, apiVersion) => ({
   },
 
   async logout() {
-    return await axios.$et(`${baseUrl}/logout`);
+    return await axios.get(`${baseUrl}/logout`);
   },
 
   async register(payload) {
