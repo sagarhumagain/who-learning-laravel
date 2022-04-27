@@ -99,7 +99,7 @@ const router = VueRouter.createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    document.title = `${to.meta.title} - ${process.env.MIX_APP_NAME}`
+    document.title = `${to.meta.title} - ${process.env.APP_NAME}`
     if(to.meta.middleware=="guest"){
         if(store.state.auth.authenticated){
             next({name:"dashboard"})

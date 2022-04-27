@@ -6,24 +6,16 @@
                     <div class="card-body">
                         <h1 class="text-center">Create Course</h1>
                         <hr/>
-                        <form action="javascript:void(0)" @submit="register" class="row" method="post">
-                            <div class="form-group col-12">
-                                <label for="name" class="font-weight-bold">Name</label>
-                                <input type="text" name="name" v-model="user.name" id="name" placeholder="Enter name" class="form-control">
-                            </div>
-                            <div class="form-group col-12">
-                                <label for="email" class="font-weight-bold">Duration</label>
-                                <input type="text" name="email" v-model="user.email" id="email" placeholder="Enter Email" class="form-control">
-                            </div>
-                           
-                            <div class="col-12 mb-2">
-                                <button type="submit" :disabled="processing" class="btn btn-primary btn-block">
-                                    {{ processing ? "Please wait" : "Create" }}
-                                </button>
-                            </div>
-                            <div class="col-12 text-center">
-                                <label>Already have an account? <router-link :to="{name:'login'}">Login Now!</router-link></label>
-                            </div>
+                        <form @submit.prevent="createCourse" @keydown="form.onKeydown($event)">
+                          <input v-model="form.name" type="text" name="name" placeholder="Full Name">
+                          <div v-if="form.errors.has('name')" v-html="form.errors.get('name')" />
+
+                          <input v-model="form.email" type="" name="email" placeholder="Email">
+                          <div v-if="form.errors.has('email')" v-html="form.errors.get('email')" />
+
+                          <button type="submit" :disabled="form.busy">
+                            Log In
+                          </button>
                         </form>
                     </div>
                 </div>
@@ -34,24 +26,30 @@
 
 <script>
 import { mapActions } from 'vuex'
+import Form from 'vform'
+
 export default {
-    name:'createcourse',
+    name:'create-user',
+    components:{
+      FormKitSchema
+    },
     data(){
         return {
-            user:{
-                name:"",
-                email:"",
-                password:"",
-                password_confirmation:""
-            },
+            form: new Form({
+              name: '',
+              description: '',
+              credit_hours: '',
+              url: '',
+              due_date: ''
+            }),
             processing:false
         }
     },
     methods:{
         ...mapActions({
-            signIn:'auth/login'
+            // signIn:'auth/login'
         }),
-        async register(){
+        async createCourse(){
             this.processing = true
             await axios.post('/register',this.user).then(response=>{
                 this.signIn()
