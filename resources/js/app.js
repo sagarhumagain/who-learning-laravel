@@ -37,10 +37,25 @@ const toastOptions = {
   timeout: 2500,
   shareAppContext: true
 };
+//vform
+import {
+  Button,
+  HasError,
+  AlertError,
+  AlertErrors,
+  AlertSuccess
+} from 
+'vform/src/components/bootstrap5'
 
+app.component(Button.name, Button)
+app.component(HasError.name, HasError)
+app.component(AlertError.name, AlertError)
+app.component(AlertErrors.name, AlertErrors)
+app.component(AlertSuccess.name, AlertSuccess)
+
+//Vuee toastification
 app.use(Toast, toastOptions);
-// app.use(Formkit, formKitConfig);
-
+//fontawsome
 app.component("font-awesome-icon", FontAwesomeIcon);
 app.config.globalProperties.$api = apiRepositories;
 
