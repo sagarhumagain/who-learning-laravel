@@ -20,18 +20,17 @@ class RolesTableSeeder extends Seeder
         // Reset cached roles and permissions
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        $superAdmin = Role::create(['name' => 'super-admin','guard_name'=>'api']);
-        $courseAdmin = Role::create(['name' => 'course-admin','guard_name'=>'api']);
-        $normalUser = Role::create(['name' => 'normal-user','guard_name'=>'api']);
+        $superAdmin = Role::create(['name' => 'super-admin','guard_name'=>'web']);
+        $courseAdmin = Role::create(['name' => 'course-admin','guard_name'=>'web']);
+        $normalUser = Role::create(['name' => 'normal-user','guard_name'=>'web']);
 
-        $sa_user = User::where('email','superadmin@who.int')->first();
+        $sa_user = User::where('email', 'superadmin@who.int')->first();
         $sa_user->assignRole($superAdmin);
 
-        $ca_user = User::where('email','courseadmin@who.int')->first();
+        $ca_user = User::where('email', 'courseadmin@who.int')->first();
         $ca_user->assignRole($courseAdmin);
 
-        $nu_user = User::where('email','normaluser@who.int')->first();
+        $nu_user = User::where('email', 'normaluser@who.int')->first();
         $nu_user->assignRole($normalUser);
-
     }
 }

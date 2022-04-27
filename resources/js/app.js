@@ -14,7 +14,7 @@ import 'bootstrap';
 import {apiRepositories} from '@/services/api';
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 import { plugin as Formkit, defaultConfig as formKitConfig } from '@formkit/vue';
-
+import moment from 'moment';
 // import '@formkit/themes/genesis'
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -53,10 +53,19 @@ app.component(AlertError.name, AlertError)
 app.component(AlertErrors.name, AlertErrors)
 app.component(AlertSuccess.name, AlertSuccess)
 
+app.use(Toast, toastOptions);
+// app.use(Formkit, formKitConfig);
+
 //Vuee toastification
 app.use(Toast, toastOptions);
 //fontawsome
 app.component("font-awesome-icon", FontAwesomeIcon);
 app.config.globalProperties.$api = apiRepositories;
+
+app.config.globalProperties.$filters = {
+  duration(created) {
+      return moment(created).toNow('UTC'); // April 7th 2019,(h:mm:ss a) 3:34:44 pm
+  },
+}
 
 app.mount('#app');

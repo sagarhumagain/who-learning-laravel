@@ -12,8 +12,7 @@
     color: $color-white;
 
     &:hover {
-      color: $color-white;
-      font-weight: $font-weight-bold;
+      font-weight: unset;
     }
   }
 }

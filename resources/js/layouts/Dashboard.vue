@@ -10,24 +10,29 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
                         <router-link :to="{name:'dashboard'}" class="nav-link">Home <span class="sr-only">(current)</span></router-link>
                     </li>
                 </ul>
+
                 <div class="ml-auto">
                     <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                          <Notification />
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ user.name }}
                             </a>
-                            <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="dropdown-item" href="javascript:void(0)" @click="logout">Logout</a>
+                            <div class="dropdown-menu profile-dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item text-danger  p-0" href="javascript:void(0)" @click="logout">Logout</a>
                             </div>
                         </li>
                     </ul>
                 </div>
+                
             </div>
         </nav>
         <main class="main-view mt-3" :class="[{'collapsed' : collapsed}, {'onmobile' : isOnMobile}]">
@@ -38,10 +43,15 @@
 
 <script>
 import {mapActions} from 'vuex';
+import Notification from '@/components/Notification';
 
 export default {
     name: "dashboard-layout",
+    components: {
+        Notification,
+    },
     methods: {
+      
       onCollapse (collapsed) {
         console.log(collapsed)
         // this.collapsed = collapsed
@@ -70,6 +80,7 @@ export default {
           }
         }
     },
+    
     data(){
         return {
             isOnMobile: false,

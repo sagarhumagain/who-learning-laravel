@@ -1,5 +1,6 @@
 import { inject } from "vue";
 import Auth from "@/api/auth";
+import Notification from "@/api/notification";
 // import Courses from "@/api/courses";
 
  // if (process.client) {
@@ -14,6 +15,7 @@ import Auth from "@/api/auth";
   const apiVersion = '/api/v1';
   export const apiRepositories = {
     auth: Auth(baseUrl, apiVersion),
+    notification: Notification(baseUrl, apiVersion)
     // courses: Courses(baseUrl, apiVersion),
   };
   // inject("api", repositories);
