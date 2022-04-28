@@ -44,7 +44,7 @@
 <script>
 import {mapActions} from 'vuex';
 import Notification from '@/components/Notification';
-
+import { getRoles } from '@/helpers/auth';
 export default {
     name: "dashboard-layout",
     components: {
@@ -82,11 +82,11 @@ export default {
     },
     
     data(){
-        return {
-            isOnMobile: false,
-            collapsed: false,
-            user:this.$store.state.auth.user,
-            menu: [
+        const roles = getRoles();
+        console.log(roles);
+        let menuItems;
+        if (roles.includes('super-admin')) {
+          menuItems = [
                 {
                   header: 'Main Navigation',
                   hiddenOnCollapse: true
@@ -126,7 +126,40 @@ export default {
                     // }
                   ]
                 }
-              ]
+              ];
+        } else {
+          menuItems = [
+                {
+                  header: 'Main Navigation',
+                  hiddenOnCollapse: true
+                },
+                {
+                  href: '/',
+                  title: 'Dashboard',
+                  icon: 'fa fa-gauge'
+                },
+                {
+                  // href: '/courses',
+                  title: 'Courses',
+                  icon: 'fa fa-book',
+                  child: [
+                    {
+                      href: '/courses/',
+                      title: 'List Courses'
+                    },
+                    {
+                      href: '/courses/create',
+                      title: 'Create a New Course'
+                    }
+                  ]
+                },
+              ];
+        }
+        return {
+            isOnMobile: false,
+            collapsed: false,
+            user:this.$store.state.auth.user,
+            menu: menuItems
         }
     }
 }

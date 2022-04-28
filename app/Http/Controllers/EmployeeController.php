@@ -15,9 +15,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = Employee::get();
-        return response()->json([
-            'employees' => $employees
-        ]);
+        return response()->json($employees);
     }
 
     /**
@@ -52,9 +50,7 @@ class EmployeeController extends Controller
      */
     public function show(Employee $employee)
     {
-        return response()->json([
-            'employee' => $employee
-        ]);
+        return response()->json($employee);
     }
 
     /**
@@ -65,9 +61,7 @@ class EmployeeController extends Controller
      */
     public function edit(Employee $employee)
     {
-        return response()->json([
-            'employee' => $employee
-        ]);
+        return response()->json($employee);
     }
 
     /**

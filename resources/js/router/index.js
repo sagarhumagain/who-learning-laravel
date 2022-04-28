@@ -1,6 +1,7 @@
 import * as Vue from 'vue'
 import * as VueRouter from 'vue-router'
 import store from '@/store'
+import { getRoles } from '@/helpers/auth'
 
 
 
@@ -15,6 +16,7 @@ const DahboardLayout = () => import('@/layouts/Dashboard.vue' /* webpackChunkNam
 
 /* Authenticated Component */
 const Dashboard = () => import('@/views/Dashboard.vue' /* webpackChunkName: "resource/js/components/dashboard" */)
+const UserDashboard = () => import('@/views/UserDashboard.vue' /* webpackChunkName: "resource/js/components/userdashboard" */)
 const CoursesList = () => import('@/views/courses/List.vue' /* webpackChunkName: "resource/js/components/courseslist" */)
 const CourseCreate = () => import('@/views/courses/Create.vue' /* webpackChunkName: "resource/js/components/coursecreate" */)
 const CourseView = () => import('@/views/courses/View.vue' /* webpackChunkName: "resource/js/components/courseview" */)
@@ -25,7 +27,119 @@ const Employee = () => import('@/views/users/Employee.vue' /* webpackChunkName: 
 
 /* Authenticated Component */
 
-
+const roles = getRoles();
+let routeChildrens
+if (roles.includes('super-admin')) {
+  routeChildrens = [
+    {
+        name:"dashboard",
+        path: '/',
+        component: Dashboard,
+        meta:{
+            title:`Dashboard`
+        }
+    },
+    {
+      name:"courses-list",
+      path: '/courses',
+      component: Courses,
+      meta:{
+          title:`List Courses`
+      }
+    },
+    {
+      name:"course-create",
+      path: '/courses/create',
+      component: CourseCreate,
+      meta:{
+          title:`Create Courses`
+      }
+    },
+    {
+      name:"course-view",
+      path: '/courses/:id',
+      component: CourseView,
+      meta:{
+          title:`View Course`
+      }
+    },
+    {
+      name:"courses-edit",
+      path: '/courses/:id/edit',
+      component: CourseEdit,
+      meta:{
+          title:`Edit Course`
+      }
+    },
+    {
+        name:"users",
+        path: '/users',
+        component: Users,
+        meta:{
+            title:`Users Management`
+        }
+      },
+      {
+        name:"employee",
+        path: '/user/profile',
+        component: Employee,
+        meta:{
+            title:`Profile Management`
+        }
+      }
+    ];
+} else {
+    routeChildrens = [
+      {
+          name:"dashboard",
+          path: '/',
+          component: UserDashboard,
+          meta:{
+              title:`Dashboard`
+          }
+      },
+      {
+        name:"courses-list",
+        path: '/courses',
+        component: Courses,
+        meta:{
+            title:`List Courses`
+        }
+      },
+      {
+        name:"course-create",
+        path: '/courses/create',
+        component: CourseCreate,
+        meta:{
+            title:`Create Courses`
+        }
+      },
+      {
+        name:"course-view",
+        path: '/courses/:id',
+        component: CourseView,
+        meta:{
+            title:`View Course`
+        }
+      },
+      {
+        name:"courses-edit",
+        path: '/courses/:id/edit',
+        component: CourseEdit,
+        meta:{
+            title:`Edit Course`
+        }
+      },
+      {
+        name:"employee",
+        path: '/user/profile',
+        component: Employee,
+        meta:{
+            title:`Profile Management`
+        }
+      }
+    ];
+}
 const Routes = [
     {
         name:"login",
@@ -51,65 +165,8 @@ const Routes = [
         meta:{
             middleware:"auth"
         },
-        children:[
-            {
-                name:"dashboard",
-                path: '/',
-                component: Dashboard,
-                meta:{
-                    title:`Dashboard`
-                }
-            },
-            {
-              name:"courses-list",
-              path: '/courses',
-              component: Courses,
-              meta:{
-                  title:`List Courses`
-              }
-            },
-            {
-              name:"course-create",
-              path: '/courses/create',
-              component: CourseCreate,
-              meta:{
-                  title:`Create Courses`
-              }
-            },
-            {
-              name:"course-view",
-              path: '/courses/:id',
-              component: CourseView,
-              meta:{
-                  title:`View Course`
-              }
-            },
-            {
-              name:"courses-edit",
-              path: '/courses/:id/edit',
-              component: CourseEdit,
-              meta:{
-                  title:`Edit Course`
-              }
-            },
-            {
-                name:"users",
-                path: '/users',
-                component: Users,
-                meta:{
-                    title:`Users Management`
-                }
-              },
-              {
-                name:"employee",
-                path: '/user/profile',
-                component: Employee,
-                meta:{
-                    title:`Profile Management`
-                }
-              }
-        ]
-    },
+        children: routeChildrens
+       },
     
 ]
 

@@ -15,9 +15,7 @@ class StaffTypeController extends Controller
     public function index()
     {
         $staff_types = StaffType::get();
-        return response()->json([
-            'staff_types' => $staff_types
-        ]);
+        return response()->json($staff_types);
     }
 
     /**
@@ -52,9 +50,7 @@ class StaffTypeController extends Controller
      */
     public function show(StaffType $staffType)
     {
-        return response()->json([
-            'staff_type' => $staffType
-        ]);
+        return response()->json($staffType);
     }
 
     /**
@@ -65,9 +61,7 @@ class StaffTypeController extends Controller
      */
     public function edit(StaffType $staffType)
     {
-        return response()->json([
-            'staff_type' => $staffType
-        ]);
+        return response()->json($staffType);
     }
 
     /**

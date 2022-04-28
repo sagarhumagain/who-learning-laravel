@@ -7,7 +7,7 @@
                         <h3>Course Management</h3>
 
                         <div class="card-tools">
-                            <button type="" class="btn btn-primary" @click="newModal"><i class="fa fa-user-plus fa-fw"></i> Add New User</button>
+                            <button type="" class="btn btn-primary" @click="newModal"><i class="fa fa-user-plus fa-fw"></i> Add New Course</button>
                         </div>
                     </div>
                     <!-- /.card-header -->
@@ -22,7 +22,7 @@
                                 <th>Description</th>
                                 <th>Actions</th>
                             </tr>
-                            <tr v-for="(user, index) in users.data" :key="user.id">
+                            <tr v-for="(user, index) in courses.data" :key="user.id">
                                 <td>{{index + 1}}</td>
                                 <td>{{user.name}}
                                 </td>

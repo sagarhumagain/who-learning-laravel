@@ -25,7 +25,10 @@ return new class extends Migration
             $table->foreign('designation_id')->references('id')->on('designations')->onDelete('CASCADE');
             $table->boolean('is_active')->default(0);
             $table->bigInteger('staff_category_id')->unsigned();
-            $table->foreign('staff_category_id')->references('id')->on('staff_categories')->onDelete('CASCADE');
+            $table->foreign('staff_category_id')->references('id')->on('staff_types')->onDelete('CASCADE');
+            $table->bigInteger('staff_type_id')->unsigned();
+            $table->foreign('staff_type_id')->references('id')->on('staff_types')->onDelete('CASCADE');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

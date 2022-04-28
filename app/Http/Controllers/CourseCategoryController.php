@@ -15,9 +15,7 @@ class CourseCategoryController extends Controller
     public function index()
     {
         $course_categories = CourseCategory::get();
-        return response()->json([
-            'course_categories' => $course_categories
-        ]);
+        return response()->json($course_categories);
     }
 
     /**
@@ -52,9 +50,7 @@ class CourseCategoryController extends Controller
      */
     public function show(CourseCategory $courseCategory)
     {
-        return response()->json([
-            'course_category' => $courseCategory
-        ]);
+        return response()->json($courseCategory);
     }
 
     /**
@@ -65,9 +61,7 @@ class CourseCategoryController extends Controller
      */
     public function edit(CourseCategory $courseCategory)
     {
-        return response()->json([
-            'course_category' => $courseCategory
-        ]);
+        return response()->json($courseCategory);
     }
 
     /**

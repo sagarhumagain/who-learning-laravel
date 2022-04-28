@@ -15,9 +15,7 @@ class ContractTypeController extends Controller
     public function index()
     {
         $contract_types = ContractType::get();
-        return response()->json([
-            'contract_types' => $contract_types
-        ]);
+        return response()->json($contract_types);
     }
 
     /**
@@ -52,9 +50,7 @@ class ContractTypeController extends Controller
      */
     public function show(ContractType $contractType)
     {
-        return response()->json([
-            'contract_type' => $contractType
-        ]);
+        return response()->json($contractType);
     }
 
     /**
@@ -65,9 +61,7 @@ class ContractTypeController extends Controller
      */
     public function edit(ContractType $contractType)
     {
-        return response()->json([
-            'contract_type' => $contractType
-        ]);
+        return response()->json($contractType);
     }
 
     /**
@@ -79,7 +73,7 @@ class ContractTypeController extends Controller
      */
     public function update(Request $request, ContractType $contractType)
     {
-        $contract->update($contractType->all());
+        $contractType->update($request->all());
         return response()->json(true);
     }
 

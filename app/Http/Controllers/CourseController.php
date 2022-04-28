@@ -14,10 +14,8 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::get();
-        return response()->json([
-            'courses' => $courses
-        ]);
+        $courses['data'] = Course::paginate(20);
+        return  $courses;
     }
 
     /**
@@ -40,7 +38,29 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        Course::create($request->all());
+        $this->validate($request, [
+            'name' => 'required',
+            'description' => 'required',
+            'credit_hours' => 'required|numeric',
+            'url' => 'required|url',
+            'source' => 'required',
+            'due_date' => '',
+        ]);
+        $user = auth()->user();
+        $courseFields = [
+            'name' => $request->name,
+            'description' => $request->description,
+            'credit_hours' => $request->credit_hours,
+            'url' => $request->credit_hours,
+            'source' => $request->source,
+            'due_date' => $request->due_date,
+        ];
+        if($user->hasRole(['superadmin'])) {
+          $courseFields['is_approved'] = True;
+        } else {
+          $courseFields['is_approved'] = False;
+        }
+        Course::create($courseFields);
         return response()->json(true);
     }
 

@@ -1,8 +1,8 @@
 import { inject } from "vue";
 import Auth from "@/api/auth";
 import Notification from "@/api/notification";
-// import Courses from "@/api/courses";
-
+import Courses from "@/api/courses";
+import Enums from "@/api/enums";
  // if (process.client) {
   //   const token = localStorage.getItem("token");
   //   // Set token when defined
@@ -15,7 +15,8 @@ import Notification from "@/api/notification";
   const apiVersion = '/api/v1';
   export const apiRepositories = {
     auth: Auth(baseUrl, apiVersion),
-    notification: Notification(baseUrl, apiVersion)
-    // courses: Courses(baseUrl, apiVersion),
+    notification: Notification(baseUrl, apiVersion),
+    courses: Courses(baseUrl, apiVersion),
+    enums: Enums(baseUrl, apiVersion)
   };
   // inject("api", repositories);

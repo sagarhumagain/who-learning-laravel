@@ -17,22 +17,28 @@ class PillarsTableSeeder extends Seeder
     {
         $pillars = [
             [
-                'name' => 'Epidemiology and Health Information'
+                'name' => 'Epidemiology and Health Information',
+                'slug' => 'ehi'
             ],
             [
                 'name' => 'Laboratory Capacity',
+                'slug' => 'lc'
             ],
             [
-                'name' => 'Technical Expertise and Training'
+                'name' => 'Technical Expertise and Training',
+                'slug' => 'tet'
             ],
             [
-                'name' => 'Operations Support and Logistics'
+                'name' => 'Operations Support and Logistics',
+                'slug' => 'osl'
             ],
             [
-                'name' => 'Partner Coordination & Donor Relations / Communication and Documentation'
+                'name' => 'Partner Coordination & Donor Relations / Communication and Documentation',
+                'slug' => 'pcdr'
             ],
             [
-                'name' => 'Incident Management System'
+                'name' => 'Incident Management System',
+                'slug' => 'ims'
             ],
             
         ];

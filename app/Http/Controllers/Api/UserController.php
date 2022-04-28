@@ -115,4 +115,14 @@ class UserController extends Controller
         $user->delete();
         return ['message' =>'User Deleted'];
     }
+
+    public function getProfile()
+    {
+        $user = auth()->user();
+        $data = $user->toArray();
+        $data['employee'] = $user->employee();
+        $data['permissions'] = $user->getAllPermissions()->pluck('name');
+        $data['roles'] = $user->getRoleNames();
+        return $data;
+    }
 }

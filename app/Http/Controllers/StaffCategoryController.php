@@ -15,9 +15,7 @@ class StaffCategoryController extends Controller
     public function index()
     {
         $staff_categories = StaffCategory::get();
-        return response()->json([
-            'staff_categories' => $staff_categories
-        ]);
+        return response()->json($staff_categories);
     }
 
     /**
@@ -52,9 +50,7 @@ class StaffCategoryController extends Controller
      */
     public function show(StaffCategory $staffCategory)
     {
-        return response()->json([
-            'staff_category' => $staffCategory
-        ]);
+        return response()->json($staffCategory);
     }
 
     /**
@@ -65,9 +61,7 @@ class StaffCategoryController extends Controller
      */
     public function edit(StaffCategory $staffCategory)
     {
-        return response()->json([
-            'staff_category' => $staffCategory
-        ]);
+        return response()->json($staffCategory);
     }
 
     /**

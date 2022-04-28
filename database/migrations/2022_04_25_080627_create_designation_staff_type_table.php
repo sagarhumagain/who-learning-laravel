@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('designation_staff_categories', function (Blueprint $table) {
+        Schema::create('designation_staff_type', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('designation_id')->unsigned()->index();
             $table->foreign('designation_id')->references('id')->on('designations')->onDelete('cascade');
-            $table->bigInteger('staff_category_id')->unsigned()->index();
-            $table->foreign('staff_category_id')->references('id')->on('staff_categories')->onDelete('cascade');
+            $table->bigInteger('staff_type_id')->unsigned()->index();
+            $table->foreign('staff_type_id')->references('id')->on('staff_types')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('designation_staff_categories');
+        Schema::dropIfExists('designation_staff_type');
     }
 };
