@@ -21,6 +21,7 @@ const CourseView = () => import('@/views/courses/View.vue' /* webpackChunkName: 
 const CourseEdit = () => import('@/views/courses/Edit.vue' /* webpackChunkName: "resource/js/components/courseedit" */)
 const Users = () => import('@/views/users/Users.vue' /* webpackChunkName: "resource/js/components/users" */)
 const Courses = () => import('@/views/courses/Courses.vue' /* webpackChunkName: "resource/js/components/courses" */)
+const Employee = () => import('@/views/users/Employee.vue' /* webpackChunkName: "resource/js/components/employee" */)
 
 /* Authenticated Component */
 
@@ -97,6 +98,14 @@ const Routes = [
                 component: Users,
                 meta:{
                     title:`Users Management`
+                }
+              },
+              {
+                name:"employee",
+                path: '/user/profile',
+                component: Employee,
+                meta:{
+                    title:`Profile Management`
                 }
               }
         ]

@@ -25,6 +25,9 @@ library.add(far);
 import { dom } from "@fortawesome/fontawesome-svg-core";
 dom.watch();
 
+import Functions from "./functions";
+app.config.globalProperties.$function = new Functions();
+
 // /*Sweet alert start*/
 
 const app = createApp({});

@@ -115,16 +115,16 @@ export default {
                   href: '/users',
                   title: 'Users',
                   icon: 'fa fa-user',
-                  // child: [
-                  //   {
-                  //     href: '/users/list',
-                  //     title: 'View Users'
-                  //   },
-                  //   {
-                  //     href: '/users/add',
-                  //     title: 'Add a New User'
-                  //   }
-                  // ]
+                  child: [
+                    {
+                      href: '/user/profile',
+                      title: 'View profile'
+                    },
+                    // {
+                    //   href: '/users/add',
+                    //   title: 'Add a New User'
+                    // }
+                  ]
                 }
               ]
         }
