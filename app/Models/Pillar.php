@@ -13,4 +13,8 @@ class Pillar extends Model
         'name',
         'description',
     ];
+    public function employees()
+    {
+        return $this->belongsToMany(User::class);
+    }
 }

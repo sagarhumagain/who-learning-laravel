@@ -86,8 +86,35 @@
                                                 :taggable="true"
                                                 >
                                             </multiselect>
-                                        </div>
-                                        
+                                        </div>    
+                                        <div class="form-group col-md-6">
+                                            <h6>Pillars</h6>
+                                            <multiselect v-model="form.pillars"
+                                                tag-placeholder="Pillars"
+                                                placeholder="Select Pillars"
+                                                label="name" track-by="name"
+                                                :options="pillars"
+                                                :multiple="true"
+                                                :taggable="true"
+                                                >
+                                            </multiselect>
+                                        </div> 
+
+                                        <div class="form-group col-md-6">
+                                    <h6>Supervisor</h6>
+                                    <multiselect v-model="form.supervisor_user_id"
+                                        tag-placeholder="Select Supervisor"
+                                        placeholder="Select Supervisor"
+                                        label = "name"
+                                        track_by = "id"
+                                        :options="Object.keys(supervisors).map(Number)"
+                                        :custom-label="opt => supervisors[opt]"
+                                        :multiple="false"
+                                        :allow-empty="false"
+                                        :taggable="true">
+                                    </multiselect>
+                                    </div>    
+
                                         <div class="form-group col-md-6">
                                             <label for="password" >Password *</label>
 
@@ -112,72 +139,7 @@
         </div>
 
 
-        <!-- <div class="modal fade" id="addNewProfile" tabindex="-1" role="dialog" aria-labelledby="addNewProfileLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg  modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addNewProfileLabel">Update Profile</h5>
-                    </div>
-                    <form  @submit.prevent="updateProfile()">
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="form-group col-md-6">
-                                    <h6>Group</h6>
-                                    <multiselect v-model="pform.group_id"
-                                        tag-placeholder="Select Group"
-                                        placeholder="Select Group"
-                                        label = "name"
-                                        track_by = "id"
-                                        :options="Object.keys(groups).map(Number)"
-                                        :custom-label="opt => groups[opt]"
-                                        :multiple="false"
-                                        :allow-empty="false"
-                                        :taggable="true">
-                                    </multiselect>
-                                    <has-error :form="pform" field="group_id"></has-error>
-
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <h6>Duty Station</h6>
-                                    <multiselect v-model="pform.duty_station"
-                                        tag-placeholder="Select Duty Station"
-                                        placeholder="Select Duty Station"
-                                        label = "name"
-                                        track_by = "id"
-                                        :options="Object.keys(duty_stations).map(Number)"
-                                        :custom-label="opt => duty_stations[opt]"
-                                        :multiple="false"
-                                        :allow-empty="false"
-                                        :taggable="true">
-                                    </multiselect>
-                                <has-error :form="pform" field="duty_station"></has-error>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <h6>Supervisor</h6>
-                                    <multiselect v-model="pform.supervisor"
-                                        tag-placeholder="Select Supervisor"
-                                        placeholder="Select Supervisor"
-                                        label = "name"
-                                        track_by = "id"
-                                        :options="Object.keys(supervisors).map(Number)"
-                                        :custom-label="opt => supervisors[opt]"
-                                        :multiple="false"
-                                        :allow-empty="false"
-                                        :taggable="true">
-                                    </multiselect>
-                                <has-error :form="pform" field="supervisor"></has-error>
-                                </div>
-                            </div> 
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa fa-times fa-fw"></i>Close</button>
-                            <button  type="submit" class="btn btn-success"><i class="fa fa-plus fa-fw"></i>Update</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div> -->
-
+        
 
     </div>
 </template>
@@ -200,8 +162,7 @@
                 totaluser: 0,
                 users: {},
                 roles: [],
-                groups:[],
-                duty_stations:[],
+                pillars:[],
                 supervisors:[],
                 modal_data:{
                     modal_size:'modal-lg',
@@ -218,17 +179,11 @@
                     confirmpassword: null,
                     roles: null,
                     is_first_time_login:1,
-                }),
-                pform: new Form({
-                    id: null,
-                    name:null,
-                    email:null,
+                    pillars: null,
+                    supervisor_user_id:null,
                     user_id:null,
-                    duty_station:null,
-                    group_id:null,
-                    emp_code:null,
-                    supervisor:null,
                 }),
+                
                 api_url:null,
                 
             }
@@ -241,14 +196,7 @@
                 this.form.reset();
                 $('#addNewUser').modal('show');
             },
-            updateProfileModal(user) {
-                this.pform.reset();
-                $('#addNewProfile').modal('show');
-                if(user.profile) this.pform.fill(user.profile);
-                this.pform.name = user.name
-                this.pform.email = user.email
-                this.pform.user_id = user.id
-            },
+            
             /*Create User Function Starts*/
             createUser() {
                 this.$Progress.start(); //start a progress bar
@@ -286,6 +234,7 @@
                 this.form.reset();
                 $('#addNewUser').modal('show');
                 this.form.fill(user);
+                this.form.supervisor_user_id = user.employee.supervisor_user_id;
             },
             /*Edit User Function*/
             updateUser(id) {
@@ -382,42 +331,13 @@
                     this.fc = false;
                 }
             },
-            async updateProfile() {
-                try{
-                    const response = await this.pform.put('/api/admin_updated_profile/'+this.pform.id);
-                    if(response.data.error == 'false'){
-                        this.$swal(
-                                'Updated!',
-                                response.data.message,
-                                'success'
-                            )
-                        this.$Progress.finish();
-                        $('#addNewProfile').modal('hide');
-                    }else{
-                        this.$swal(
-                                'Error!',
-                                response.data.message,
-                                'warning'
-                            )
-                        this.$Progress.fail();
-                    }
-                }catch(error){
-                    this.$swal(
-                                'Error!',
-                                error.response.data.message,
-                                'warning'
-                            )
-                    this.$Progress.fail();
-                }
-            },
 
             /*==== Start of Show existing User function ====*/
             async loadUsers() {
                 const {data}  = await  axios.get("/api/user")
                 this.users = data.data,
                 this.roles = data.roles
-                this.groups = data.groups
-                this.duty_stations = data.duty_stations
+                this.pillars = data.pillars
                 this.supervisors = data.supervisors
                 this.api_url = 'api/user'
                 /*==== End of existing User ====*/
@@ -429,10 +349,7 @@
             this.emitter.on("AfterCreate", () => {
                 this.loadUsers();
             })
-            //emit event on pagination
-            this.emitter.on('paginating',(item)=>{
-                this.users = item
-            })
+            
         }
     
     }

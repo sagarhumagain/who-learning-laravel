@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Pillar;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -25,10 +26,9 @@ class UserController extends Controller
 
     public function index()
     {
-        $data['data']= $this->user->with('roles:name', 'employee')->latest()->paginate(100);
+        $data['data']= $this->user->with('roles:name,id', 'employee')->latest()->paginate(100);
         $data['roles'] = Role::select('name', 'id')->get();
-        // $data['groups'] = Group::pluck('group_name', 'id');
-        // $data['duty_stations'] = DutyStation::pluck('work_place', 'id');
+        $data['pillars'] = Pillar::select('name', 'id')->get();
         $data['supervisors'] = User::role('supervisor')->pluck('name', 'id');
         return $data;
     }
@@ -44,6 +44,9 @@ class UserController extends Controller
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
         $user = User::create($input);
+
+        
+
         $user->assignRole($request['roles']);
 
         return response()->json($user);
@@ -70,14 +73,25 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $user = User::findOrFail($id);
+            $user = User::with('employee')->findOrFail($id);
+
+            $employee = $user['employee'];
+
+            if ($employee) {
+                $employee->pillars()->attach([$request->pillar_id]);
+            }
+            $roles = [];
+            foreach ($request->roles as $role) {
+                array_push($roles, $role['name']);
+            }
 
             /*If user change the password*/
             if (!empty($request->password)) {
                 $request->merge(['password' => Hash::make($request['password'])]);
             }
+
             $user->update($request->all());
-            $user->syncRoles($request['roles']);
+            $user->syncRoles($roles);
 
             $data['error']='false';
             $data['message']='User Info! Has Been Updated';

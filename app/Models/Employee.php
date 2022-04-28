@@ -29,37 +29,41 @@ class Employee extends Model implements Auditable
       'code'
   ];
 
-  /**
-   * The attributes that should be hidden for serialization.
-   *
-   * @var array<int, string>
-   */
-  protected $hidden = [
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
      
   ];
 
-  /**
-   * The attributes that should be cast.
-   *
-   * @var array<string, string>
-   */
-  protected $casts = [
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
       
   ];
   
-  /**
-   * Get the user of employee.
-   */
-  public function user()
-  {
-      return $this->belongsTo(User::class, 'user_id'. 'id');
-  }
+    /**
+     * Get the user of employee.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id'. 'id');
+    }
 
-  /**
-   * Get the supervisor associated with the user.
-   */
-  public function supervisor()
-  {
-      return $this->hasOne(User::class, 'supervisor_user_id');
-  }
+    /**
+     * Get the supervisor associated with the user.
+     */
+    public function supervisor()
+    {
+        return $this->hasOne(User::class, 'supervisor_user_id');
+    }
+    public function pillars()
+    {
+        return $this->hasMany(Pillar::class);
+    }
 }
