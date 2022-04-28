@@ -14,10 +14,8 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::get();
-        return response()->json([
-            'courses' => $courses
-        ]);
+        $courses['data'] = Course::paginate(20);
+        return  $courses;
     }
 
     /**

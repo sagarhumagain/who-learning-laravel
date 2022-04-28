@@ -30,12 +30,12 @@ import 'v-calendar/dist/style.css';
 dom.watch();
 
 import Functions from "./functions";
-app.config.globalProperties.$function = new Functions();
 
 // /*Sweet alert start*/
 
 const app = createApp({});
 
+app.config.globalProperties.$function = new Functions(app);
 app.use(router);
 app.use(store);
 app.use(VueSidebarMenu);

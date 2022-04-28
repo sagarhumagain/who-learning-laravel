@@ -32,7 +32,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(
     ['prefix' => 'v1', 'middleware' => ['auth:sanctum']],
     function () {
-        Route::apiResources(['user'         =>UserController::class]);
+        Route::apiResources(['user'=>UserController::class]);
+        Route::get('/profile', [UserController::class, 'getProfile']);
         // Route::apiResources(['role'         =>'RoleController']);
 
         // Route::apiResources(['permission'   =>'PermissionController']);

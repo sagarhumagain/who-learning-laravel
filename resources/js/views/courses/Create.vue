@@ -71,7 +71,6 @@ export default {
       
     },
     data(){
-        console.log(this.$store.state.auth.user);
         return {
             user:this.$store.state.auth.user,
             form: new Form({

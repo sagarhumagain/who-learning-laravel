@@ -200,7 +200,7 @@
             /*Create User Function Starts*/
             createUser() {
                 this.$Progress.start(); //start a progress bar
-                this.form.post('/api/user') // POST form data
+                this.form.post('/api/v1/user') // POST form data
                     //Start Condition to check form is validate
                     .then(() => {
                         this.emitter.emit('AfterCreate'); //custom event to reload data
@@ -239,7 +239,7 @@
             /*Edit User Function*/
             updateUser(id) {
                 this.$Progress.start();
-                this.form.put('/api/user/' + this.form.id)
+                this.form.put('/api/v1/user/' + this.form.id)
                     .then(() => {
                         $("#addNewUser").modal('hide'); //Hide the model
                         this.$swal(
@@ -272,7 +272,7 @@
 
                     //send an ajax request to the server
                     if (result.value) {
-                        this.form.delete('/api/user/' + id).then(() => {
+                        this.form.delete('/api/v1/user/' + id).then(() => {
                             this.$swal(
                                 'Deleted!',
                                 'Your file has been deleted.',
@@ -303,7 +303,7 @@
                     if (result.value) {
                         this.form.fill(user);
                         this.form.is_verified = val;
-                        this.form.put('/api/user/'+this.form.id).then(() => {
+                        this.form.put('/api/v1/user/'+this.form.id).then(() => {
                             this.$swal(
                                 'Updated!',
                                 'User info. has been updated.',
@@ -334,7 +334,7 @@
 
             /*==== Start of Show existing User function ====*/
             async loadUsers() {
-                const {data}  = await  axios.get("/api/user")
+                const {data}  = await  axios.get("/api/v1/user")
                 this.users = data.data,
                 this.roles = data.roles
                 this.pillars = data.pillars

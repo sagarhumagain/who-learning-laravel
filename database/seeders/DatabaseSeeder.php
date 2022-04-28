@@ -5,7 +5,11 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Database\Seeders\UsersTableSeeder;
-use Database\Seeders\RolesTableSeeder;
+use Database\Seeders\ContractTypeSeeder;
+use Database\Seeders\CourseCategorySeeder;
+use Database\Seeders\StaffCategorySeeder;
+use Database\Seeders\PermissionSeeder;
+use Database\Seeders\StaffTypeSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,6 +25,10 @@ class DatabaseSeeder extends Seeder
           RolesTableSeeder::class,
           PillarsTableSeeder::class,
           PermissionSeeder::class,
+          ContractTypeSeeder::class,
+          CourseCategorySeeder::class,
+          StaffCategorySeeder::class,
+          StaffTypeSeeder::class,
       ]);
     }
 }

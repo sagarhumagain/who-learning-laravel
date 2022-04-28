@@ -22,7 +22,7 @@
                                 <th>Description</th>
                                 <th>Actions</th>
                             </tr>
-                            <tr v-for="(user, index) in users.data" :key="user.id">
+                            <tr v-for="(user, index) in courses.data" :key="user.id">
                                 <td>{{index + 1}}</td>
                                 <td>{{user.name}}
                                 </td>
