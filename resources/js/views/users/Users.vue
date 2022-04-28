@@ -18,7 +18,6 @@
                                 <th>S.N.</th>
                                 <th style="width:25%">Name</th>
                                 <th>Email</th>
-                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                             <tr v-for="(user, index) in users.data" :key="user.id">
@@ -26,11 +25,7 @@
                                 <td>{{user.name}}
                                 </td>
                                 <td>{{user.email}}</td>
-                                <td>
-                                <button v-if="user.is_first_time_login == '0'" class="btn btn-sm btn-success"><i class="green fa fa-check"></i>Verified </button>   
-                                <button v-else-if="user.is_first_time_login == '2'" class="btn btn-sm btn-danger"><i class="red fa fa-check"></i>Disapproved </button>   
-                                <button v-else class="btn btn-sm btn-success"><i class="orange fa fa-circle"></i>Pending </button>   
-                                </td>
+                                
                                 <td>
                                     <a href="#" @click="editModal(user)" class="btn btn-sm btn-success mr-2">Edit
                                         <i class="fa fa-edit"></i>
@@ -80,7 +75,7 @@
                                                 <has-error :form="form" field="email"></has-error>
                                         </div>
 
-                                        <!-- <div class="form-group col-md-6">
+                                        <div class="form-group col-md-6">
                                             <h6>Roles</h6>
                                             <multiselect v-model="form.roles"
                                                 tag-placeholder="Roles"
@@ -88,9 +83,10 @@
                                                 label="name" track-by="name"
                                                 :options="roles"
                                                 :multiple="true"
-                                                :taggable="true">
+                                                :taggable="true"
+                                                >
                                             </multiselect>
-                                        </div> -->
+                                        </div>
                                         
                                         <div class="form-group col-md-6">
                                             <label for="password" >Password *</label>
@@ -186,14 +182,14 @@
     </div>
 </template>
 <script>
-    import Multiselect from 'vue-multiselect'
+  import Multiselect from 'vue-multiselect'
     import Form from 'vform'
     import { Button, HasError, AlertError } from 'vform/src/components/bootstrap5'
     import Modal from '@/components/Modal';
     export default {
         components: {
-            Multiselect,
             HasError,
+            Multiselect,
             Modal
         },
         /*Filling the data into form*/
@@ -441,12 +437,16 @@
     
     }
 </script>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
+
 
 <style scoped>
 .is-equal{
 
 box-shadow: 0 0 0 0.2rem rgb(73 231 25 / 25%) !important;
 }
+
 </style>
+
 
 
