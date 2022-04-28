@@ -95,6 +95,7 @@ export default {
             try {
               await this.$api.auth.getCsrfCookie();
               await this.$api.auth.login(this.formData);
+              await this.$api.auth.getProfile();
               this.signIn();
             } catch (e) { 
               toast.error(e.response.data.message);

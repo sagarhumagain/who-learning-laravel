@@ -9,4 +9,8 @@ class CourseCourseCategory extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    protected $fillable = [
+      'course_id',
+      'course_category_id'
+    ];
 }

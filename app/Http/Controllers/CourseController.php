@@ -14,10 +14,8 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::get();
-        return response()->json([
-            'courses' => $courses
-        ]);
+        $courses['data'] = Course::paginate(20);
+        return  $courses;
     }
 
     /**
@@ -40,6 +38,13 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'name' => 'required',
+            'description' => 'required',
+            'credit_hours' => 'required',
+            'url' => 'required|url',
+            'due_date' => '',
+        ]);
         Course::create($request->all());
         return response()->json(true);
     }

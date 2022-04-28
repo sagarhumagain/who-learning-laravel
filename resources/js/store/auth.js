@@ -22,18 +22,20 @@ export default {
         },
         SET_USER (state, value) {
             state.user = value
-        }
+        },
     },
     actions:{
-        login({commit}){
-            return $api.auth.getActiveUser().then(({data})=>{
-                commit('SET_USER',data)
-                commit('SET_AUTHENTICATED',true)
-                router.push({name:'dashboard'})
-            }).catch(({response:{data}})=>{
-                commit('SET_USER',{})
-                commit('SET_AUTHENTICATED',false)
-            })
+        async login({commit}){
+          try{
+            const response = await $api.auth.getProfile();
+            commit('SET_USER',response.data);
+            commit('SET_AUTHENTICATED',true);
+            router.push({name:'dashboard'})
+          }
+          catch (e) {
+            commit('SET_USER',{})
+            commit('SET_AUTHENTICATED',false)
+          }
         },
         logout({commit}){
             commit('SET_USER',{})

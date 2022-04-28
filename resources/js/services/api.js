@@ -1,7 +1,7 @@
 import { inject } from "vue";
 import Auth from "@/api/auth";
 import Notification from "@/api/notification";
-// import Courses from "@/api/courses";
+import Courses from "@/api/courses";
 
  // if (process.client) {
   //   const token = localStorage.getItem("token");
@@ -15,7 +15,7 @@ import Notification from "@/api/notification";
   const apiVersion = '/api/v1';
   export const apiRepositories = {
     auth: Auth(baseUrl, apiVersion),
-    notification: Notification(baseUrl, apiVersion)
-    // courses: Courses(baseUrl, apiVersion),
+    notification: Notification(baseUrl, apiVersion),
+    courses: Courses(baseUrl, apiVersion),
   };
   // inject("api", repositories);

@@ -28,28 +28,30 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resource('contracts/v1/', ContractController::class);
-Route::resource('contract-types/v1/', ContractTypeController::class);
-Route::resource('courses/v1/', CourseController::class);
-Route::resource('designations/v1/', DesignationController::class);
-Route::resource('pillars/v1/', PillarController::class);
-Route::resource('staff-categories/v1/', StaffCategoryController::class);
-Route::resource('staff-types/v1/', StaffTypeController::class);
-
 
 Route::group(
-    ['middleware' => ['auth:sanctum']],
+    ['prefix' => 'v1', 'middleware' => ['auth:sanctum']],
     function () {
-        Route::apiResources(['user'         =>UserController::class]);
+        Route::apiResources(['user'=>UserController::class]);
+        Route::get('/profile', [UserController::class, 'getProfile']);
         // Route::apiResources(['role'         =>'RoleController']);
 
         // Route::apiResources(['permission'   =>'PermissionController']);
         // Route::post('updatePassword', 'ProfileController@updatePassword');
         // Route::apiResources(['profile'      =>'ProfileController']);
 
-        Route::post('v1/read_all', [BaseController::class, 'readAll']);
-        Route::post('v1/read_notification', [BaseController::class, 'read']);
-        Route::post('v1/unread_notification', [BaseController::class, 'unread']);
-        Route::get('v1/notifications', [BaseController::class, 'notifications']);
+        Route::post('/read_all', [BaseController::class, 'readAll']);
+        Route::post('/read_notification', [BaseController::class, 'read']);
+        Route::post('/unread_notification', [BaseController::class, 'unread']);
+        Route::get('/notifications', [BaseController::class, 'notifications']);
+
+
+        Route::resource('/contracts', ContractController::class);
+        Route::resource('/contract-types', ContractTypeController::class);
+        Route::resource('/courses', CourseController::class);
+        Route::resource('/designations', DesignationController::class);
+        Route::resource('/pillars', PillarController::class);
+        Route::resource('/staff-categories', StaffCategoryController::class);
+        Route::resource('/staff-types', StaffTypeController::class);
     }
 );

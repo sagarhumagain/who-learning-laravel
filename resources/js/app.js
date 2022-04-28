@@ -14,6 +14,7 @@ import 'bootstrap';
 import {apiRepositories} from '@/services/api';
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 import moment from 'moment';
+
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { fas } from '@fortawesome/free-solid-svg-icons'
@@ -23,15 +24,18 @@ library.add(fab);
 import { far } from '@fortawesome/free-regular-svg-icons';
 library.add(far);
 import { dom } from "@fortawesome/fontawesome-svg-core";
+import VCalendar from 'v-calendar';
+import 'v-calendar/dist/style.css';
+
 dom.watch();
 
 import Functions from "./functions";
-app.config.globalProperties.$function = new Functions();
 
 // /*Sweet alert start*/
 
 const app = createApp({});
 
+app.config.globalProperties.$function = new Functions(app);
 app.use(router);
 app.use(store);
 app.use(VueSidebarMenu);
@@ -50,19 +54,25 @@ import {
 } from 
 'vform/src/components/bootstrap5'
 
-app.component(Button.name, Button)
-app.component(HasError.name, HasError)
-app.component(AlertError.name, AlertError)
-app.component(AlertErrors.name, AlertErrors)
-app.component(AlertSuccess.name, AlertSuccess)
+app.component(Button.name, Button);
+app.component(HasError.name, HasError);
+app.component(AlertError.name, AlertError);
+app.component(AlertErrors.name, AlertErrors);
+app.component(AlertSuccess.name, AlertSuccess);
 
 app.use(Toast, toastOptions);
 
-//Vuee toastification
+//vcalendar
+app.use(VCalendar, {})
+
+//Vue toastification
 app.use(Toast, toastOptions);
 //fontawsome
 app.component("font-awesome-icon", FontAwesomeIcon);
 app.config.globalProperties.$api = apiRepositories;
+//mitt
+// const emitter = mitt();
+// app.config.globalProperties.emitter = emitter;
 
 app.config.globalProperties.$filters = {
   duration(created) {
