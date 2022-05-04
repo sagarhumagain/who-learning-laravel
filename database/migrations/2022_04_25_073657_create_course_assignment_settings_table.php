@@ -16,12 +16,12 @@ return new class extends Migration
         Schema::create('course_assignment_settings', function (Blueprint $table) {
             $table->id();
             $table->integer('assigned_by')->nullable();
-            $table->string('department_ids')->nullable();
-            $table->string('pillar_ids')->nullable();
-            $table->string('contract_type_ids')->nullable();
-            $table->string('staff_type_ids')->nullable();
-            $table->string('staff_designation_ids')->nullable();
-            $table->string('user_ids')->nullable();
+            $table->string('department_ids')->default('[]');
+            $table->string('pillar_ids')->default('[]');
+            $table->string('contract_type_ids')->default('[]');
+            $table->string('staff_type_ids')->default('[]');
+            $table->string('staff_designation_ids')->default('[]');
+            $table->string('user_ids')->default('[]');
             $table->string('assignment_type')->nullable();
             $table->timestamps();
         });

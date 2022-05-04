@@ -18,50 +18,58 @@ class StaffCategorySeeder extends Seeder
         StaffCategory::create(
           [
             'name' => 'National Professional Officer',
-            'description' => 'National Professional Officer'
-          ]
+            'description' => 'National Professional Officer',
+            'slug' => 'npo'
+            ]
         );
         StaffCategory::create(
           [
             'name' => 'General Staff',
-            'description' => 'General Staff'
-          ]
+            'description' => 'General Staff',
+            'slug' => 'gs'
+            ]
         );
         StaffCategory::create(
           [
             'name' => 'Team Leader',
-            'description' => 'Team Leader'
-          ]
+            'description' => 'Team Leader',
+            'slug' => 'tl'
+            ]
         );
         StaffCategory::create(
           [
             'name' => 'Technical Officer',
-            'description' => 'Technical Officer'
-          ]
+            'description' => 'Technical Officer',
+            'slug' => 'to'
+            ]
         );
         StaffCategory::create(
           [
             'name' => 'Medical Officer',
-            'description' => 'Medical Officer'
-          ]
+            'description' => 'Medical Officer',
+            'slug' => 'mo'
+            ]
         );
         StaffCategory::create(
           [
             'name' => 'Scientist',
-            'description' => 'Scientist'
+            'description' => 'Scientist',
+            'slug' => 's'
           ]
         );
         StaffCategory::create(
           [
             'name' => 'Epidemiologist',
-            'description' => 'Epidemiologist'
-          ]
+            'description' => 'Epidemiologist',
+            'slug' => 'e'
+            ]
         );
         StaffCategory::create(
           [
             'name' => 'SSA',
-            'description' => 'SSA'
-          ]
+            'description' => 'SSA',
+            'slug' => 'ssa'
+            ]
         );
     }
 }

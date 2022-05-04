@@ -14,16 +14,16 @@
                 </div>
             </div> -->
             <div class="col-3">
-                <Card title="Total Staffs">
-                  {{api.statistics.total_staffs}}
-                </Card>
-            </div>
-            <div class="col-3">
                 <Card title="Total Courses">
                   {{api.statistics.total_courses}}
                 </Card>
             </div>
             <div class="col-3">
+                <Card title="Total hours">
+                  {{api.statistics.total_duration_completed}}/{{api.statistics.total_course_duration}}
+                </Card>
+            </div>
+            <!-- <div class="col-3">
                 <Card title="Total Courses Duration (in hrs)">
                   {{api.statistics.total_course_duration}}
                 </Card>
@@ -32,16 +32,29 @@
                 <Card title="Total Courses Completed(in hrs)">
                   {{api.statistics.total_duration_completed}}
                 </Card>
-            </div>
+            </div> --> 
             <div class="col-8">
-                <Card title="Mandatory Courses Overview">
-                  <div class="row">
-                    <div class="col-4" v-for="(chartData, index) in mandatoryCourseChart.chartDatas" :key="index">
-                      <DoughnutChart :chartData="chartData" :width="mandatoryCourseChart.width" :height="mandatoryCourseChart.height" :chartOptions="mandatoryCourseChart.chartOptions" />
-                      <p class="text-center">{{chartData.name}}</p>
+              <div class="row">
+                <div class="col-4">
+                  <Card title="Course Completion">
+                    <div class="row">
+                      <div class="col-12" v-for="(chartData, index) in mandatoryCourseChart.chartDatas" :key="index">
+                        <DoughnutChart :chartData="chartData" :width="mandatoryCourseChart.width" :height="mandatoryCourseChart.height" :chartOptions="mandatoryCourseChart.chartOptions" />
+                        <!-- <p class="text-center">{{chartData.name}}</p> -->
+                      </div>
                     </div>
-                  </div>
-                </Card>
+                  </Card>
+                </div>
+                <div class="col-8">
+                  <Card title="Upcoming Deadlines">
+                    <div class="row">
+                      <div class="col-12">
+                        <Table :columnDefs="deadlines.columnDefs" :rowData="deadlines.rowData" />
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              </div>
                 <Card title="Top Learners">
                   <div class="row">
                     <div class="col-12">
@@ -52,9 +65,14 @@
             </div>
             <div class="col-4">
               <div class="row">
-                <Card :title="chartData.name" v-for="(chartData, index) in barChart.chartDatas" :key="index">
+                <Card title="Completed Course">
                   <div class="col-12">
-                    <BarChart :chartData="chartData" :width="barChart.width" :height="barChart.height" :chartOptions="barChart.chartOptions"/>
+                    <Table :columnDefs="completedCourse.columnDefs" :rowData="completedCourse.rowData" />
+                  </div>
+                </Card>
+                <Card title="Yearly Progress">
+                  <div class="col-12">
+                    <LineChart />
                   </div>
                 </Card>
               </div>
@@ -71,6 +89,7 @@ import BarChart from '@/components/BarChart'
 import DoughnutChart from '@/components/DoughnutChart'
 import Table from '@/components/Table'
 import variables from '@/helpers/constants';
+import LineChart from '@/components/LineChart';
 
 export default {
     name:"dashboard",
@@ -86,48 +105,35 @@ export default {
               },
               chartDatas: [
                 {
-                  name: 'Course A',
-                  labels: [ 'Completed', 'Remaining'],
-                  datasets: [ { data: [10, 90], backgroundColor: [variables.COLOR_SEC_GREEN, variables.COLOR_RED] } ],
-                   
-                },
-                {
-                  name: 'Course B',
-                  labels: [ 'Completed', 'Remaining'],
-                  datasets: [ { data: [20, 80], backgroundColor: [variables.COLOR_SEC_GREEN, variables.COLOR_RED] } ]
-                },
-                {
-                  name: 'Course C',
-                  labels: [ 'Completed', 'Remaining'],
-                  datasets: [ { data: [30, 70], backgroundColor: [variables.COLOR_SEC_GREEN, variables.COLOR_RED] } ]
+                  name: 'Completed Hours',
+                  labels: [ 'Completed', 'Remainging'],
+                  datasets: [ { data: [92, 8], backgroundColor: [variables.COLOR_SEC_GREEN, variables.COLOR_RED] } ],
                 }
               ],
             },
-            barChart: {
-              height: 200,
-              chartOptions: {
-                responsive: true,
-                indexAxis: 'y',
-                maintainAspectRatio: false
-              },
-              chartDatas: [
-                {
-                  name: 'Most Popular Courses',
-                  labels: [ 'Course A', 'Course B', 'Course C'],
-                  datasets: [ { data: [90, 79, 50], backgroundColor: [variables.COLOR_SEC_YELLOW, variables.COLOR_SEC_MAGENTA, variables.COLOR_SEC_PURPLE] } ],
-                   
-                },
-                {
-                  name: 'Staffs by Pillar',
-                  labels: [ 'Pillar 1', 'Pillar 2', 'Pillar 3', 'Pillar 4'],
-                  datasets: [ 
-                    { 
-                      data: [20, 90, 49, 60],
-                      backgroundColor: [variables.COLOR_SEC_YELLOW, variables.COLOR_SEC_MAGENTA, variables.COLOR_SEC_PURPLE, variables.COLOR_SEC_ORANGE]
-                    },
-                  ]
-                },
+            completedCourse: {
+              columnDefs: [
+                { headerName: "Name", field: "name", sortable: true, filter: true },
+                { headerName: "Course Category", field: "course_category", sortable: true, filter: true },
+                { headerName: "Credit Hours", field: "credit_hours", sortable: true, filter: true },
               ],
+              rowData: [
+                { name: "AMR-competency", course_category: "Antimicrobial Resistance channel", credit_hours: 8 },
+                { name: "Anaphylaxis", course_category: "Risk communication", credit_hours: .34 },
+                { name: "Cybersecurity Essentials & Preventing Phishing PLUS Cybersecurity Refresher.", course_category: "WHO Mandatory Trainings", credit_hours: 2 },
+              ]
+            },
+            deadlines: {
+              columnDefs: [
+                { headerName: "Name", field: "name", sortable: true, filter: true },
+                { headerName: "Course Category", field: "course_category", sortable: true, filter: true },
+                { headerName: "Deadline", field: "due_date", sortable: true, filter: true },
+              ],
+              rowData: [
+                { name: "Infodemic Management", course_category: "Risk communication", due_date: "2022-05-13" },
+                { name: "WHO United to Respect (expected to be rolled out soon)", course_category: "WHO Mandatory Trainings", due_date: "2022-05-18" },
+                { name: "Free Health Information Management Certificates | POLHN (csod.com)", course_category: "Information Management ", due_date: "2022-05-21" },
+              ]
             },
             api: {
               loaded: false,
@@ -135,8 +141,8 @@ export default {
               statistics: {
                 total_courses: 30,
                 total_staffs: 86,
-                total_course_duration: 63.2,
-                total_duration_completed: 160
+                total_course_duration: 100,
+                total_duration_completed: 92
               },
               
             }
@@ -146,7 +152,8 @@ export default {
         Card,
         BarChart,
         DoughnutChart,
-        Table
+        Table,
+        LineChart
     },
 }
 </script>

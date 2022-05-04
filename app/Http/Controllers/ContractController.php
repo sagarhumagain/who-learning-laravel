@@ -16,9 +16,7 @@ class ContractController extends Controller
     public function index()
     {
         $contracts = Contract::get();
-        return response()->json([
-            'contracts' => $contracts
-        ]);
+        return response()->json($contracts);
     }
 
     /**
@@ -53,9 +51,7 @@ class ContractController extends Controller
      */
     public function show(Contract $contract)
     {
-        return response()->json([
-            'contract' => $contract
-        ]);
+        return response()->json($contract);
     }
 
     /**
@@ -66,9 +62,7 @@ class ContractController extends Controller
      */
     public function edit(Contract $contract)
     {
-        return response()->json([
-            'contract' => $contract
-        ]);
+        return response()->json($contract);
     }
 
     /**

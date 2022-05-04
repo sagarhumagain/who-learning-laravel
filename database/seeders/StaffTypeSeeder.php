@@ -18,19 +18,22 @@ class StaffTypeSeeder extends Seeder
         StaffType::create(
           [
             'name' => 'International',
-            'description' => 'International Staff'
-          ]
+            'description' => 'International Staff',
+            'slug' => 'is'
+            ]
         );
         StaffType::create(
           [
             'name' => 'National',
-            'description' => 'National Staff'
-          ]
+            'description' => 'National Staff',
+            'slug' => 'ns'
+            ]
         );
         StaffType::create(
           [
             'name' => 'SSA',
-            'description' => 'SSA Staff'
+            'description' => 'Non Staff',
+            'slug' => 'ssa'
           ]
         );
     }

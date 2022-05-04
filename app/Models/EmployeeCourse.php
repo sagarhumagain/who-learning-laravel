@@ -7,18 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
-use App\Models\Employee;
-class Pillar extends Model implements Auditable
+
+class EmployeeCourse extends Model implements Auditable
 {
     use HasFactory, SoftDeletes, AuditableTrait;
-
+    protected $guarded = [];
     protected $fillable = [
-        'name',
-        'description',
-        'slug'
+      'employee_id',
+      'course_id',
+      'certificate_path',
+      'completed_date',
+      'is_approved'
     ];
-    public function employees()
-    {
-        return $this->belongsToMany(Employee::class, 'employee_pillar');
-    }
 }

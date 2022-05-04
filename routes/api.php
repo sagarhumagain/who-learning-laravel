@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ContractTypeController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\DesignationController;
 use App\Http\Controllers\PillarController;
 use App\Http\Controllers\StaffCategoryController;
@@ -52,6 +53,7 @@ Route::group(
         Route::resource('/designations', DesignationController::class);
         Route::resource('/pillars', PillarController::class);
         Route::resource('/staff-categories', StaffCategoryController::class);
-        Route::resource('/staff-types', StaffTypeController::class);
+        Route::resource('/staff-types', CourseCategoryController::class);
+        Route::resource('/course-categories', CourseCategoryController::class);
     }
 );

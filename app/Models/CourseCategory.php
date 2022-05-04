@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Course;
-
-class CourseCategory extends Model
+use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+class CourseCategory extends Model implements Auditable
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes, AuditableTrait;
 
     protected $fillable = [
         'name',
@@ -16,6 +18,6 @@ class CourseCategory extends Model
     ];
 
     public function courses() {
-        return $this->belongsToMany(Course::class, 'course_course_categories');
+        return $this->belongsToMany(Course::class, 'course_course_category');
     }
 }

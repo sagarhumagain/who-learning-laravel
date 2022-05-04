@@ -9,4 +9,8 @@ class DesignationStaffCategory extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    protected $fillable = [
+      'designation_id',
+      'staff_category_id',
+    ];
 }

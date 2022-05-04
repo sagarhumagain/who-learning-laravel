@@ -15,9 +15,7 @@ class PillarController extends Controller
     public function index()
     {
         $pillars = Pillar::get();
-        return response()->json([
-            'pillars' => $pillars
-        ]);
+        return response()->json($pillars);
     }
 
     /**
@@ -52,9 +50,7 @@ class PillarController extends Controller
      */
     public function show(Pillar $pillar)
     {
-        return response()->json([
-            'pillar' => $pillar
-        ]);
+        return response()->json($pillar);
     }
 
     /**
@@ -65,9 +61,7 @@ class PillarController extends Controller
      */
     public function edit(Pillar $pillar)
     {
-        return response()->json([
-            'pillar' => $pillar
-        ]);
+        return response()->json($pillar);
     }
 
     /**

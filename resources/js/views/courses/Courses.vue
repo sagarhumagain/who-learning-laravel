@@ -7,7 +7,7 @@
                         <h3>Course Management</h3>
 
                         <div class="card-tools">
-                            <button type="" class="btn btn-primary" @click="newModal"><i class="fa fa-user-plus fa-fw"></i> Add New User</button>
+                            <button type="" class="btn btn-primary" @click="newModal"><i class="fa fa-user-plus fa-fw"></i> Add New Course</button>
                         </div>
                     </div>
                     <!-- /.card-header -->

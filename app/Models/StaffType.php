@@ -5,17 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Designation;
-
-class StaffType extends Model
+use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use App\Models\Contract;
+class StaffType extends Model implements Auditable
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes, AuditableTrait;
 
     protected $fillable = [
         'name',
         'description',
+        'slug'
     ];
 
     public function designations() {
-        return $this->belongsToMany(Designation::class, 'designation_staff_types');
+        return $this->belongsToMany(Designation::class, 'designation_staff_type');
+    }
+
+    public function contracts() {
+      return $this->hasMany(Contract::class, 'staff_type_id');
     }
 }

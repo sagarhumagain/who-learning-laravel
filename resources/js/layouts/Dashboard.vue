@@ -83,6 +83,7 @@ export default {
     
     data(){
         const roles = getRoles();
+        console.log(roles);
         let menuItems;
         if (roles.includes('super-admin')) {
           menuItems = [

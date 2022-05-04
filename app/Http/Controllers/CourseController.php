@@ -41,11 +41,26 @@ class CourseController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'description' => 'required',
-            'credit_hours' => 'required',
+            'credit_hours' => 'required|numeric',
             'url' => 'required|url',
+            'source' => 'required',
             'due_date' => '',
         ]);
-        Course::create($request->all());
+        $user = auth()->user();
+        $courseFields = [
+            'name' => $request->name,
+            'description' => $request->description,
+            'credit_hours' => $request->credit_hours,
+            'url' => $request->credit_hours,
+            'source' => $request->source,
+            'due_date' => $request->due_date,
+        ];
+        if($user->hasRole(['superadmin'])) {
+          $courseFields['is_approved'] = True;
+        } else {
+          $courseFields['is_approved'] = False;
+        }
+        Course::create($courseFields);
         return response()->json(true);
     }
 

@@ -15,9 +15,7 @@ class DesignationController extends Controller
     public function index()
     {
         $designations = Designation::get();
-        return response()->json([
-            'designations' => $designations
-        ]);
+        return response()->json($designations);
     }
 
     /**
@@ -52,9 +50,7 @@ class DesignationController extends Controller
      */
     public function show(Designation $designation)
     {
-        return response()->json([
-            'designation' => $designation
-        ]);
+        return response()->json($designation);
     }
 
     /**
@@ -65,9 +61,7 @@ class DesignationController extends Controller
      */
     public function edit(Designation $designation)
     {
-        return response()->json([
-            'designation' => $designation
-        ]);
+        return response()->json($designation);
     }
 
     /**

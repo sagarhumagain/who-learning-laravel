@@ -77,15 +77,16 @@ export default {
     data(){
         return {
             formData:{
-                email:"",
-                password:""
+                email:"superadmin@who.int",
+                password:"superadmin123"
             },
             processing:false
         }
     },
     methods:{
         ...mapActions({
-            signIn:'auth/login'
+            signIn:'auth/login',
+            setEnums: 'choice/setEnums'
         }),
         async login(){
           
@@ -96,6 +97,7 @@ export default {
               await this.$api.auth.getCsrfCookie();
               await this.$api.auth.login(this.formData);
               await this.$api.auth.getProfile();
+              this.setEnums();
               this.signIn();
             } catch (e) { 
               toast.error(e.response.data.message);

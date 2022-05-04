@@ -18,19 +18,22 @@ class ContractTypeSeeder extends Seeder
         ContractType::create(
           [
             'name' => 'Fixed Term',
-            'description' => 'Fixed Term Contract'
+            'description' => 'Fixed Term Contract',
+            'slug' => 'ft'
           ]
         );
         ContractType::create(
           [
             'name' => 'Temporary',
-            'description' => 'Temporary Contract'
+            'description' => 'Temporary Contract',
+            'slug' => 't'
           ]
         );
         ContractType::create(
           [
             'name' => 'SSA',
-            'description' => 'SSA Contract'
+            'description' => 'SSA Contract',
+            'slug' => 'ssa'
           ]
         );
         

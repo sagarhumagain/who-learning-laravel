@@ -15,11 +15,14 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->text('description')->nullable();
-            $table->string('credit_hours')->nullable();
+            $table->string('name');
+            $table->text('description');
+            $table->decimal('credit_hours',6,2)->nullable();
             $table->string('url')->nullable();
+            $table->string('source')->nullable();
             $table->date('due_date')->nullable();
+            $table->boolean('is_approved')->default(False);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
