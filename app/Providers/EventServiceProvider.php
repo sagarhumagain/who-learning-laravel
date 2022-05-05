@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\CourseAssignedEvent;
+use App\Events\CourseCreatedEvent;
 use App\Events\Welcome;
+use App\Listeners\CourseAssignedListener;
 use App\Listeners\CourseCreatedListener;
 use App\Listeners\SendWelcomeNotification;
 use Illuminate\Auth\Events\Registered;
@@ -24,6 +27,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         CourseCreatedEvent::class => [
             CourseCreatedListener::class,
+        ],
+        CourseAssignedEvent::class => [
+            CourseAssignedListener::class,
         ],
     ];
 

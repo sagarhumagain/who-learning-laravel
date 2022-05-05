@@ -7,60 +7,6 @@ use Illuminate\Http\Request;
 
 class BaseController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
     public function notifications(Request $request)
     {
         $user = $request->user();
@@ -90,5 +36,17 @@ class BaseController extends Controller
         if ($notification) {
             $notification->markAsRead();
         }
+    }
+
+    public function filterArrayByKey($datas, $key)
+    {
+        if (!$datas) {
+            return [];
+        }
+        $val =  [];
+        foreach ($datas as $data) {
+            array_push($val, $data[$key]);
+        }
+        return $val;
     }
 }

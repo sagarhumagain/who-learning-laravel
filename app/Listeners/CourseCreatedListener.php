@@ -29,10 +29,10 @@ class CourseCreatedListener
      */
     public function handle($event)
     {
-        $admins =  User::hereHas('roles', function ($query) {
+        $admins =  User::whereHas('roles', function ($query) {
             $query->where('name', 'course-admin')->orWhere('name', 'super-admin');
         })->get();
-        
+
         Notification::send($admins, new CourseCreatedNotification($event->course));
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class CourseCreatedNotification extends Notification
+class CourseAssignedNotification extends Notification
 {
     use Queueable;
 
@@ -16,11 +16,10 @@ class CourseCreatedNotification extends Notification
      *
      * @return void
      */
-    public function __construct($course)
+    public function __construct($course_assignment_setting)
     {
-        $this->course = $course;
+        $this->course_assignment_setting = $course_assignment_setting;
     }
-
     /**
      * Get the notification's delivery channels.
      *
@@ -54,9 +53,16 @@ class CourseCreatedNotification extends Notification
      */
     public function toArray($notifiable)
     {
+        dd($this->course_assignment_setting['assigned_pillar_name']);
+        $assigned_pillar_name  = $this->course_assignment_setting['assigned_pillar_name'] ?  'pillar'.implode(' , ', $this->course_assignment_setting['assigned_pillar_name']) : '';
+        $assigned_contract_type_name  = $this->course_assignment_setting['assigned_contract_type_name'] ? implode(' , ', $this->course_assignment_setting['assigned_contract_type_name']) : '';
+        $assigned_staff_type_name  = $this->course_assignment_setting['assigned_staff_type_name'] ? implode(' , ', $this->course_assignment_setting['assigned_staff_type_name']) : '';
+        $assigned_staff_designation_name  = $this->course_assignment_setting['assigned_staff_designation_name'] ? implode(' , ', $this->course_assignment_setting['assigned_staff_designation_name']) : '';
+        dd($assigned_pillar_name);
+
         return [
-            'title' => 'New Course Created',
-            'excerpt' => 'New course '.$this->course->name.' has been created.',
+            'title' => 'New Course Assigned',
+            'excerpt' => '',
         ];
     }
 }

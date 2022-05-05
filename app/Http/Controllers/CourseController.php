@@ -2,10 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CourseAssignedEvent;
+use App\Events\CourseCreatedEvent;
+use App\Http\Controllers\Api\BaseController;
 use App\Models\Course;
+use App\Models\CourseAssignmentSetting;
+use App\Models\User;
+use App\Notifications\CourseAssignedNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
-class CourseController extends Controller
+class CourseController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -55,12 +62,26 @@ class CourseController extends Controller
             'source' => $request->source,
             'due_date' => $request->due_date,
         ];
-        if($user->hasRole(['superadmin'])) {
-          $courseFields['is_approved'] = True;
+        if ($user->hasRole(['super-admin'])) {
+            $courseFields['is_approved'] = true;
         } else {
-          $courseFields['is_approved'] = False;
+            $courseFields['is_approved'] = false;
         }
-        Course::create($courseFields);
+        $coures = Course::create($courseFields);
+
+        if ($user->hasRole(['super-admin','course-admin'])) {
+            event(new CourseCreatedEvent($coures));
+        }
+        $assignmentFields = [
+            'pillar_ids' => parent::filterArrayByKey($request->pillar_ids, 'id'),
+            'staff_type_ids' => parent::filterArrayByKey($request->staff_type_ids, 'id'),
+            'contract_type_ids' => parent::filterArrayByKey($request->contract_type_ids, 'id'),
+            'staff_category_ids' => parent::filterArrayByKey($request->staff_category_ids, 'id'),
+            'staff_designation_ids' => parent::filterArrayByKey($request->staff_designation_ids, 'id'),
+        ];
+        CourseAssignmentSetting::create($assignmentFields);
+        event(new CourseAssignedEvent($request));
+
         return response()->json(true);
     }
 

@@ -55,7 +55,7 @@
                           </div>
                           <div>
                             <h4>Assign To</h4>
-                            <multiselect v-model="form.pillars"
+                            <multiselect v-model="form.pillar_ids"
                                 tag-placeholder="Pillars"
                                 placeholder="Select Pillars"
                                 label="name" track-by="name"
@@ -64,7 +64,7 @@
                                 :taggable="true"
                                 >
                             </multiselect>
-                            <multiselect v-model="form.staff_types"
+                            <multiselect v-model="form.staff_type_ids"
                                 tag-placeholder="Staff Types"
                                 placeholder="Select Staff Types"
                                 label="name" track-by="name"
@@ -73,16 +73,16 @@
                                 :taggable="true"
                               >
                             </multiselect>
-                            <multiselect v-model="form.contract_types"
+                            <multiselect v-model="form.contract_type_ids"
                                 tag-placeholder="Contract Types"
                                 placeholder="Select Contract Types"
                                 label="name" track-by="name"
-                                :options="pillars"
+                                :options="contract_types"
                                 :multiple="true"
                                 :taggable="true"
                                 >
                             </multiselect>
-                            <multiselect v-model="form.staff_categories"
+                            <multiselect v-model="form.staff_category_ids"
                                 tag-placeholder="Staff Category"
                                 placeholder="Select Staff Category"
                                 label="name" track-by="name"
@@ -91,7 +91,7 @@
                                 :taggable="true"
                                 >
                             </multiselect>
-                            <multiselect v-model="form.designations"
+                            <multiselect v-model="form.staff_designation_ids"
                                 tag-placeholder="Designations"
                                 placeholder="Select Designations"
                                 label="name" track-by="name"
@@ -139,11 +139,11 @@ export default {
               url: '',
               source: '',
               due_date: '',
-              pillars: null,
-              staff_types: null,
-              contract_types: null,
-              staff_categories: null,
-              designations: null
+              pillar_ids: null,
+              staff_type_ids: null,
+              contract_type_ids: null,
+              staff_category_ids: null,
+              staff_designation_ids: null
             })
         }
     },
