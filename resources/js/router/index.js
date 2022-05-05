@@ -24,6 +24,8 @@ const CourseEdit = () => import('@/views/courses/Edit.vue' /* webpackChunkName: 
 const Users = () => import('@/views/users/Users.vue' /* webpackChunkName: "resource/js/components/users" */)
 const Courses = () => import('@/views/courses/Courses.vue' /* webpackChunkName: "resource/js/components/courses" */)
 const Employee = () => import('@/views/users/Employee.vue' /* webpackChunkName: "resource/js/components/employee" */)
+const ApproveCourses = () => import('@/views/approvals/Courses.vue' /* webpackChunkName: "resource/js/components/approvalcourses" */)
+const ApproveEmployeeCourse = () => import('@/views/approvals/EmployeeCourse.vue' /* webpackChunkName: "resource/js/components/approvalemployeecourse" */)
 
 /* Authenticated Component */
 
@@ -86,7 +88,63 @@ if (roles.includes('super-admin')) {
         meta:{
             title:`Profile Management`
         }
-      }
+      },
+      {
+        name:"approve-courses",
+        path: '/approve/courses',
+        component: ApproveCourses,
+        meta:{
+            title:`Approve Courses`
+        }
+      },
+      {
+        name:"approve-employee-course",
+        path: '/approve/employee-course',
+        component: ApproveEmployeeCourse,
+        meta:{
+            title:`Approve Employee Course`
+        }
+      },
+      {
+        name:"approve-employee-course",
+        path: '/approve/employee-course',
+        component: ApproveEmployeeCourse,
+        meta:{
+            title:`Approve Employee Course`
+        }
+      },
+      {
+        name:"approve-employee-course",
+        path: '/approve/employee-course',
+        component: ApproveEmployeeCourse,
+        meta:{
+            title:`Approve Employee Course`
+        }
+      },
+      {
+        name:"approve-employee-course",
+        path: '/approve/employee-course',
+        component: ApproveEmployeeCourse,
+        meta:{
+            title:`Approve Employee Course`
+        }
+      },
+      {
+        name:"approve-employee-course",
+        path: '/approve/employee-course',
+        component: ApproveEmployeeCourse,
+        meta:{
+            title:`Approve Employee Course`
+        }
+      },
+      {
+        name:"approve-employee-course",
+        path: '/approve/employee-course',
+        component: ApproveEmployeeCourse,
+        meta:{
+            title:`Approve Employee Course`
+        }
+      },
     ];
 } else {
     routeChildrens = [

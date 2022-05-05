@@ -83,7 +83,6 @@ export default {
     
     data(){
         const roles = getRoles();
-        console.log(roles);
         let menuItems;
         if (roles.includes('super-admin')) {
           menuItems = [
@@ -125,7 +124,22 @@ export default {
                     //   title: 'Add a New User'
                     // }
                   ]
-                }
+                },
+                {
+                  // href: '/courses',
+                  title: 'Approvals',
+                  icon: 'fa fa-check',
+                  child: [
+                    {
+                      href: '/approve/courses',
+                      title: 'Approve Courses'
+                    },
+                    {
+                      href: '/approve/employee-course',
+                      title: 'Approve Employee Courses'
+                    }
+                  ]
+                },
               ];
         } else {
           menuItems = [

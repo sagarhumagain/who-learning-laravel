@@ -13,7 +13,12 @@ use App\Http\Controllers\PillarController;
 use App\Http\Controllers\StaffCategoryController;
 use App\Http\Controllers\StaffTypeController;
 use App\Http\Controllers\Api\UserController;
-
+use App\Http\Controllers\Api\ContractTypeDesignationController;
+use App\Http\Controllers\Api\ContractTypeStaffCategoryController;
+use App\Http\Controllers\Api\ContractTypeStaffTypeController;
+use App\Http\Controllers\Api\DesignationStaffCategoryController;
+use App\Http\Controllers\Api\DesignationStaffTypeController;
+use App\Http\Controllers\Api\StaffCategoryStaffTypeController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -53,7 +58,14 @@ Route::group(
         Route::resource('/designations', DesignationController::class);
         Route::resource('/pillars', PillarController::class);
         Route::resource('/staff-categories', StaffCategoryController::class);
-        Route::resource('/staff-types', CourseCategoryController::class);
+        Route::resource('/staff-types', StaffTypeController::class);
         Route::resource('/course-categories', CourseCategoryController::class);
+
+        Route::get('/designation-staff-category', [ContractTypeDesignationController::class, 'show']);
+        Route::get('/designation-staff-category', [ContractTypeStaffCategoryController::class, 'show']);
+        Route::get('/designation-staff-category', [ContractTypeStaffTypeController::class, 'show']);
+        Route::get('/designation-staff-category', [DesignationStaffCategoryController::class, 'show']);
+        Route::get('/designation-staff-type', [DesignationStaffTypeController::class, 'show']);
+        Route::get('/designation-staff-category', [StaffCategoryStaffTypeController::class, 'show']);
     }
 );

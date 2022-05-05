@@ -8,7 +8,13 @@ export default {
         contractTypes:[],
         staffCategories: [],
         designations: [],
-        courseCategories: []
+        courseCategories: [],
+        contractTypeDesignation: [],
+        contractTypeStaffCategory: [],
+        contractTypeStaffType: [],
+        designationStaffCategory: [],
+        designationStaffType: [],
+        staffCategoryStaffType: [],
     },
     getters:{
         pillars(state){
@@ -28,7 +34,25 @@ export default {
         },
         courseCategories(state){
           return state.courseCategories
-        }
+        },
+        contractTypeDesignation(state) {
+          return state.contractTypeDesignation
+        },
+        contractTypeStaffCategory(state) {
+          return state.contractTypeStaffCategory
+        },
+        contractTypeStaffType(state) {
+          return state.contractTypeStaffType
+        },
+        designationStaffCategory(state) {
+          return state.designationStaffCategory
+        },
+        designationStaffType(state) {
+          return state.designationStaffType
+        },
+        staffCategoryStaffType(state) {
+          return state.staffCategoryStaffType
+        },
     },
     mutations:{
         SET_PILLARS (state, value) {
@@ -49,6 +73,24 @@ export default {
         SET_COURSE_CATEGORIES (state, value) {
           state.courseCategories = value
         },
+        SET_CONTRACT_TYPE_DESIGNATION (state, value) {
+          state.contractTypeDesignation = value
+        },
+        SET_CONTRACT_TYPE_STAFF_CATEGORY (state, value) {
+          state.contractTypeStaffCategory = value
+        },
+        SET_CONTRACT_TYPE_STAFF_TYPE (state, value) {
+          state.contractTypeStaffType = value
+        },
+        SET_DESIGNATION_STAFF_CATEGORY (state, value) {
+          state.designationStaffCategory = value
+        },
+        SET_DESIGNATION_STAFF_TYPE (state, value) {
+          state.designationStaffType = value
+        },
+        SET_STAFF_CATEGORY_STAFF_TYPE (state, value) {
+          state.staffCategoryStaffType = value
+        },
     },
     actions:{
         async setEnums({commit}){
@@ -65,6 +107,19 @@ export default {
             commit('SET_DESIGNATIONS',response.data);
             response = await $api.enums.listCourseCategory();
             commit('SET_COURSE_CATEGORIES',response.data);
+            //validations store
+            response = await $api.enums.contractTypeDesignation();
+            commit('SET_CONTRACT_TYPE_DESIGNATION',response.data);
+            response = await $api.enums.contractTypeStaffCategory();
+            commit('SET_CONTRACT_TYPE_STAFF_CATEGORY',response.data);
+            response = await $api.enums.contractTypeStaffType();
+            commit('SET_CONTRACT_TYPE_STAFF_TYPE',response.data);
+            response = await $api.enums.designationStaffCategory();
+            commit('SET_DESIGNATION_STAFF_CATEGORY',response.data);
+            response = await $api.enums.designationStaffType();
+            commit('SET_DESIGNATION_STAFF_TYPE',response.data);
+            response = await $api.enums.staffCategoryStaffType();
+            commit('SET_STAFF_CATEGORY_STAFF_TYPE',response.data);
           }
           catch (e) {
             // commit('SET_USER',{})
