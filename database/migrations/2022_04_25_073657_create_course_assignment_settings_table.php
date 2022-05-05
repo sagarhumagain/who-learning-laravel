@@ -15,7 +15,10 @@ return new class extends Migration
     {
         Schema::create('course_assignment_settings', function (Blueprint $table) {
             $table->id();
-            $table->integer('assigned_by')->nullable();
+            $table->bigInteger('course_id')->unsigned()->unique();
+            $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
+            $table->integer('assigned_by_employee_id');
+            $table->foreign('assigned_by_employee_id')->references('id')->on('employee')->onDelete('cascade');
             $table->string('department_ids')->default('[]');
             $table->string('pillar_ids')->default('[]');
             $table->string('contract_type_ids')->default('[]');

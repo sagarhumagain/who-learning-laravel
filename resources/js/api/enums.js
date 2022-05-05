@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export default (baseUrl, apiVersion) => ({
   async createPillar(body) {
     return await axios.post(`${baseUrl}${apiVersion}/pillars`, body);
@@ -93,5 +95,31 @@ export default (baseUrl, apiVersion) => ({
 
   async listCourseCategory() {
     return await axios.get(`${baseUrl}${apiVersion}/course-categories`);
+  },
+
+  async contractTypeDesignation() {
+    return await axios.get(`${baseUrl}${apiVersion}/contract-type-designation`);
+  },
+
+  async contractTypeStaffCategory() {
+    return await axios.get(`${baseUrl}${apiVersion}/contract-type-staff-category`);
+  },
+
+  async contractTypeStaffType() {
+    return await axios.get(`${baseUrl}${apiVersion}/contract-type-staff-type`);
+  },
+
+  async designationStaffCategory() {
+    return await axios.get(`${baseUrl}${apiVersion}/designation-staff-category`);
+  },
+
+  async designationStaffType() {
+    return await axios.get(`${baseUrl}${apiVersion}/designation-staff-type`);
+  },
+
+  async staffCategoryStaffType() {
+    return await axios.get(`${baseUrl}${apiVersion}/staff-category-staff-type`);
   }
+
+
 });
