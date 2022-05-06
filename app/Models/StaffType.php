@@ -11,7 +11,6 @@ use App\Models\StaffCategory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
-
 class StaffType extends Model implements Auditable
 {
     use HasFactory, SoftDeletes, AuditableTrait;
@@ -34,7 +33,7 @@ class StaffType extends Model implements Auditable
       return $this->belongsToMany(ContractType::class, 'designation_staff_type');
     }
 
-    public function contractCategories() {
+    public function staffCategories() {
       return $this->belongsToMany(StaffCategory::class, 'staff_category_staff_type');
     }
 }

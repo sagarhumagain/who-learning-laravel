@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use App\Models\Employee;
+
 class Pillar extends Model implements Auditable
 {
     use HasFactory, SoftDeletes, AuditableTrait;
@@ -17,8 +18,8 @@ class Pillar extends Model implements Auditable
         'description',
         'slug'
     ];
-    public function employees()
+    public function users()
     {
-        return $this->belongsToMany(Employee::class, 'employee_pillar');
+        return $this->belongsToMany(User::class);
     }
 }

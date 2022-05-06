@@ -89,12 +89,13 @@
                                         </div>    
                                         <div class="form-group col-md-6">
                                             <h6>Pillars</h6>
-                                            <multiselect v-model="form.pillars"
+                                            <multiselect v-model="form.pillar_id"
                                                 tag-placeholder="Pillars"
                                                 placeholder="Select Pillars"
                                                 label="name" track-by="name"
-                                                :options="pillars"
-                                                :multiple="true"
+                                                :options="Object.keys(pillars).map(Number)"
+                                                :custom-label="opt => pillars[opt]"
+                                                :multiple="false"
                                                 :taggable="true"
                                                 >
                                             </multiselect>
@@ -179,7 +180,7 @@
                     confirmpassword: null,
                     roles: null,
                     is_first_time_login:1,
-                    pillars: null,
+                    pillar_id: null,
                     supervisor_user_id:null,
                     user_id:null,
                 }),

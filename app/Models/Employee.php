@@ -62,13 +62,4 @@ class Employee extends Model implements Auditable
     {
         return $this->hasOne(User::class, 'supervisor_user_id');
     }
-
-    public function pillars()
-    {
-        return $this->belongsToMany(Pillar::class, 'employee_pillar');
-    }
-
-    public function courses() {
-      return $this->belongsToMany(Course::class, 'employee_course');
-    }
 }

@@ -28,7 +28,7 @@ class UserController extends Controller
     {
         $data['data']= $this->user->with('roles:name,id', 'employee')->latest()->paginate(100);
         $data['roles'] = Role::select('name', 'id')->get();
-        $data['pillars'] = Pillar::select('name', 'id')->get();
+        $data['pillars'] = Pillar::pluck('name', 'id');
         $data['supervisors'] = User::role('supervisor')->pluck('name', 'id');
         return $data;
     }
@@ -73,12 +73,12 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $user = User::with('employee')->findOrFail($id);
+            $user = User::findOrFail($id);
 
-            $employee = $user['employee'];
-
-            if ($employee) {
-                $employee->pillars()->attach([$request->pillar_id]);
+            try {
+                $user->pillars()->attach([$request->pillar_id]);
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 500);
             }
             $roles = [];
             foreach ($request->roles as $role) {

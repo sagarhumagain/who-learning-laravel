@@ -54,4 +54,13 @@ class User extends Authenticatable implements Auditable
     {
         return $this->hasOne(Employee::class, 'user_id');
     }
+    public function pillars()
+    {
+        return $this->belongsToMany(Pillar::class);
+    }
+
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class);
+    }
 }
