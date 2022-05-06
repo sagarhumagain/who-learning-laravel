@@ -12,8 +12,8 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('employee_pillar', function (Blueprint $table) {
-            $table->foreignId('employee_id')->constrained('users')->onDelete('RESTRICT');
+        Schema::create('pillar_user', function (Blueprint $table) {
+            $table->foreignId('user_id')->constrained('users')->onDelete('RESTRICT');
             $table->foreignId('pillar_id')->constrained('pillars')->onDelete('RESTRICT');
         });
     }
@@ -25,7 +25,7 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::table('employee_pillar', function (Blueprint $table) {
+        Schema::table('pillar_user', function (Blueprint $table) {
             //
         });
     }

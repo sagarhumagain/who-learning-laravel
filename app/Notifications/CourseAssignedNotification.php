@@ -53,16 +53,15 @@ class CourseAssignedNotification extends Notification
      */
     public function toArray($notifiable)
     {
-        dd($this->course_assignment_setting['assigned_pillar_name']);
-        $assigned_pillar_name  = $this->course_assignment_setting['assigned_pillar_name'] ?  'pillar'.implode(' , ', $this->course_assignment_setting['assigned_pillar_name']) : '';
-        $assigned_contract_type_name  = $this->course_assignment_setting['assigned_contract_type_name'] ? implode(' , ', $this->course_assignment_setting['assigned_contract_type_name']) : '';
-        $assigned_staff_type_name  = $this->course_assignment_setting['assigned_staff_type_name'] ? implode(' , ', $this->course_assignment_setting['assigned_staff_type_name']) : '';
-        $assigned_staff_designation_name  = $this->course_assignment_setting['assigned_staff_designation_name'] ? implode(' , ', $this->course_assignment_setting['assigned_staff_designation_name']) : '';
-        dd($assigned_pillar_name);
+        $assigned_pillar_name  = $this->course_assignment_setting['assigned_pillar_name'] ?  'pillar '.implode(' , ', $this->course_assignment_setting['assigned_pillar_name']) : '';
+        $assigned_contract_type_name  = $this->course_assignment_setting['assigned_contract_type_name'] ? 'contract type '. implode(' , ', $this->course_assignment_setting['assigned_contract_type_name']) : '';
+        $assigned_staff_type_name  = $this->course_assignment_setting['assigned_staff_type_name'] ? 'staff type '. implode(' , ', $this->course_assignment_setting['assigned_staff_type_name']) : '';
+        $assigned_staff_designation_name  = $this->course_assignment_setting['assigned_staff_designation_name'] ? 'staff designation '. implode(' , ', $this->course_assignment_setting['assigned_staff_designation_name']) : '';
 
+        $message = 'New course '.$this->course_assignment_setting['course_name'].' has been created by '.auth()->user()->name.' to '. $assigned_pillar_name ?? ''. $assigned_contract_type_name ?? ''.$assigned_staff_type_name ?? '' . $assigned_staff_designation_name ?? '';
         return [
             'title' => 'New Course Assigned',
-            'excerpt' => '',
+            'excerpt' => $message,
         ];
     }
 }

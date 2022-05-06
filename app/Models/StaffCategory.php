@@ -11,7 +11,6 @@ use App\Models\Contract;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
-
 class StaffCategory extends Model  implements Auditable
 {
     use HasFactory, SoftDeletes, AuditableTrait;

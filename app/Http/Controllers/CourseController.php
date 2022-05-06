@@ -67,10 +67,10 @@ class CourseController extends BaseController
         } else {
             $courseFields['is_approved'] = false;
         }
-        $coures = Course::create($courseFields);
+        $course = Course::create($courseFields);
 
         if ($user->hasRole(['super-admin','course-admin'])) {
-            event(new CourseCreatedEvent($coures));
+            event(new CourseCreatedEvent($course));
         }
         $assignmentFields = [
             'pillar_ids' => parent::filterArrayByKey($request->pillar_ids, 'id'),
@@ -79,7 +79,13 @@ class CourseController extends BaseController
             'staff_category_ids' => parent::filterArrayByKey($request->staff_category_ids, 'id'),
             'staff_designation_ids' => parent::filterArrayByKey($request->staff_designation_ids, 'id'),
         ];
+        $users = User::whereHas('pillars', function ($q) use ($assignmentFields) {
+            $q->whereIn('pillar_id', $assignmentFields['pillar_ids']);
+        })->pluck('id');
+        $course->users()->attach($users);
+        
         CourseAssignmentSetting::create($assignmentFields);
+
         event(new CourseAssignedEvent($request));
 
         return response()->json(true);

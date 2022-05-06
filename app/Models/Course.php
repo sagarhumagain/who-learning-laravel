@@ -9,9 +9,11 @@ use App\Models\Employee;
 use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use phpDocumentor\Reflection\DocBlock\Tags\Uses;
+
 class Course extends Model implements Auditable
 {
-  use HasFactory, AuditableTrait, SoftDeletes;
+    use HasFactory, AuditableTrait, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -25,11 +27,13 @@ class Course extends Model implements Auditable
 
     // protected $dates = ['due_date'];
 
-    public function course_categories() {
+    public function course_categories()
+    {
         return $this->belongsToMany(CourseCategory::class, 'course_course_category');
     }
 
-    public function employees() {
-      return $this->belongsToMany(Employee::class, 'employee_course');
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
     }
 }
