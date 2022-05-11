@@ -50,28 +50,21 @@ class CourseAssignedListener extends BaseController
      */
     public function handle($event)
     {
+        $assignmentFields = $this->data;
+
         $users =  User::whereHas('roles', function ($query) {
             $query->where('name', 'course-admin')->orWhere('name', 'super-admin')->orWhere('name', 'normal-user');
-        })->when($this->data['pillar_ids'], function ($query) {
-            $query->orWhereHas('pillars', function ($query) {
-                return $query->whereIn('pillar_id', $this->data['pillar_ids']);
-            });
-        })->when($this->data['staff_type_ids'], function ($query) {
-            $query->whereHas('staffTypse', function ($query) {
-                return $query->whereIn('staff_type_id', $this->data['staff_type_ids']);
-            });
-        })->when($this->data['contract_type_ids'], function ($query) {
-            $query->whereHas('contractTypes', function ($query) {
-                return $query->whereIn('contract_type_id', $this->data['contract_type_ids']);
-            });
-        })->when($this->data['staff_category_ids'], function ($query) {
-            $query->whereHas('staffCategories', function ($query) {
-                return $query->whereIn('staff_category_id', $this->data['staff_category_ids']);
-            });
-        })->when($this->data['staff_designation_ids'], function ($query) {
-            $query->whereHas('staffDesignations', function ($query) {
-                return $query->whereIn('staff_designation_id', $this->data['staff_designation_ids']);
-            });
+        })->leftJoin(\DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
+            $join->on('users.id', '=', 't2.user_id');
+        })
+        ->where(function ($q) use ($assignmentFields) {
+            $q->whereHas('pillars', function ($q) use ($assignmentFields) {
+                $q->whereIn('pillar_id', $assignmentFields['pillar_ids']);
+            })
+            ->orWhereIn('staff_type_id', $assignmentFields['staff_type_ids'])
+            ->orWhereIn('contract_type_id', $assignmentFields['contract_type_ids'])
+            ->orWhereIn('staff_category_id', $assignmentFields['staff_category_ids'])
+            ->orWhereIn('designation_id', $assignmentFields['staff_designation_ids']);
         })->get();
 
 

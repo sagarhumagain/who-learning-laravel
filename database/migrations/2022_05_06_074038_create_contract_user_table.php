@@ -12,12 +12,9 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('designations', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->nullable();
-            $table->text('description')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::create('contract_user', function (Blueprint $table) {
+            $table->foreignId('contract_')->constrained('users')->onDelete('RESTRICT');
+            $table->foreignId('pillar_id')->constrained('pillars')->onDelete('RESTRICT');
         });
     }
 
@@ -28,6 +25,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('designations');
+        Schema::dropIfExists('contract_user');
     }
 };
