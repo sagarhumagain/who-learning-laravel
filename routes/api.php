@@ -2,9 +2,9 @@
 namespace Api;
 
 use App\Http\Controllers\Api\BaseController;
+use App\Http\Controllers\Api\ContractController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ContractTypeController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseCategoryController;
@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\ContractTypeStaffTypeController;
 use App\Http\Controllers\Api\DesignationStaffCategoryController;
 use App\Http\Controllers\Api\DesignationStaffTypeController;
 use App\Http\Controllers\Api\StaffCategoryStaffTypeController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -39,6 +40,8 @@ Route::group(
     ['prefix' => 'v1', 'middleware' => ['auth:sanctum']],
     function () {
         Route::apiResources(['user'=>UserController::class]);
+        Route::apiResources(['contract'=>ContractController::class]);
+
         Route::get('/profile', [UserController::class, 'getProfile']);
         // Route::apiResources(['role'         =>'RoleController']);
 

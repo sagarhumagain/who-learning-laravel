@@ -58,7 +58,7 @@ class CourseController extends BaseController
             'name' => $request->name,
             'description' => $request->description,
             'credit_hours' => $request->credit_hours,
-            'url' => $request->credit_hours,
+            'url' => $request->url,
             'source' => $request->source,
             'due_date' => $request->due_date,
         ];
@@ -78,13 +78,27 @@ class CourseController extends BaseController
             'contract_type_ids' => parent::filterArrayByKey($request->contract_type_ids, 'id'),
             'staff_category_ids' => parent::filterArrayByKey($request->staff_category_ids, 'id'),
             'staff_designation_ids' => parent::filterArrayByKey($request->staff_designation_ids, 'id'),
+            'course_id' => $course->id,
+            'assigned_by_user_id' => $user->id,
         ];
-        $users = User::whereHas('pillars', function ($q) use ($assignmentFields) {
-            $q->whereIn('pillar_id', $assignmentFields['pillar_ids']);
-        })->pluck('id');
+
+    
+        $users = User::leftJoin(\DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
+            $join->on('users.id', '=', 't2.user_id');
+        })
+        ->where(function ($q) use ($assignmentFields) {
+            $q->whereHas('pillars', function ($q) use ($assignmentFields) {
+                $q->whereIn('pillar_id', $assignmentFields['pillar_ids']);
+            })
+            ->orWhereIn('staff_type_id', $assignmentFields['staff_type_ids'])
+            ->orWhereIn('contract_type_id', $assignmentFields['contract_type_ids'])
+            ->orWhereIn('staff_category_id', $assignmentFields['staff_category_ids'])
+            ->orWhereIn('designation_id', $assignmentFields['staff_designation_ids']);
+        })->get();
         $course->users()->attach($users);
-        
         CourseAssignmentSetting::create($assignmentFields);
+
+        
 
         event(new CourseAssignedEvent($request));
 

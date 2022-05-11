@@ -26,20 +26,27 @@ class Contract extends Model implements Auditable
         'staff_type_id'
     ];
 
-    public function contractType() {
+    public function contractType()
+    {
         return $this->belongsTo(ContractType::class, 'contract_type_id');
     }
 
-    public function designation() {
+    public function designation()
+    {
         return $this->belongsTo(Designation::class, 'designation_id');
     }
 
-    public function staffCategory() {
+    public function staffCategory()
+    {
         return $this->belongsTo(StaffCategory::class, 'staff_category_id');
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class, );
+    }
 
-    public function staffType() {
-      return $this->belongsTo(StaffType::class, 'staff_type_id');
-  }
-
+    public function staffType()
+    {
+        return $this->belongsTo(StaffType::class, 'staff_type_id');
+    }
 }

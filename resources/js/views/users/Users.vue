@@ -7,7 +7,7 @@
                         <h3>User Management</h3>
 
                         <div class="card-tools">
-                            <button type="" class="btn btn-primary" @click="newModal"><i class="fa fa-user-plus fa-fw"></i> Add New User</button>
+                            <button type="" class="btn btn-primary" @click="newModal()"><i class="fa fa-user-plus fa-fw"></i> Add New User</button>
                         </div>
                     </div>
                     <!-- /.card-header -->
@@ -19,27 +19,65 @@
                                 <th style="width:25%">Name</th>
                                 <th>Email</th>
                                 <th>Actions</th>
+                                <th>Contract History </th>
                             </tr>
                             <tr v-for="(user, index) in users.data" :key="user.id">
+                                
                                 <td>{{index + 1}}</td>
                                 <td>{{user.name}}
                                 </td>
                                 <td>{{user.email}}</td>
                                 
                                 <td>
-                                    <a href="#" @click="editModal(user)" class="btn btn-sm btn-success mr-2">Edit
+                                    <a href="#" @click="editUserModal(user)" class="btn btn-sm btn-success mr-2">Edit
                                         <i class="fa fa-edit"></i>
                                     </a>
-                                     <!-- <a href="#" @click="updateProfileModal(user)" class="btn btn-sm btn-warning mr-2">Update Profile
-                                        <i class="fa fa-user"></i>
-                                    </a> -->
                                     <a href="#" @click="verify(user,0)" class="btn btn-sm btn-success mr-2">Verify User
                                         <i class="fa fa-check"></i>
                                     </a>
                                     <a href="#" @click="deleteUser(user.id)" class="btn btn-sm btn-danger mr-2">Delete
                                         <i class="fa fa-trash"></i>
                                     </a>
-                                   
+                                                                    
+                                </td>
+                                <td>
+                                    <div class="accordion" id="accordionExample">
+                                        <div class="accordion-item rounded-0">
+                                            <button class="accordion-button rounded-0" type="button">
+                                                <a href="#" data-bs-toggle="collapse" :data-bs-target="'#history'+user.id" aria-expanded="true" aria-controls="collapseOne">Contract History</a>
+                                                <a href="#" type="" class="btn " @click="newContractModal(user.id,user.name)"><i class="fa fa-user-plus fa-fw"></i> Add New</a>
+                                            </button>
+                                            <div :id="'history'+user.id" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                            <div class="accordion-body">
+                                                <table class="table table-hover">
+                                                    <tbody>
+                                                    <tr class="bg-light">
+                                                        <th>Start Date </th>
+                                                        <th>End Date</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                    <tr v-for="contract in user.contracts" :key="contract.id">
+                                                        <td>{{contract.contract_start}}</td>
+                                                        <td>{{contract.contract_end}}</td>
+                                                        <td>
+                                                            <a href="#" @click="editContractModal(contract)" class="btn btn-sm btn-success mr-2">
+                                                                <i class="fa fa-edit"></i>
+                                                            </a>
+                                                            <a href="#" @click="deleteUser(contract.id)" class="btn btn-sm btn-danger mr-2">
+                                                                <i class="fa fa-trash"></i>
+                                                            </a>
+                                                                                            
+                                                        </td>
+
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                
+
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             </tbody></table>
@@ -50,98 +88,151 @@
             </div>
         </div>
 
-<!-- Modal -->
-        <div class="modal fade" id="addNewUser" tabindex="-1" role="dialog" aria-labelledby="addNewUserLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg  modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" v-show="!editmode" id="addNewUserLabel">Add New User</h5>
-                        <h5 class="modal-title" v-show="editmode" id="addNewUserLabel">Update User</h5>
-                        
-                    </div>
-                    <form  @submit.prevent="editmode ? updateUser() : createUser()">
-                        <div class="modal-body">
-                                    <div class="row">
-                                        <div class="form-group col-md-6">
-                                            <label for="first_name" >Name *</label>
-                                                <input type="text" v-model="form.name" class="form-control"  placeholder="Name" :class="{ 'is-invalid': form.errors.has('name') }">
-                                                <has-error :form="form" field="name"></has-error>
-                                        </div>
+<!-- user info modal  -->
+        <modal :form="form" :modal_data="modal_data" :editmode="editmode" :api_url="'v1/user'  ">
 
-                            
-                                        <div class="form-group col-md-6">
-                                            <label for="" >Email *</label>
-                                                <input type="email" v-model="form.email" class="form-control" id="inputEmail" placeholder="Email" :class="{ 'is-invalid': form.errors.has('email') }">
-                                                <has-error :form="form" field="email"></has-error>
-                                        </div>
+            <div class="form-group col-md-6">
+                <label for="first_name" >Name *</label>
+                    <input type="text" v-model="form.name" class="form-control"  placeholder="Name" :class="{ 'is-invalid': form.errors.has('name') }">
+                    <has-error :form="form" field="name"></has-error>
+            </div>
 
-                                        <div class="form-group col-md-6">
-                                            <h6>Roles</h6>
-                                            <multiselect v-model="form.roles"
-                                                tag-placeholder="Roles"
-                                                placeholder="Select Roles"
-                                                label="name" track-by="name"
-                                                :options="roles"
-                                                :multiple="true"
-                                                :taggable="true"
-                                                >
-                                            </multiselect>
-                                        </div>    
-                                        <div class="form-group col-md-6">
-                                            <h6>Pillars</h6>
-                                            <multiselect v-model="form.pillar_id"
-                                                tag-placeholder="Pillars"
-                                                placeholder="Select Pillars"
-                                                label="name" track-by="name"
-                                                :options="Object.keys(pillars).map(Number)"
-                                                :custom-label="opt => pillars[opt]"
-                                                :multiple="false"
-                                                :taggable="true"
-                                                >
-                                            </multiselect>
-                                        </div> 
 
-                                        <div class="form-group col-md-6">
-                                    <h6>Supervisor</h6>
-                                    <multiselect v-model="form.supervisor_user_id"
-                                        tag-placeholder="Select Supervisor"
-                                        placeholder="Select Supervisor"
-                                        label = "name"
-                                        track_by = "id"
-                                        :options="Object.keys(supervisors).map(Number)"
-                                        :custom-label="opt => supervisors[opt]"
-                                        :multiple="false"
-                                        :allow-empty="false"
-                                        :taggable="true">
-                                    </multiselect>
-                                    </div>    
+            <div class="form-group col-md-6">
+                <label for="" >Email *</label>
+                    <input type="email" v-model="form.email" class="form-control" id="inputEmail" placeholder="Email" :class="{ 'is-invalid': form.errors.has('email') }">
+                    <has-error :form="form" field="email"></has-error>
+            </div>
 
-                                        <div class="form-group col-md-6">
-                                            <label for="password" >Password *</label>
+            <div class="form-group col-md-6">
+                <h6>Roles</h6>
+                <multiselect v-model="form.roles"
+                    tag-placeholder="Roles"
+                    placeholder="Select Roles"
+                    label="name" track-by="name"
+                    :options="roles"
+                    :multiple="true"
+                    :taggable="true"
+                    >
+                </multiselect>
+            </div>    
+            <div class="form-group col-md-6">
+                <h6>Pillars</h6>
+                <multiselect v-model="form.pillar_id"
+                    tag-placeholder="Pillars"
+                    placeholder="Select Pillars"
+                    :options="Object.keys(pillars).map(Number)"
+                    :custom-label="opt => pillars[opt]"
+                    :multiple="false"
+                    :allow-empty="false"
+                    :taggable="true"
+                    >
+                </multiselect>
+            </div> 
+            <div class="form-group col-md-6">
+                <h6>Supervisor</h6>
+                <multiselect v-model="form.supervisor_user_id"
+                    tag-placeholder="Select Supervisor"
+                    placeholder="Select Supervisor"
+                    label = "name"
+                    track_by = "id"
+                    :options="Object.keys(supervisors).map(Number)"
+                    :custom-label="opt => supervisors[opt]"
+                    :multiple="false"
+                    :allow-empty="false"
+                    :taggable="true">
+                </multiselect>
+            </div>    
 
-                                                <input type="password" v-model="form.password"  @input="check" class="form-control" :class="{ 'is-invalid': isActive, 'is-equal':fc}"  id="password" placeholder="Password">
-                                                <has-error :form="form" field="password"></has-error>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="confirmpassword">Confirm password *</label>
-                                                <input type="password" v-model="form.confirmpassword" @input="check" class="form-control" :class="{ 'is-invalid': isActive, 'is-equal':fc}" id="confirmpassword" placeholder="Password">
-                                                <has-error :form="form" field="confirmpassword"></has-error>
-                                        </div>
-                                    </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa fa-times fa-fw"></i>Close</button>
-                            <button v-show="editmode" type="submit" class="btn btn-success"><i class="fa fa-plus fa-fw"></i>Update</button>
-                            <button v-show="!editmode" type="submit" class="btn btn-primary"><i class="fa fa-plus fa-fw"></i>Create</button>
-                        </div>
-                    </form>
+            <div class="form-group col-md-6">
+                <label for="password" >Password *</label>
+
+                    <input type="password" v-model="form.password"  @input="check" class="form-control" :class="{ 'is-invalid': isActive, 'is-equal':fc}"  id="password" placeholder="Password">
+                    <has-error :form="form" field="password"></has-error>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="confirmpassword">Confirm password *</label>
+                    <input type="password" v-model="form.confirmpassword" @input="check" class="form-control" :class="{ 'is-invalid': isActive, 'is-equal':fc}" id="confirmpassword" placeholder="Password">
+                    <has-error :form="form" field="confirmpassword"></has-error>
+            </div>
+        </modal>
+<!-- contract modal -->
+        <modal :form="form" :modal_data="c_modal_data" :editmode="editmode" :api_url="'v1/contract'">
+            <h4 class="modal-header">Contract Information : {{this.form.name}}</h4>
+            
+            <div class="form-group col-md-6">
+                <label for="first_name" >Contract Start Date*</label>
+                    <input type="text" v-model="form.contract_start" class="form-control"  placeholder="Contract Strat Date" :class="{ 'is-invalid': form.errors.has('contract_start') }">
+                    <has-error :form="form" field="contract_start"></has-error>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="first_name" >Contract End Date*</label>
+                    <input type="text" v-model="form.contract_end" class="form-control"  placeholder="Contract Strat Date" :class="{ 'is-invalid': form.errors.has('contract_end') }">
+                    <has-error :form="form" field="contract_end"></has-error>
+            </div>
+            <div class="form-group col-md-6">
+                <h6>Staff Type</h6>
+                <multiselect v-model="form.staff_type_id"
+                    tag-placeholder="Saff Type"
+                    placeholder="Select Staff Type"
+                    :options="Object.keys(staff_types).map(Number)"
+                    :custom-label="opt => staff_types[opt]"
+                    :multiple="false"
+                    :allow-empty="false"
+                    :taggable="true"
+                    >
+                </multiselect>
+            </div> 
+
+            <div class="form-group col-md-6">
+                <h6>Designation</h6>
+                <multiselect v-model="form.designation_id"
+                    tag-placeholder="Designation"
+                    placeholder="Select Designation"
+                    :options="Object.keys(designations).map(Number)"
+                    :custom-label="opt => designations[opt]"
+                    :multiple="false"
+                    :allow-empty="false"
+                    :taggable="true"
+                    >
+                </multiselect>
+            </div> 
+            <div class="form-group col-md-6">
+                <h6>Contract Type</h6>
+                <multiselect v-model="form.contract_type_id"
+                    tag-placeholder="Contract Type"
+                    placeholder="Select Contract Type"
+                    :options="Object.keys(contract_types).map(Number)"
+                    :custom-label="opt => contract_types[opt]"
+                    :multiple="false"
+                    :allow-empty="false"
+                    :taggable="true"
+                    >
+                </multiselect>
+            </div> 
+            <div class="form-group col-md-6">
+                <h6>Staff Category</h6>
+                <multiselect v-model="form.staff_category_id"
+                    tag-placeholder="Staff Category"
+                    placeholder="Select Staff Category"
+                    :options="Object.keys(staff_categories).map(Number)"
+                    :custom-label="opt => staff_categories[opt]"
+                    :multiple="false"
+                    :allow-empty="false"
+                    :taggable="true"
+                    >
+                </multiselect>
+            </div> 
+            <div class="col-md-6 mt-3">
+                <div class="form-group  form-control">
+                    <input v-model="form.is_active" true-value="1" false-value="0" type="checkbox" name="is_active"  class="form-check-input" :class="{ 'is-invalid': form.errors.has('is_active') }">
+                    <label class="form-check-label" for="1">
+                        Is Active
+                    </label>
                 </div>
             </div>
-        </div>
-
-
-        
-
+        </modal>
+    
     </div>
 </template>
 <script>
@@ -155,7 +246,6 @@
             Multiselect,
             Modal
         },
-        /*Filling the data into form*/
         data() {
 
             return {
@@ -165,9 +255,18 @@
                 roles: [],
                 pillars:[],
                 supervisors:[],
+                designations:[],
+                staff_categories:[],
+                contract_types:[],
+                staff_types:[],
+
                 modal_data:{
                     modal_size:'modal-lg',
-                    api_url:'user'
+                    modal_name:'addNewUser'
+                },
+                c_modal_data:{
+                    modal_size:'modal-lg',
+                    modal_name:'addNewContract'
                 },
                 isActive: true,
                 fc: false,
@@ -183,6 +282,14 @@
                     pillar_id: null,
                     supervisor_user_id:null,
                     user_id:null,
+                    contract_type_id:null,
+                    contract_start:null,
+                    contract_end:null,
+                    is_active: null,
+                    staff_type_id:null,
+                    designation_id:null,
+                    staff_category_id:null,
+                    contract_type_id:null,
                 }),
                 
                 api_url:null,
@@ -190,78 +297,32 @@
             }
         },
         methods: {
-
-            /*===== Call add new user modal ====*/
             newModal() {
                 this.editmode = false;
                 this.form.reset();
                 $('#addNewUser').modal('show');
             },
-            
-            /*Create User Function Starts*/
-            createUser() {
-                this.$Progress.start(); //start a progress bar
-                this.form.post('/api/v1/user') // POST form data
-                    //Start Condition to check form is validate
-                    .then(() => {
-                        this.emitter.emit('AfterCreate'); //custom event to reload data
-                        $("#addNewUser").modal('hide'); //Hide the model
-                        //Sweetalert notification for the result
-                        this.$swal({
-                            type: 'success',
-                            title: 'User Created Successfully',
-                            icon: 'success',
-                        })
-
-                        this.$Progress.finish(); //End the progress bar
-                    })
-                    //if form is not valid of handle any errors
-                    .catch(() => {
-                        this.$swal(
-                            'Error!',
-                            'Something Went Wrong.',
-                            'warning'
-                        )
-
-                        this.$Progress.fail(); //End the progress bar
-                    })
-            },
-
-            /*==== End of User Create ====*/
-
-            /*==== Call edit Modal with user data ====*/
-            editModal(user) {
-                this.editmode = true;
+            newContractModal(id,name) {
+                this.editmode = false;
                 this.form.reset();
+                this.form.user_id = id;
+                this.form.name = name
+                $('#addNewContract').modal('show');
+            },
+            editUserModal(user){
+                this.editmode = true;
+                const user_data = user
+                user_data.pillar_id = user.pillars.length ? user.pillars[0].id : null;
+                user_data.supervisor_user_id = user.employee ? user.employee.supervisor_user_id : null;
                 $('#addNewUser').modal('show');
-                this.form.fill(user);
-                this.form.supervisor_user_id = user.employee.supervisor_user_id;
+                this.emitter.emit('editing', user_data);
             },
-            /*Edit User Function*/
-            updateUser(id) {
-                this.$Progress.start();
-                this.form.put('/api/v1/user/' + this.form.id)
-                    .then(() => {
-                        $("#addNewUser").modal('hide'); //Hide the model
-                        this.$swal(
-                            'Updated!',
-                            'User info. has been updated.',
-                            'success'
-                        )
-                        this.$Progress.finish();
-                        this.emitter.emit('AfterCreate'); //Fire an reload event
+            editContractModal(contract){
+                this.editmode = true;
+                $('#addNewContract').modal('show');
+                this.emitter.emit('editing', contract);
+            },
 
-                    }).catch(() => {
-                    this.$swal(
-                        'Error!',
-                        'Something Went Wrong.',
-                        'warning'
-                    )
-                    this.$Progress.fail();
-                });
-            },
-            /*==== End of edit user function ====*/
-            /*==== Call Delete Modal uith user id ====*/
             deleteUser(id) {
                 this.$swal({
                     title: 'Are you sure?',
@@ -270,8 +331,6 @@
                     showCancelButton: true,
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
-
-                    //send an ajax request to the server
                     if (result.value) {
                         this.form.delete('/api/v1/user/' + id).then(() => {
                             this.$swal(
@@ -279,7 +338,7 @@
                                 'Your file has been deleted.',
                                 'success'
                             )
-                            this.emitter.emit('AfterCreate'); //Fire an reload event
+                            this.emitter.emit('AfterCreate');
                         }).catch(() => {
                             this.$swal(
                                 'Warning!',
@@ -299,8 +358,6 @@
                     showCancelButton: true,
                     confirmButtonText: 'Yes, verify it!'
                 }).then((result) => {
-
-                    //send an ajax request to the server
                     if (result.value) {
                         this.form.fill(user);
                         this.form.is_verified = val;
@@ -310,7 +367,7 @@
                                 'User info. has been updated.',
                                 'success'
                             )
-                            this.emitter.emit('AfterCreate'); //Fire an reload event
+                            this.emitter.emit('AfterCreate');
                         }).catch(() => {
                             this.$swal(
                                 'Warning!',
@@ -322,7 +379,6 @@
 
                 })
             },
-            /*==== End of Delete Modal ====*/
             check() {
                 if (this.form.password == this.form.confirmpassword) {
                     this.isActive = false;
@@ -333,20 +389,21 @@
                 }
             },
 
-            /*==== Start of Show existing User function ====*/
             async loadUsers() {
                 const {data}  = await  axios.get("/api/v1/user")
                 this.users = data.data,
                 this.roles = data.roles
                 this.pillars = data.pillars
                 this.supervisors = data.supervisors
+                this.designations = data.designation_types
+                this.staff_categories = data.staff_categories
+                this.contract_types = data.contract_types
+                this.staff_types = data.staff_types
                 this.api_url = 'api/user'
-                /*==== End of existing User ====*/
             },
         },
         created() {
-            this.loadUsers(); //load the user in the table
-            //Load the userlist if add or created a new user
+            this.loadUsers();
             this.emitter.on("AfterCreate", () => {
                 this.loadUsers();
             })
