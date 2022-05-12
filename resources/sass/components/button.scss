@@ -4,9 +4,21 @@
   background-color: $color-primary;
   transition: 0.3s;
   font-weight: $font-weight-bold;
+  border: solid 1.5px;
+  border-color: $color-white;
+  border-radius: 0;
   &:hover {
     border-color: $color-primary;
     background-color: $color-white;
     color: $color-primary;
+    border: solid 1.5px;
+  }
+}
+
+.btn-file-upload {
+  background-color: $color-sec-blue;
+  color: white;
+  &:hover {
+    background-color: $color-sec-blue-tint1;
   }
 }

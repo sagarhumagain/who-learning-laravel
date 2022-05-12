@@ -1,4 +1,4 @@
-export default (baseUrl, apiVersion) => ({
+export default (baseUrl, apiVersion ) => ({
   async getCsrfCookie() {
     return await axios.get(`${baseUrl}/sanctum/csrf-cookie`);
   },
@@ -9,6 +9,10 @@ export default (baseUrl, apiVersion) => ({
 
   async logout() {
     return await axios.get(`${baseUrl}/logout`);
+  },
+
+  async customLogout() {
+    return await axios.get(`${baseUrl}${apiVersion}/custom-logout/`);
   },
 
   async register(payload) {

@@ -54,15 +54,17 @@
                               <error-msg :errors="errors" field="due_date"></error-msg>
                           </div>
                            <h4>Course Category</h4>
-                            <multiselect v-model="form.course_category_ids"
-                                tag-placeholder="Category"
-                                placeholder="Select Category"
-                                label="name" track-by="name"
-                                :options="course_categories"
-                                :multiple="true"
-                                :taggable="true"
-                                >
-                            </multiselect>
+                            <div class="form-group col-lg-8 col-md-12">
+                              <multiselect v-model="form.course_category_ids"
+                                  tag-placeholder="Category"
+                                  placeholder="Select Category"
+                                  label="name" track-by="name"
+                                  :options="course_categories"
+                                  :multiple="true"
+                                  :taggable="true"
+                                  >
+                              </multiselect>
+                            </div>
                           <div v-if="this.permission.CanAssignCourse()">
                             <h4>Assign To</h4>
                             <multiselect v-model="form.pillar_ids"
@@ -123,7 +125,7 @@
                                 <label for="file" class="control-label">Certificate Image </label>
                                 <input type="file" name="certificate_path"  @change="onFileChange"
                                         placeholder="File"
-                                        class="btn btn-sm btn-info">
+                                        class="btn btn-sm btn-info btn-file-upload">
                                 <error-msg :errors="errors" field="certificate_path"></error-msg>
                             </div>                        
                           </div>

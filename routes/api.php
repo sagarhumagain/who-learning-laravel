@@ -19,6 +19,8 @@ use App\Http\Controllers\Api\ContractTypeStaffTypeController;
 use App\Http\Controllers\Api\DesignationStaffCategoryController;
 use App\Http\Controllers\Api\DesignationStaffTypeController;
 use App\Http\Controllers\Api\StaffCategoryStaffTypeController;
+use App\Http\Controllers\Api\StatisticsController;
+use App\Http\Controllers\Auth\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,13 +37,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
 Route::group(
     ['prefix' => 'v1', 'middleware' => ['auth:sanctum']],
     function () {
         Route::apiResources(['user'=>UserController::class]);
         Route::apiResources(['contract'=>ContractController::class]);
-
+       
         Route::get('/profile', [UserController::class, 'getProfile']);
 
         // Route::apiResources(['role'         =>'RoleController']);
@@ -74,5 +75,15 @@ Route::group(
         Route::get('/designation-staff-category', [DesignationStaffCategoryController::class, 'show']);
         Route::get('/designation-staff-type', [DesignationStaffTypeController::class, 'show']);
         Route::get('/designation-staff-category', [StaffCategoryStaffTypeController::class, 'show']);
+        // Route::get('/statistics/top-learner', [StatisticsController::class, 'show']);
+        Route::get('/statistics/admin-stats', [StatisticsController::class, 'fetchAdminDashboardStats']);
+        Route::get('/statistics/staff-pillar', [StatisticsController::class, 'fetchStaffByPillar']);
+        Route::get('/statistics/course-popular', [StatisticsController::class, 'fetchMostPopularCourses']);
+        Route::get('/courses/users/pending-approval', [StatisticsController::class, 'fetchPendingApprovals']);
+        Route::get('/statistics/course-mandatory', [StatisticsController::class, 'fetchMandatoryCourses']);
+        Route::get('/statistics/user-stats', [StatisticsController::class, 'fetchUserDashboardStats']);
+        Route::get('/statistics/user-course-completed', [StatisticsController::class, 'fetchUserCompletedCourse']);
+        Route::get('/statistics/user-course-deadline', [StatisticsController::class, 'fetchUserUpcomingDeadlines']);
+        Route::get('/statistics/user-yearly-progress', [StatisticsController::class, 'fetchUserYearlyProgress']);
     }
 );

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Pillar;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -42,8 +43,17 @@ class PillarsTableSeeder extends Seeder
             ],
             
         ];
+        $user1 = User::where('email','normaluser@who.int')->first();
+        $user2 = User::where('email','normaluser2@who.int')->first();
+        $pillarConditions = [true, false];
         foreach ($pillars as $pillar) {
-            Pillar::create($pillar);
+            shuffle($pillarConditions);
+            $createdPillar = Pillar::create($pillar);
+            if($pillarConditions[0] == true) {
+              $user1->pillars()->attach($createdPillar->id);
+            } else {
+              $user2->pillars()->attach($createdPillar->id);
+            }
         }
     }
 }

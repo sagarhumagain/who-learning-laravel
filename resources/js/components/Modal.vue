@@ -14,9 +14,9 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-times fa-fw"></i>Close</button>
-                        <button v-show="editmode" :disabled="disabled" type="submit" class="btn btn-success"><i class="fas fa-plus fa-fw"></i>Update</button>
-                        <button v-show="!editmode" :disabled="disabled" type="submit" class="btn btn-primary"><i class="fas fa-plus fa-fw"></i>Create</button>
+                        <button type="button" class="btn btn-red" data-bs-dismiss="modal"><i class="fas fa-times fa-fw"></i>Close</button>
+                        <button v-show="editmode" :disabled="disabled" type="submit" class="btn btn-green"><i class="fas fa-plus fa-fw"></i>Update</button>
+                        <button v-show="!editmode" :disabled="disabled" type="submit" class="btn btn-primary-blue"><i class="fas fa-plus fa-fw"></i>Create</button>
                     </div>
                 </form>
             </div>

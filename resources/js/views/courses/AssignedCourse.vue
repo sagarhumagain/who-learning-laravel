@@ -31,10 +31,10 @@
                                 <td>{{course.due_date}}</td>
                                 <td>{{course.description}}</td>
                                 <td>
-                                    <p class="text-danger" v-if="course.pivot.completed_date == null">Incomplete</p>
-                                    <p class="text-warning" v-else-if="course.pivot.is_approved == null && course.pivot.completed_date">Approval Pending</p>
-                                    <p class="text-warning" v-else-if="course.pivot.is_approved == '1' && course.pivot.completed_date">Approved</p>
-                                    <p class="text-warning" v-else-if="course.pivot.is_approved == '0' && course.pivot.completed_date">Disapproved</p>
+                                    <p class="color-red" v-if="course.pivot.completed_date == null">Incomplete</p>
+                                    <p class="color-yellow" v-else-if="course.pivot.is_approved == null && course.pivot.completed_date">Approval Pending</p>
+                                    <p class="color-green" v-else-if="course.pivot.is_approved == '1' && course.pivot.completed_date">Approved</p>
+                                    <p class="color-red" v-else-if="course.pivot.is_approved == '0' && course.pivot.completed_date">Disapproved</p>
                                 </td>
                                 <td>
                                     <!-- <a href="#" @click="editCourseModal(course.pivot)">
@@ -75,7 +75,7 @@
                                 <label for="file" class="control-label">Certificate Image *</label>
                                 <input type="file" name="certificate_path"  @change="onFileChange"
                                         placeholder="File"
-                                        class="btn btn-sm btn-info">
+                                        class="btn btn-sm btn-info btn-file-upload">
                                 <error-msg :errors="errors" field="certificate_path"></error-msg>
                             </div>                        
                         </div>
@@ -84,9 +84,9 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-times fa-fw"></i>Close</button>
-                        <button v-show="editmode" :disabled="disabled" type="submit" class="btn btn-success"><i class="fas fa-plus fa-fw"></i>Update</button>
-                        <button v-show="!editmode" :disabled="disabled" type="submit" class="btn btn-primary"><i class="fas fa-plus fa-fw"></i>Create</button>
+                        <button type="button" class="btn btn-red" data-bs-dismiss="modal"><i class="fas fa-times fa-fw"></i>Close</button>
+                        <button v-show="editmode" :disabled="disabled" type="submit" class="btn btn-green"><i class="fas fa-plus fa-fw"></i>Update</button>
+                        <button v-show="!editmode" :disabled="disabled" type="submit" class="btn btn-primary-blue"><i class="fas fa-plus fa-fw"></i>Create</button>
                     </div>
                 </form>
             </div>

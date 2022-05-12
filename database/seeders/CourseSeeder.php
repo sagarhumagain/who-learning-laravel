@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Course;
 use App\Models\CourseCategory;
 use App\Models\CourseCourseCategory;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 class CourseSeeder extends Seeder
@@ -28,7 +29,8 @@ class CourseSeeder extends Seeder
             "source" => "Open WHO",
             "url" => "https://openwho.org/courses/AMR-competency",
             "due_date" => '2022-05-22',
-            "course_categories" => ["Antimicrobial Resistance Channel"]
+            "course_categories" => ["Antimicrobial Resistance Channel"],
+            "is_approved" => 1
         ),
         array(
           "name" => "RCCE-COVID-19",
@@ -37,7 +39,8 @@ class CourseSeeder extends Seeder
           "source" => "Open WHO",
           "url" => "https://openwho.org/courses/RCCE-COVID-19",
           "due_date" => '2022-05-15',
-          "course_categories" => ["Risk communication"]
+          "course_categories" => ["Risk communication", "WHO Mandatory Trainings"],
+          "is_approved" => 1
         ),
         array(
           "name" => "Data Analysis and Data Vizualization",
@@ -46,7 +49,8 @@ class CourseSeeder extends Seeder
           "source" => "iLearn",
           "url" => "https://who.csod.com/ui/lms-learning-details/app/course/ac716a33-6379-5a22-88e9-37c574c06106",
           "due_date" => '2022-05-22',
-          "course_categories" => ["Data Analysis and Data Vizualization"]
+          "course_categories" => ["Data Analysis and Data Vizualization", "WHO Mandatory Trainings"],
+          "is_approved" => 1
         ),
       );
       foreach ($courses as $course) {
@@ -60,7 +64,8 @@ class CourseSeeder extends Seeder
             'due_date' => $course['due_date']
           ]
         );
-
+        $user1 = User::where('email','normaluser@who.int')->first();
+        $user2 = User::where('email','normaluser2@who.int')->first();
         foreach($course['course_categories'] as $courseCategory) {
           $courseCategoryId = CourseCategory::where(DB::raw('lower(name)'), strtolower($courseCategory))
           ->pluck('id')->first();
@@ -69,6 +74,9 @@ class CourseSeeder extends Seeder
             "course_category_id" => $courseCategoryId
           ]);
         }
+       
+        $user1->courses()->attach($createdCourse->id);
+        $user2->courses()->attach($createdCourse->id);
       }
     }
 }

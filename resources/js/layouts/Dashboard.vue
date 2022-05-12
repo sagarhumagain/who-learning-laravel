@@ -53,13 +53,11 @@ export default {
     methods: {
       
       onCollapse (collapsed) {
-        console.log(collapsed)
+        console.log(collapsed);
         // this.collapsed = collapsed
       },
       onItemClick (event, item) {
-        console.log('onItemClick')
-        // console.log(event)
-        // console.log(item)
+        console.log('onItemClick');
       },
       ...mapActions({
             signOut:"auth/logout"
@@ -68,7 +66,7 @@ export default {
             await axios.post('/logout').then(({data})=>{
                 this.signOut()
                 this.$router.push({name:"login"})
-            })
+            });
         },
         onResize () {
           if (window.innerWidth <= 767) {

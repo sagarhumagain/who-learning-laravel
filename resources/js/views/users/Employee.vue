@@ -261,7 +261,6 @@ import Multiselect from 'vue-multiselect'
                         this.$Progress.fail();
                     }
                 }catch(error){
-                    console.log(error);
                     this.$swal(
                                 'Error!',
                                 'Something Went Wrong.',

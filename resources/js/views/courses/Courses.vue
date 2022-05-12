@@ -7,7 +7,7 @@
                         <h3>Course Management</h3>
 
                         <div class="card-tools">
-                            <button type="" class="btn btn-primary" @click="newCourse"><i class="fa fa-book fa-fw"></i> Add New Course</button>
+                            <button type="" class="btn btn-fill" @click="newCourse"><i class="fa fa-book fa-fw"></i> Add New Course</button>
                         </div>
                     </div>
                     <!-- /.card-header -->
@@ -42,13 +42,12 @@
                                     <!-- <a href="#" @click="editCourse(course,course.id)" class="btn btn-sm btn-success mr-2">Edit
                                         <i class="fa fa-edit"></i>
                                     </a> -->
-                                    <router-link class="project-link mr-3" :to="{ name: 'courses-edit', params: { course: course , id: course.id} }">
-                                        <i class="fa fa-edit"></i>
+                                    <router-link class="project-link mr-3 color-sec-blue" :to="{ name: 'courses-edit', params: { course: course , id: course.id} }">
+                                        <i class="fa fa-edit"  title="Edit"></i>
                                     </router-link>
-                                    
-                                    
-                                    <a href="#" class="mr-3" @click="deleteUser(course.id)" >
-                                        <i class="fa fa-trash"></i>
+                                  
+                                    <a href="#" class="color-red" @click="deleteCourse(course.id)" >
+                                        <i class="fa fa-trash"  title="Delete"></i>
                                     </a>
                                     <a href="#" class="mr-3" @click="approveCourse(course,true)" >
                                         <i class="fa fa-check"></i>
@@ -173,7 +172,7 @@
                 
 
             },
-            deleteUser(id) {
+            deleteCourse(id) {
                 this.$swal({
                     title: 'Are you sure?',
                     text: "You won't be able to revert this!",
@@ -202,18 +201,19 @@
                 })
             },
             
-            /*==== Start of Show existing User function ====*/
+
+            /*==== Start of Show existing Course function ====*/
             async loadCourses() {
                 const {data}  = await  axios.get("/api/v1/courses")
                 this.courses = data.data,
                 
                 this.api_url = 'api/courses'
-                /*==== End of existing User ====*/
+                /*==== End of existing Course ====*/
             },
         },
         created() {
-            this.loadCourses(); //load the user in the table
-            //Load the userlist if add or created a new user
+            this.loadCourses(); //load the course in the table
+            //Load the courselist if add or created a new course
             this.emitter.on("AfterCreate", () => {
                 this.loadCourses();
             })
