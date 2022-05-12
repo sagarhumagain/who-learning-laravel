@@ -5,23 +5,39 @@ namespace App\Http\Controllers;
 use App\Events\CourseAssignedEvent;
 use App\Events\CourseCreatedEvent;
 use App\Http\Controllers\Api\BaseController;
+use App\Http\Requests\Course\UpdateCourseValidation;
 use App\Models\Course;
 use App\Models\CourseAssignmentSetting;
+use App\Models\CourseUser;
 use App\Models\User;
 use App\Notifications\CourseAssignedNotification;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 
 class CourseController extends BaseController
 {
+    protected $folder = 'users';
+    public function __construct(Course $model)
+    {
+        $this->model = $model;
+        $this->folder_path = 'images'.DIRECTORY_SEPARATOR.$this->folder;
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $courses['data'] = Course::paginate(20);
+        if ($request->id) {
+            $user_course = User::where('id', $request->id)->firstOrFail();
+            $courses['data'] = $user_course->courses(function ($q) {
+                $q->where('is_approved', 1);
+            })->paginate(20);
+        } else {
+            $courses['data'] = Course::paginate(20);
+        }
         return  $courses;
     }
 
@@ -154,5 +170,29 @@ class CourseController extends BaseController
     {
         $course->delete();
         return response()->json(true);
+    }
+    public function updateAssignedCourse(UpdateCourseValidation $request)
+    {
+        try {
+            $path =  $this->folder_path.DIRECTORY_SEPARATOR.auth()->user()->id;
+            parent::checkFolderExist($path);
+            $fileName = 'certificate'.'.'.$request->certificate_path->getClientOriginalExtension();
+            $request->certificate_path->move($path, $fileName);
+            $request['certificate_path'] = $path.DIRECTORY_SEPARATOR.$fileName;
+            $course_user = CourseUser::where('course_id', $request->course_id)->firstOrFail();
+            $data = [
+                'certificate_path' => $path.DIRECTORY_SEPARATOR.$fileName,
+                'completed_date' => $request->completed_date
+            ];
+            $course_user->update($data);
+            
+            $data['error'] = false;
+            $data['message'] = 'Certification details updated successfully';
+        } catch (Exception $e) {
+            $data['error'] = true;
+            $data['message'] = $e->getMessage();
+        }
+
+        return response()->json($data);
     }
 }

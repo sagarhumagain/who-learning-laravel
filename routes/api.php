@@ -43,6 +43,7 @@ Route::group(
         Route::apiResources(['contract'=>ContractController::class]);
 
         Route::get('/profile', [UserController::class, 'getProfile']);
+
         // Route::apiResources(['role'         =>'RoleController']);
 
         // Route::apiResources(['permission'   =>'PermissionController']);
@@ -57,7 +58,10 @@ Route::group(
 
         Route::resource('/contracts', ContractController::class);
         Route::resource('/contract-types', ContractTypeController::class);
+
         Route::resource('/courses', CourseController::class);
+        Route::put('/update-assigned-course', [CourseController::class, 'updateAssignedCourse']);
+
         Route::resource('/designations', DesignationController::class);
         Route::resource('/pillars', PillarController::class);
         Route::resource('/staff-categories', StaffCategoryController::class);

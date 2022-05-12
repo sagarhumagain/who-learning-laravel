@@ -4,9 +4,32 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class BaseController extends Controller
 {
+    public function checkDirectoryExist()
+    {
+        //check folder
+        if (!file_exists(public_path($this->folder_path))) {
+            mkdir(public_path($this->folder_path));
+        }
+    }
+
+    //check folder exits
+    public function checkFolderExist($path)
+    {
+        if (!file_exists($path)) {
+            File::makeDirectory($path, $mode = 0777, true, true);
+            File::makeDirectory($path . '/thumbs', $mode = 0777, true, true);
+        }
+    }
+    //rename directory if already exists
+    public function renameDirectory($old_dir, $new_dir)
+    {
+        rename($old_dir, $new_dir);
+    }
+
     public function notifications(Request $request)
     {
         $user = $request->user();
