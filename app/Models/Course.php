@@ -27,7 +27,7 @@ class Course extends Model implements Auditable
 
     // protected $dates = ['due_date'];
 
-    public function course_categories()
+    public function courseCategories()
     {
         return $this->belongsToMany(CourseCategory::class, 'course_course_category');
     }

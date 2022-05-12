@@ -84,7 +84,7 @@ class CourseController extends BaseController
             $courseFields['is_approved'] = false;
         }
         $course = Course::create($courseFields);
-
+        $course->courseCategories()->attach($request->course_category_ids);
         if ($user->hasRole(['super-admin','course-admin'])) {
             event(new CourseCreatedEvent($course));
         }
@@ -174,17 +174,23 @@ class CourseController extends BaseController
     public function updateAssignedCourse(UpdateCourseValidation $request)
     {
         try {
-            $path =  $this->folder_path.DIRECTORY_SEPARATOR.auth()->user()->id;
-            parent::checkFolderExist($path);
-            $fileName = 'certificate'.'.'.$request->certificate_path->getClientOriginalExtension();
-            $request->certificate_path->move($path, $fileName);
-            $request['certificate_path'] = $path.DIRECTORY_SEPARATOR.$fileName;
             $course_user = CourseUser::where('course_id', $request->course_id)->firstOrFail();
-            $data = [
-                'certificate_path' => $path.DIRECTORY_SEPARATOR.$fileName,
-                'completed_date' => $request->completed_date
-            ];
-            $course_user->update($data);
+
+            if ($request->certificate_path != $course_user->certificate_path) {
+                $path =  $this->folder_path.DIRECTORY_SEPARATOR.auth()->user()->id;
+                parent::checkFolderExist($path);
+                $fileName = 'certificate'.'.'.$request->certificate_path->getClientOriginalExtension();
+                $request->certificate_path->move($path, $fileName);
+                $data = [
+                    'certificate_path' => $path.DIRECTORY_SEPARATOR.$fileName,
+                    'completed_date' => $request->completed_date
+                ];
+                $course_user->update($data);
+            } else {
+                $course_user->update([
+                    'completed_date' => $request->completed_date
+                ]);
+            }
             
             $data['error'] = false;
             $data['message'] = 'Certification details updated successfully';

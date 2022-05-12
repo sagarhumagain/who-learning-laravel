@@ -8,6 +8,7 @@ use App\Models\Course;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
+
 class CourseCategory extends Model implements Auditable
 {
     use HasFactory, SoftDeletes, AuditableTrait;
@@ -17,7 +18,8 @@ class CourseCategory extends Model implements Auditable
         'description',
     ];
 
-    public function courses() {
+    public function courses()
+    {
         return $this->belongsToMany(Course::class, 'course_course_category');
     }
 }

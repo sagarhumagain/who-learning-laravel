@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
+
 class CourseCourseCategory extends Model implements Auditable
 {
     use HasFactory, AuditableTrait;
@@ -15,4 +16,10 @@ class CourseCourseCategory extends Model implements Auditable
       'course_id',
       'course_category_id'
     ];
+
+
+    public function course()
+    {
+        return $this->belongsToMany(Course::class);
+    }
 }
