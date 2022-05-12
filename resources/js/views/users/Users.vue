@@ -121,10 +121,9 @@
                 <multiselect v-model="form.pillar_id"
                     tag-placeholder="Pillars"
                     placeholder="Select Pillars"
-                    :options="Object.keys(pillars).map(Number)"
-                    :custom-label="opt => pillars[opt]"
-                    :multiple="false"
-                    :allow-empty="false"
+                    label="name" track-by="id"
+                    :options="pillars"
+                    :multiple="true"
                     :taggable="true"
                     >
                 </multiselect>
@@ -312,7 +311,7 @@
             editUserModal(user){
                 this.editmode = true;
                 const user_data = user
-                user_data.pillar_id = user.pillars.length ? user.pillars[0].id : null;
+                user_data.pillar_id = user.pillars.length ? user.pillars : null;
                 user_data.supervisor_user_id = user.employee ? user.employee.supervisor_user_id : null;
                 $('#addNewUser').modal('show');
                 this.emitter.emit('editing', user_data);

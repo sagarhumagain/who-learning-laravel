@@ -53,6 +53,16 @@
                               </v-date-picker> -->
                               <div v-if="form.errors.has('due_date')" v-html="form.errors.get('due_date')" />
                           </div>
+                           <h4>Course Category</h4>
+                            <multiselect v-model="form.course_category_ids"
+                                tag-placeholder="Category"
+                                placeholder="Select Category"
+                                label="name" track-by="id"
+                                :options="course_categories"
+                                :multiple="true"
+                                :taggable="true"
+                                >
+                            </multiselect>
                           <div>
                             <h4>Assign To</h4>
                             <multiselect v-model="form.pillar_ids"
@@ -132,6 +142,8 @@ export default {
             contract_types: this.$store.state.choice.contractTypes,
             staff_categories: this.$store.state.choice.staffCategories,
             designations: this.$store.state.choice.designations,
+            course_categories: this.$store.state.choice.courseCategories,
+
             form: new Form({
               name: '',
               description: '',
@@ -143,7 +155,8 @@ export default {
               staff_type_ids: null,
               contract_type_ids: null,
               staff_category_ids: null,
-              staff_designation_ids: null
+              staff_designation_ids: null,
+              course_category_ids: null,
             })
         }
     },

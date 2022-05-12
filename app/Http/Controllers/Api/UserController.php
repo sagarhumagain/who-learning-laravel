@@ -36,7 +36,7 @@ class UserController extends Controller
             $q->latest()->get();
         })->latest()->paginate(100);
         $data['roles'] = Role::select('name', 'id')->get();
-        $data['pillars'] = Pillar::pluck('name', 'id');
+        $data['pillars'] = Pillar::select('name', 'id')->get();
         $data['supervisors'] = User::role('supervisor')->pluck('name', 'id');
         $data['contract_types'] = ContractType::pluck('name', 'id');
         $data['designation_types'] = Designation::pluck('name', 'id');
@@ -89,7 +89,12 @@ class UserController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-            $user->pillars()->attach([$request->pillar_id]);
+            $pillars = [];
+            foreach ($request->pillar_id as $pillar) {
+                array_push($pillars, $pillar['id']);
+            }
+            $user->pillars()->detach();
+            $user->pillars()->attach($pillars);
             $roles = [];
             foreach ($request->roles as $role) {
                 array_push($roles, $role['name']);
@@ -99,13 +104,7 @@ class UserController extends Controller
             }
             $user->update($request->all());
             $user->syncRoles($roles);
-            // try {
-            //     Contract::updateOrCreate(['user_id' => $id], $request->all());
-            // } catch (Exception $e) {
-            //     return response()->json(['error' => $e->getMessage()], 500);
-            // }
-            // $contract = Contract::where('user_id', $id)->firstOrFail();
-            // $contract->update($request->all());
+           
             $data['error']='false';
             $data['message']='User Info! Has Been Updated';
         } catch (\Exception $exception) {
