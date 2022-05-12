@@ -63,6 +63,7 @@ class User extends Authenticatable implements Auditable
     {
         return $this->belongsToMany(Course::class);
     }
+    
     public function contracts()
     {
         return $this->hasMany(Contract::class);
