@@ -84,7 +84,10 @@ class CourseController extends BaseController
             $courseFields['is_approved'] = false;
         }
         $course = Course::create($courseFields);
-        $course->courseCategories()->attach($request->course_category_ids);
+
+        $courseCategoryIds = parent::filterArrayByKey($request->course_category_ids, 'id');
+        
+        $course->courseCategories()->attach($courseCategoryIds);
         if ($user->hasRole(['super-admin','course-admin'])) {
             event(new CourseCreatedEvent($course));
         }
@@ -113,8 +116,6 @@ class CourseController extends BaseController
         })->get();
         $course->users()->attach($users);
         CourseAssignmentSetting::create($assignmentFields);
-
-        
 
         event(new CourseAssignedEvent($request));
 
