@@ -16,10 +16,4 @@ class CourseCourseCategory extends Model implements Auditable
       'course_id',
       'course_category_id'
     ];
-
-
-    public function course()
-    {
-        return $this->belongsToMany(Course::class);
-    }
 }
