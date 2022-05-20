@@ -20,6 +20,7 @@
                                 <th>Credit Hours</th>
                                 <th>Due Date</th>
                                 <th>Description</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                             <tr v-for="(course, index) in courses.data" :key="course.id">
@@ -29,11 +30,19 @@
                                 <td>{{course.credit_hours}}</td>
                                 <td>{{course.due_date}}</td>
                                 <td>{{course.description}}</td>
-
                                 <td>
-                                    <a href="#" @click="editCourseModal(course.pivot)" class="btn btn-sm btn-success mr-2">Update
+                                    <p class="text-danger" v-if="course.pivot.completed_date == null">Incomplete</p>
+                                    <p class="text-warning" v-else-if="course.pivot.is_approved == null && course.pivot.completed_date">Approval Pending</p>
+                                    <p class="text-warning" v-else-if="course.pivot.is_approved == '1' && course.pivot.completed_date">Approved</p>
+                                    <p class="text-warning" v-else-if="course.pivot.is_approved == '0' && course.pivot.completed_date">Disapproved</p>
+                                </td>
+                                <td>
+                                    <!-- <a href="#" @click="editCourseModal(course.pivot)">
                                         <i class="fa fa-edit"></i>
-                                    </a>
+                                    </a> -->
+                                    <router-link class="project-link mr-3" :to="{ name: 'courses-edit', params: { course: course.pivot , id: course.pivot.course_id} }">
+                                        <i class="fa fa-edit"></i>
+                                    </router-link>
                                     
                                 </td>
                             </tr>
@@ -179,7 +188,7 @@
             },
             /*==== Start of Show existing User function ====*/
             async loadCourse() {
-                const {data}  = await  axios.get("/api/v1/courses?id=" + this.$route.params.id)
+                const {data}  = await  axios.get("/api/v1/courses");
                 this.courses = data.data
             },
         },

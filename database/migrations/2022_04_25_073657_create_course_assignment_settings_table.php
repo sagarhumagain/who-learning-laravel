@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
             $table->foreignId('assigned_by_user_id')->constrained('users')->onDelete('cascade');
-            $table->string('department_ids')->default('[]');
+            $table->string('staff_category_ids')->default('[]');
             $table->string('pillar_ids')->default('[]');
             $table->string('contract_type_ids')->default('[]');
             $table->string('staff_type_ids')->default('[]');

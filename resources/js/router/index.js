@@ -72,7 +72,8 @@ if (roles.includes('super-admin')) {
       component: CourseEdit,
       meta:{
           title:`Edit Course`
-      }
+      },
+      props: true,
     },
     {
         name:"users",
@@ -160,7 +161,7 @@ if (roles.includes('super-admin')) {
       {
         name:"courses-list",
         path: '/courses',
-        component: Courses,
+        component: AssignedCourse,
         meta:{
             title:`List Courses`
         }
@@ -182,20 +183,13 @@ if (roles.includes('super-admin')) {
         }
       },
       {
-        name:"assigned-course",
-        path: '/courses/:id/assigned',
-        component: AssignedCourse,
-        meta:{
-            title:`View Assigned Course`
-        }
-      },
-      {
         name:"courses-edit",
         path: '/courses/:id/edit',
         component: CourseEdit,
         meta:{
             title:`Edit Course`
-        }
+        },
+        props: true,
       },
       {
         name:"employee",
@@ -239,7 +233,9 @@ const Routes = [
 
 const router = VueRouter.createRouter({
   history: VueRouter.createWebHistory(),
-  routes: Routes
+  routes: Routes,
+  linkActiveClass: 'active'
+
 })
 
 router.beforeEach((to, from, next) => {

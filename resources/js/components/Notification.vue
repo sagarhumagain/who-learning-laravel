@@ -4,21 +4,21 @@
         <span class="badge badge-warning navbar-badge">{{this.notifications.length}}</span>
     </a>
     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right notifications" style="left: inherit; right: 0px;">
-        <span class="dropdown-header">{{this.notifications.length}} Notifications</span>
+        <a href="#" class="dropdown-item notification dropdown-footer ">See All {{this.notifications.length}}  Notifications</a>
         <div class="dropdown-divider"></div>
-        
 
         <a v-for="notification in notifications" :key="notification.id" class="dropdown-item notification d-flex justify-content-between">
         <div class="notification-content">
             <h5 class="m-0">{{notification.data.title}} </h5>
-            <p>{{notification.data.excerpt}}</p>
-
+            <p class="m-0">{{notification.data.excerpt.substring(0,30)+'...'}}</p>
         </div>
-        <span class="float-right text-muted text-sm">{{$filters.duration(notification.created_at)}} ago</span>
+        <div class="d-flex flex-column align-items-end">
+        <span class=" text-muted text-sm">{{$filters.duration(notification.created_at)}} ago</span>
+        <a class=" text-muted text-sm" href="">Read More</a>
+        </div>
+
         </a>
         
-        <div class="dropdown-divider"></div>
-        <a href="#" class="dropdown-item notification dropdown-footer">See All Notifications</a>
     </div>
 </template>
 
@@ -34,7 +34,11 @@ export default {
       },
     },
     created(){
-      this.fetchAllNotification();
+        this.fetchAllNotification();
+        this.emitter.on("AfterCourseCreate",()=>{
+            this.fetchAllNotification();
+        });
+
     },
     data(){
         return {

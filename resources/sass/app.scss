@@ -30,3 +30,11 @@
 
 // Pages
 // @import "pages/all";
+
+.invalid-feedback{
+    display: block;
+}
+.notifications{
+    max-height: 600px !important;
+    overflow:scroll;
+}

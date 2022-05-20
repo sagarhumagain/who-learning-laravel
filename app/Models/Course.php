@@ -34,6 +34,10 @@ class Course extends Model implements Auditable
 
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class)->withPivot('completed_date', 'certificate_path', 'is_approved');
+    }
+    public function courseAssignment()
+    {
+        return $this->hasOne(CourseAssignmentSetting::class, 'course_id', 'id');
     }
 }

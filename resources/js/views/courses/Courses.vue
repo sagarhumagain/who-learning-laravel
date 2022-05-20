@@ -7,7 +7,7 @@
                         <h3>Course Management</h3>
 
                         <div class="card-tools">
-                            <button type="" class="btn btn-primary" @click="newModal"><i class="fa fa-user-plus fa-fw"></i> Add New Course</button>
+                            <button type="" class="btn btn-primary" @click="newCourse"><i class="fa fa-book fa-fw"></i> Add New Course</button>
                         </div>
                     </div>
                     <!-- /.card-header -->
@@ -22,20 +22,24 @@
                                 <th>Description</th>
                                 <th>Actions</th>
                             </tr>
-                            <tr v-for="(user, index) in courses.data" :key="user.id">
+                            <tr v-for="(course, index) in courses.data" :key="course.id">
                                 <td>{{index + 1}}</td>
-                                <td>{{user.name}}
+                                <td>{{course.name}}
                                 </td>
-                                <td>{{user.credit_hours}}</td>
-                                <td>{{user.due_date}}</td>
-                                <td>{{user.description}}</td>
+                                <td>{{course.credit_hours}}</td>
+                                <td>{{course.due_date}}</td>
+                                <td>{{course.description}}</td>
 
                                 <td>
-                                    <a href="#" @click="editModal(user)" class="btn btn-sm btn-success mr-2">Edit
+                                    <!-- <a href="#" @click="editCourse(course,course.id)" class="btn btn-sm btn-success mr-2">Edit
                                         <i class="fa fa-edit"></i>
-                                    </a>
+                                    </a> -->
+                                    <router-link class="project-link mr-3" :to="{ name: 'courses-edit', params: { course: course , id: course.id} }">
+                                        <i class="fa fa-edit"></i>
+                                    </router-link>
                                     
-                                    <a href="#" @click="deleteUser(user.id)" class="btn btn-sm btn-danger mr-2">Delete
+                                    
+                                    <a href="#" @click="deleteUser(course.id)" >
                                         <i class="fa fa-trash"></i>
                                     </a>
                                    
@@ -58,6 +62,7 @@
     import { Button, HasError, AlertError } from 'vform/src/components/bootstrap5'
     import Modal from '@/components/Modal';
     export default {
+        name:'courses-list',
         components: {
             Multiselect,
             HasError,
@@ -84,76 +89,10 @@
             }
         },
         methods: {
+            newCourse(){
+                this.$router.push({name:'course-create'})
 
-            /*===== Call add new user modal ====*/
-            newModal() {
-                this.editmode = false;
-                this.form.reset();
-                $('#addNewUser').modal('show');
             },
-            /*Create User Function Starts*/
-            createUser() {
-                this.$Progress.start(); //start a progress bar
-                this.form.post('/api/v1/courses') // POST form data
-                    //Start Condition to check form is validate
-                    .then(() => {
-                        this.emitter.emit('AfterCreate'); //custom event to reload data
-                        $("#addNewUser").modal('hide'); //Hide the model
-                        //Sweetalert notification for the result
-                        this.$swal({
-                            type: 'success',
-                            title: 'User Created Successfully',
-                            icon: 'success',
-                        })
-
-                        this.$Progress.finish(); //End the progress bar
-                    })
-                    //if form is not valid of handle any errors
-                    .catch(() => {
-                        this.$swal(
-                            'Error!',
-                            'Something Went Wrong.',
-                            'warning'
-                        )
-
-                        this.$Progress.fail(); //End the progress bar
-                    })
-            },
-
-            /*==== End of User Create ====*/
-
-            /*==== Call edit Modal with user data ====*/
-            editModal(user) {
-                this.editmode = true;
-                this.form.reset();
-                $('#addNewUser').modal('show');
-                this.form.fill(user);
-            },
-            /*Edit User Function*/
-            updateUser(id) {
-                this.$Progress.start();
-                this.form.put('/api/v1/courses/' + this.form.id)
-                    .then(() => {
-                        $("#addNewUser").modal('hide'); //Hide the model
-                        this.$swal(
-                            'Updated!',
-                            'User info. has been updated.',
-                            'success'
-                        )
-                        this.$Progress.finish();
-                        this.emitter.emit('AfterCreate'); //Fire an reload event
-
-                    }).catch(() => {
-                    this.$swal(
-                        'Error!',
-                        'Something Went Wrong.',
-                        'warning'
-                    )
-                    this.$Progress.fail();
-                });
-            },
-            /*==== End of edit user function ====*/
-            /*==== Call Delete Modal uith user id ====*/
             deleteUser(id) {
                 this.$swal({
                     title: 'Are you sure?',
@@ -163,7 +102,6 @@
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
 
-                    //send an ajax request to the server
                     if (result.value) {
                         this.form.delete('/api/v1/courses' + id).then(() => {
                             this.$swal(
@@ -209,6 +147,9 @@
 .is-equal{
 
 box-shadow: 0 0 0 0.2rem rgb(73 231 25 / 25%) !important;
+}
+.mr-3{
+    margin-right:15px;
 }
 </style>
 
