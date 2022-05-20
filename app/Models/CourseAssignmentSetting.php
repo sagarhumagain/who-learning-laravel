@@ -13,7 +13,7 @@ class CourseAssignmentSetting extends Model implements Auditable
     protected $guarded = [];
     protected $fillable= [
       'course_id',
-      'department_ids',
+      'staff_category_ids',
       'pillar_ids',
       'contract_type_ids',
       'staff_type_ids',
@@ -23,7 +23,7 @@ class CourseAssignmentSetting extends Model implements Auditable
       'assigned_by_user_id'
     ];
     protected $casts = [
-      'department_ids' => 'array',
+      'staff_category_ids' => 'array',
       'pillar_ids' => 'array',
       'contract_type_ids' => 'array',
       'staff_type_ids' => 'array',

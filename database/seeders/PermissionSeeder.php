@@ -35,6 +35,11 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'create_course','guard_name'=>'auth']);
         Permission::create(['name' => 'update_course','guard_name'=>'auth']);
         Permission::create(['name' => 'delete_course','guard_name'=>'auth']);
+        $course_permission = Permission::create(['name' => 'course_assignment','guard_name'=>'web']);
+
+        $admin = Role::where('name', 'super-admin')->first();
+
+        $course_permission->assignRole($admin);
     }
     public function getData()
     {

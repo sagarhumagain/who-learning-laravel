@@ -26,10 +26,12 @@ library.add(far);
 import { dom } from "@fortawesome/fontawesome-svg-core";
 import VCalendar from 'v-calendar';
 import 'v-calendar/dist/style.css';
+import { getRoles } from '@/helpers/auth';
 
 dom.watch();
 
 import Functions from "./functions";
+
 
 // /*Sweet alert start*/
 
@@ -99,10 +101,19 @@ import mitt from 'mitt';
 const emitter = mitt();
 app.config.globalProperties.emitter = emitter;
 
+import RoleGate from "./ACL/role-gate";
+const roles = getRoles();
+app.config.globalProperties.role = new RoleGate(roles);
+
+import PermissionGate from "./ACL/permission-gate";
+const Permissions = getPermissions();
+app.config.globalProperties.permission = new PermissionGate(Permissions);
+
 
 // /*Sweet alert start*/
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import { getPermissions } from './helpers/auth';
 
 const options = {
     confirmButtonColor: '#41b882',

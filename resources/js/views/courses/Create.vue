@@ -9,28 +9,28 @@
                         <form @submit.prevent="createCourse()" @keydown="form.onKeydown($event)">
                           <div class="form-group col-lg-8 col-md-12">
                               <label for="name" >Name *</label>
-                              <input v-model="form.name" type="text" name="name" class="form-control" placeholder="Course Name" :class="{ 'is-invalid': form.errors.has('name')}" />
-                              <div v-if="form.errors.has('name')" v-html="form.errors.get('name')" />
+                              <input v-model="form.name" type="text" name="name" class="form-control" placeholder="Course Name" />
+                              <error-msg :errors="errors" field="name"></error-msg>
                           </div>
                           <div class="form-group col-lg-8 col-md-12">
                               <label for="description" >Description *</label>
                               <textarea v-model="form.description"  name="description" class="form-control" placeholder="Description" :class="{ 'is-invalid': form.errors.has('description')}" />
-                              <div v-if="form.errors.has('description')" v-html="form.errors.get('description')" />
+                              <error-msg :errors="errors" field="description"></error-msg>
                           </div>
                           <div class="form-group col-lg-8 col-md-12">
                               <label for="url" >Course URL *</label>
                               <input v-model="form.url" type="text" name="url" placeholder="https://who.csod.com/ui/lms-learning-details/app/course/f526f260-fbdc-5ccb-84e0-04b6020f255b" class="form-control" :class="{ 'is-invalid': form.errors.has('url')}">
-                              <div v-if="form.errors.has('url')" v-html="form.errors.get('url')" />
+                              <error-msg :errors="errors" field="url"></error-msg>
                           </div>
                           <div class="form-group col-lg-8 col-md-12">
                               <label for="credit_hours" >Credit Hours *</label>
                               <input v-model="form.credit_hours" type="number" name="credit_hours" placeholder="Credit Hours" class="form-control" :class="{ 'is-invalid': form.errors.has('credit_hours')}">
-                              <div v-if="form.errors.has('credit_hours')" v-html="form.errors.get('credit_hours')" />
+                              <error-msg :errors="errors" field="credit_hours"></error-msg>
                           </div>
                           <div class="form-group col-lg-8 col-md-12">
                               <label for="url" >Source *</label>
                               <input v-model="form.source" type="text" name="source" placeholder="iLearn" class="form-control" :class="{ 'is-invalid': form.errors.has('source')}">
-                              <div v-if="form.errors.has('source')" v-html="form.errors.get('source')" />
+                              <error-msg :errors="errors" field="source"></error-msg>
                           </div>
                           <div class="form-group col-lg-8 col-md-12">
                               <label for="due_date" >Due Date</label>
@@ -51,19 +51,19 @@
                                   />
                                 </template>
                               </v-date-picker> -->
-                              <div v-if="form.errors.has('due_date')" v-html="form.errors.get('due_date')" />
+                              <error-msg :errors="errors" field="due_date"></error-msg>
                           </div>
                            <h4>Course Category</h4>
                             <multiselect v-model="form.course_category_ids"
                                 tag-placeholder="Category"
                                 placeholder="Select Category"
-                                label="name" track-by="id"
+                                label="name" track-by="name"
                                 :options="course_categories"
                                 :multiple="true"
                                 :taggable="true"
                                 >
                             </multiselect>
-                          <div>
+                          <div v-if="this.permission.CanAssignCourse()">
                             <h4>Assign To</h4>
                             <multiselect v-model="form.pillar_ids"
                                 tag-placeholder="Pillars"
@@ -112,6 +112,23 @@
                             </multiselect>
 
                           </div>
+                          <div v-if="this.role.isNormalUser()"> 
+                            <div class="form-group col-md-8">
+                                <label for="first_name" >Completed Date</label>
+                                <input type="text" v-model="form.completed_date" class="form-control"  placeholder="Contract Strat Date" :class="{ 'is-invalid': form.errors.has('completed_date') }">
+                                <error-msg :errors="errors" field="completed_date"></error-msg>
+                            </div>
+                        
+                            <div class="form-group col-md-8">
+                                <label for="file" class="control-label">Certificate Image </label>
+                                <input type="file" name="certificate_path"  @change="onFileChange"
+                                        placeholder="File"
+                                        class="btn btn-sm btn-info">
+                                <error-msg :errors="errors" field="certificate_path"></error-msg>
+                            </div>                        
+                          </div>
+                        
+                        
                           <button type="submit" :disabled="form.busy" class="btn-fill">
                             Create
                           </button>
@@ -128,11 +145,15 @@ import { mapActions } from 'vuex'
 import Form from 'vform'
 import { useToast } from "vue-toastification"
 import Multiselect from 'vue-multiselect'
+import { getRoles } from '@/helpers/auth'
+import { getPermissions } from '@/helpers/auth'
+import ErrorMsg from '@/components/error-msg'
 
 export default {
-    name:'create-user',
+    name:'course-create',
     components:{
-      Multiselect
+      Multiselect,
+      ErrorMsg
     },
     data(){
         return {
@@ -143,20 +164,23 @@ export default {
             staff_categories: this.$store.state.choice.staffCategories,
             designations: this.$store.state.choice.designations,
             course_categories: this.$store.state.choice.courseCategories,
-
+            errors: {},
             form: new Form({
-              name: '',
-              description: '',
-              credit_hours: '',
-              url: '',
-              source: '',
-              due_date: '',
+              id:null,
+              name: null,
+              description: null,
+              credit_hours: null,
+              url: null,
+              source: null,
+              due_date: null,
               pillar_ids: null,
               staff_type_ids: null,
               contract_type_ids: null,
               staff_category_ids: null,
               staff_designation_ids: null,
               course_category_ids: null,
+              completed_date: null,
+              certificate_path: null,
             })
         }
     },
@@ -164,17 +188,62 @@ export default {
         ...mapActions({
             // signIn:'auth/login'
         }),
+        onFileChange(event){
+              const file = event.target.files[0];
+              this.form.certificate_path = file
+            },
         async createCourse(){
-            // const toast = useToast('create-course');
-            
+          this.disabled = true;
+          this.$Progress.start();
             try {
-              await this.$api.courses.create(this.form);
-              alert('Success');
-              // this.emitter.emit('afterSuccess');
-              // toast.success("Successfully created course.");
-            } catch (e) { 
-              alert(e.response.data.message);
-              // toast.error(e.response.data.message);
+                this.form.course_category_ids = JSON.stringify(this.form.course_category_ids);
+                const response = await this.form.post('/api/v1/courses');
+                this.form.course_category_ids = JSON.parse(this.form.course_category_ids);
+                if(response.data.error == true){
+                    this.$swal({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        icon: 'error',
+                        title: response.data.message,
+                    })
+                    this.$Progress.fail();
+                    this.disabled=false;
+                }
+                else{
+                    this.$swal({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        icon: 'success',
+                        title: response.data.message,
+                    })
+                    this.emitter.emit('AfterCourseCreate'); //Fire an reload event
+                    this.disabled=false
+                    this.form.reset();
+                    this.$Progress.finish();
+                    this.$router.push({name:'courses-list'})
+                }
+            } catch ({response}) { 
+                if(response.status == 500) {
+                     this.$swal(
+                        'Error!',
+                        "Something Went Wrong.",
+                        'warning'
+                    );
+                } else {
+                    this.errors = response.data.errors;
+                    this.$swal(
+                        'Error!',
+                        response.data.message,
+                        'warning'
+                    )
+                }
+                this.form.course_category_ids = JSON.parse(this.form.course_category_ids);
+                this.disabled=false;
+                this.$Progress.fail();
             }
         },
     },

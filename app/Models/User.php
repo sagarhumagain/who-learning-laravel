@@ -61,8 +61,9 @@ class User extends Authenticatable implements Auditable
 
     public function courses()
     {
-        return $this->belongsToMany(Course::class)->withPivot('completed_date', 'certificate_path');
+        return $this->belongsToMany(Course::class)->withPivot('completed_date', 'certificate_path', 'is_approved');
     }
+    
     
     public function contracts()
     {

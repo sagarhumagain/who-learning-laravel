@@ -52,21 +52,26 @@ class CourseAssignedListener extends BaseController
     {
         $assignmentFields = $this->data;
 
-        $users =  User::whereHas('roles', function ($query) {
-            $query->where('name', 'course-admin')->orWhere('name', 'super-admin')->orWhere('name', 'normal-user');
-        })->leftJoin(\DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
+        $users =  User::leftJoin(\DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
             $join->on('users.id', '=', 't2.user_id');
         })
         ->where(function ($q) use ($assignmentFields) {
-            $q->whereHas('pillars', function ($q) use ($assignmentFields) {
-                $q->whereIn('pillar_id', $assignmentFields['pillar_ids']);
-            })
-            ->orWhereIn('staff_type_id', $assignmentFields['staff_type_ids'])
-            ->orWhereIn('contract_type_id', $assignmentFields['contract_type_ids'])
-            ->orWhereIn('staff_category_id', $assignmentFields['staff_category_ids'])
-            ->orWhereIn('designation_id', $assignmentFields['staff_designation_ids']);
-        })->get();
-
+            $q->whereHas('roles', function ($query) {
+                $query->where(function ($q) {
+                    $q->where('name', '=', 'course-admin')
+                    ->orWhere('name', '=', 'super-admin');
+                });
+            })->orWhere(function ($q) use ($assignmentFields) {
+                $q->whereHas('pillars', function ($q) use ($assignmentFields) {
+                    $q->whereIn('pillar_id', $assignmentFields['pillar_ids']);
+                })
+                ->orWhereIn('staff_type_id', $assignmentFields['staff_type_ids'])
+                ->orWhereIn('contract_type_id', $assignmentFields['contract_type_ids'])
+                ->orWhereIn('staff_category_id', $assignmentFields['staff_category_ids'])
+                ->orWhereIn('designation_id', $assignmentFields['staff_designation_ids'])
+                ->orWhere('users.id', auth()->user()->id);
+            });
+        })->select('users.id as id')->get();
 
         Notification::send($users, new CourseAssignedNotification($this->data));
     }

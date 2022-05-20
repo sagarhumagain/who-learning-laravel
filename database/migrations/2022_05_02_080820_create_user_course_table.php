@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
             $table->string('certificate_path')->nullable();
             $table->date('completed_date')->nullable();
-            $table->boolean('is_approved')->default(false);
+            $table->boolean('is_approved')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
+use function PHPUnit\Framework\isEmpty;
+
 class BaseController extends Controller
 {
     public function checkDirectoryExist()
@@ -63,8 +65,10 @@ class BaseController extends Controller
 
     public function filterArrayByKey($datas, $key)
     {
-        if (!$datas) {
+        if (!$datas || $datas == 'null' || $datas == 'undefined') {
             return [];
+        } else {
+            $datas = gettype($datas) == "string" ? json_decode($datas, true) : $datas;
         }
         $val =  [];
         foreach ($datas as $data) {

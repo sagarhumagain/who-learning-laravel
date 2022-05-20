@@ -164,10 +164,6 @@ export default {
                     {
                       href: '/courses/create',
                       title: 'Create a New Course'
-                    },
-                    {
-                      href: '/courses/'+this.$store.state.auth.user.id+'/assigned',
-                      title: 'Assigned Course List'
                     }
                   ]
                 },
