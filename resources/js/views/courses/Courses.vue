@@ -20,6 +20,8 @@
                                 <th>Credit Hours</th>
                                 <th>Due Date</th>
                                 <th>Description</th>
+                                <th>Course Category</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                             <tr v-for="(course, index) in courses.data" :key="course.id">
@@ -29,8 +31,14 @@
                                 <td>{{course.credit_hours}}</td>
                                 <td>{{course.due_date}}</td>
                                 <td>{{course.description}}</td>
-
                                 <td>
+                                    <p v-for="(cat,index) in course.course_categories" :key="cat.id" >{{index+1+'). '}}{{cat.name}}</p> 
+                                </td>
+                                <td> 
+                                    <span v-if="course.is_approved == 1" class="text-success">Approved</span>
+                                    <span v-else class="text-warning">Pending</span>
+                                </td>
+                                <td class="w-15">
                                     <!-- <a href="#" @click="editCourse(course,course.id)" class="btn btn-sm btn-success mr-2">Edit
                                         <i class="fa fa-edit"></i>
                                     </a> -->
@@ -39,8 +47,14 @@
                                     </router-link>
                                     
                                     
-                                    <a href="#" @click="deleteUser(course.id)" >
+                                    <a href="#" class="mr-3" @click="deleteUser(course.id)" >
                                         <i class="fa fa-trash"></i>
+                                    </a>
+                                    <a href="#" class="mr-3" @click="approveCourse(course,true)" >
+                                        <i class="fa fa-check"></i>
+                                    </a>
+                                    <a href="#" @click="approveCourse(course,false)" >
+                                        <i class="fa fa-times"></i>
                                     </a>
                                    
                                 </td>
@@ -82,6 +96,7 @@
                     description: null,
                     credit_hours: null,
                     url:null,
+                    is_approved:null
                 }),
                 
                 api_url:null,
@@ -91,6 +106,71 @@
         methods: {
             newCourse(){
                 this.$router.push({name:'course-create'})
+            },
+            async approveCourse(course,val){
+                const status = !val ? 'disapprove' : 'approve';
+
+                const result  = await  this.$swal({
+                    title: 'Are you sure?',
+                    text: "You want to " + status +  " this course?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, ' + status +  ' it!'
+                })
+                if (result.value) {
+                    try{
+                        this.form.fill(course)
+                        this.form.is_approved = val;
+                        const response  = await this.form.put('/api/v1/courses/'+this.form.id)
+                    
+                        if(response.data.error == true){
+                            this.$swal({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                icon: 'warning',
+                                title: response.data.message,
+                            })
+                            this.$Progress.fail();
+                            this.disabled=false;
+                        }
+                        else{
+                            this.$swal({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                icon: 'success',
+                                title: response.data.message,
+                            })
+                            this.emitter.emit('AfterCreate')
+                            this.disabled=false
+                            this.$Progress.finish();
+
+                        }
+                    }catch({response}){
+                        this.disabled = false
+                        if(response.status == 500) {
+                        this.$swal(
+                            'Error!',
+                            "Something Went Wrong.",
+                            'warning'
+                        );
+                        } else {
+                            this.errors = response.data.errors;
+                            this.$swal(
+                                'Error!',
+                                response.data.message,
+                                'warning'
+                            )
+                        }
+                    }
+                    
+                }
+            
+
+                
 
             },
             deleteUser(id) {
@@ -123,7 +203,7 @@
             },
             
             /*==== Start of Show existing User function ====*/
-            async loadUsers() {
+            async loadCourses() {
                 const {data}  = await  axios.get("/api/v1/courses")
                 this.courses = data.data,
                 
@@ -132,10 +212,10 @@
             },
         },
         created() {
-            this.loadUsers(); //load the user in the table
+            this.loadCourses(); //load the user in the table
             //Load the userlist if add or created a new user
             this.emitter.on("AfterCreate", () => {
-                this.loadUsers();
+                this.loadCourses();
             })
             
         }

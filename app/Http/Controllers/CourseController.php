@@ -48,7 +48,7 @@ class CourseController extends BaseController
                 })->firstOrFail();
             }
         } else {
-            $courses['data'] = Course::paginate(200);
+            $courses['data'] = Course::with('courseCategories')->paginate(200);
         }
         return $courses;
     }
@@ -90,12 +90,10 @@ class CourseController extends BaseController
         try {
             //course create
             $course = Course::create($courseFields);
-
             //course created event
             if ($user->hasRole(['super-admin','course-admin'])) {
                 event(new CourseCreatedEvent($course));
             }
-
             //attached course categories
             if ($request->course_category_ids) {
                 $courseCategoryIds = parent::filterArrayByKey($request->course_category_ids, 'id');
@@ -196,6 +194,17 @@ class CourseController extends BaseController
      */
     public function update(Request $request, $id)
     {
+        try {
+            $course = Course::findOrFail($id);
+            $course->update($request->all());
+
+            $data['error'] = false;
+            $data['message'] = "Course Updated Successfully";
+        } catch (Exception $e) {
+            $data['error'] = true;
+            $data['message'] = $e->getMessage();
+        }
+        return response()->json($data);
     }
 
     /**
@@ -220,7 +229,8 @@ class CourseController extends BaseController
                 $course->courseCategories()->sync($courseCategoryIds);
             }
             if ($user->hasRole(['super-admin'])) {
-                $assignmentFields = [
+                try {
+                    $assignmentFields = [
                         'pillar_ids' => parent::filterArrayByKey($request->pillar_ids, 'id'),
                         'staff_type_ids' => parent::filterArrayByKey($request->staff_type_ids, 'id'),
                         'contract_type_ids' => parent::filterArrayByKey($request->contract_type_ids, 'id'),
@@ -229,9 +239,9 @@ class CourseController extends BaseController
                         'course_id' => $course->id,
                         'assigned_by_user_id' => $user->id,
                     ];
-                $users = User::leftJoin(\DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
-                    $join->on('users.id', '=', 't2.user_id');
-                })
+                    $users = User::leftJoin(\DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
+                        $join->on('users.id', '=', 't2.user_id');
+                    })
                     ->where(function ($q) use ($assignmentFields) {
                         $q->whereHas('pillars', function ($q) use ($assignmentFields) {
                             $q->whereIn('pillar_id', $assignmentFields['pillar_ids']);
@@ -242,13 +252,13 @@ class CourseController extends BaseController
                         ->orWhereIn('designation_id', $assignmentFields['staff_designation_ids']);
                     })->select('users.id as id')
                     ->get();
-                $course->users()->sync($users);
+                    $course->users()->sync($users);
                     
-                CourseAssignmentSetting::where('course_id', $course->id)->update($assignmentFields);
-            // } catch (Exception $e) {
-                //     $data['error'] = true;
-                //     $data['message'] = $e->getMessage();
-                // }
+                    CourseAssignmentSetting::where('course_id', $course->id)->update($assignmentFields);
+                } catch (Exception $e) {
+                    $data['error'] = true;
+                    $data['message'] = $e->getMessage();
+                }
             } elseif ($user->hasRole('normal-user') && $request->certificate_path != 'null') {
                 try {
                     $course_user = CourseUser::where('course_id', $course->id)->where('user_id', $user->id)->firstOrFail();
@@ -270,10 +280,10 @@ class CourseController extends BaseController
                     $data['message'] = $e->getMessage();
                 }
             }
-            $data['error']=false;
+            $data['error'] = false;
             $data['message']='Course Info! Has Been Updated';
         } catch (\Exception $e) {
-            $data['error']= true;
+            $data['error'] = true;
             $data['message']=$e->getMessage();
         }
         return response()->json($data);
