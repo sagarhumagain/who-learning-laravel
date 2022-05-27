@@ -7,7 +7,7 @@
                         <h3>Course Management</h3>
 
                         <div class="card-tools">
-                            <button type="" class="btn btn-primary" @click="newCourse"><i class="fa fa-book fa-fw"></i> Add New Course</button>
+                            <button type="" class="btn btn-fill" @click="newCourse"><i class="fa fa-book fa-fw"></i> Add New Course</button>
                         </div>
                     </div>
                     <!-- /.card-header -->
@@ -26,36 +26,43 @@
                             </tr>
                             <tr v-for="(course, index) in courses.data" :key="course.id">
                                 <td>{{index + 1}}</td>
-                                <td>{{course.name}}
-                                </td>
+                                <td>{{course.name}}</td>
                                 <td>{{course.credit_hours}}</td>
                                 <td>{{course.due_date}}</td>
                                 <td>{{course.description}}</td>
                                 <td>
-                                    <p v-for="(cat,index) in course.course_categories" :key="cat.id" >{{index+1+'). '}}{{cat.name}}</p> 
+                                    <p v-for="(cat,index) in course.course_categories" :key="cat.id" >{{index+1+') '}}{{cat.name}}</p> 
                                 </td>
-                                <td> 
-                                    <span v-if="course.is_approved == 1" class="text-success">Approved</span>
-                                    <span v-else class="text-warning">Pending</span>
+                                <td>
+                                    <span v-if="course.is_approved == null" class="color-yellow">Approval Pending</span>
+                                    <span v-else-if="course.is_approved == 1" class="color-green">Approved</span>
+                                    <span v-else-if="course.is_approved == 0" class="color-red">Disapproved</span>
                                 </td>
                                 <td class="w-15">
                                     <!-- <a href="#" @click="editCourse(course,course.id)" class="btn btn-sm btn-success mr-2">Edit
                                         <i class="fa fa-edit"></i>
                                     </a> -->
-                                    <router-link class="project-link mr-3" :to="{ name: 'courses-edit', params: { course: course , id: course.id} }">
-                                        <i class="fa fa-edit"></i>
-                                    </router-link>
-                                    
-                                    
-                                    <a href="#" class="mr-3" @click="deleteUser(course.id)" >
-                                        <i class="fa fa-trash"></i>
-                                    </a>
-                                    <a href="#" class="mr-3" @click="approveCourse(course,true)" >
-                                        <i class="fa fa-check"></i>
-                                    </a>
-                                    <a href="#" @click="approveCourse(course,false)" >
-                                        <i class="fa fa-times"></i>
-                                    </a>
+                                    <div v-if="this.role.isNormalUser()"> 
+                                       <a href="#" class="m-2 color-primary" @click="enrollCourse(course.id)" >
+                                        <i class="fa fa-circle-arrow-right"  title="Enroll Course"></i>
+                                      </a>
+                                    </div>
+                                    <div v-else>
+                                        <router-link class="project-link m-2 color-sec-blue" :to="{ name: 'courses-edit', params: { course: course , id: course.id} }">
+                                          <i class="fa fa-edit"  title="Edit Course"></i>
+                                        </router-link>
+                                      
+                                        <a href="#" class="m-2 color-red" @click="deleteCourse(course.id)" >
+                                            <i class="fa fa-trash"  title="Delete Course"></i>
+                                        </a>
+                                        <a href="#" class="m-2 color-green" @click="approveCourse(course,true)" >
+                                            <i class="fa fa-check" title="Approve Course"></i>
+                                        </a>
+                                        <a href="#" class="m-2 color-red" @click="approveCourse(course,false)" >
+                                            <i class="fa fa-times" title="Disapprove Course"></i>
+                                        </a>
+                                    </div>
+                                     
                                    
                                 </td>
                             </tr>
@@ -88,7 +95,6 @@
             return {
                 editmode: false,
                 courses: {},
-                
                 form: new Form({
                     id: null,
                     name: null,
@@ -173,7 +179,7 @@
                 
 
             },
-            deleteUser(id) {
+            deleteCourse(id) {
                 this.$swal({
                     title: 'Are you sure?',
                     text: "You won't be able to revert this!",
@@ -201,19 +207,47 @@
 
                 })
             },
+            enrollCourse(id) {
+                this.$swal({
+                    title: 'Are you sure to enroll to this course?',
+                    text: "",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, enroll!'
+                }).then((result) => {
+                    if (result.value) {
+                        this.form.delete('/api/v1/courses' + id).then(() => {
+                            this.$swal(
+                                'Enrolled!',
+                                'You have successfully enrolled to the course.',
+                                'success'
+                            )
+                            // this.emitter.emit('AfterCreate'); //Fire an reload event
+                        }).catch(() => {
+                            this.$swal(
+                                'Warning!',
+                                'Couldnot enroll to course.',
+                                'warning'
+                            )
+                        })
+                    }
+
+                })
+            },
             
-            /*==== Start of Show existing User function ====*/
+
+            /*==== Start of Show existing Course function ====*/
             async loadCourses() {
                 const {data}  = await  axios.get("/api/v1/courses")
                 this.courses = data.data,
                 
                 this.api_url = 'api/courses'
-                /*==== End of existing User ====*/
+                /*==== End of existing Course ====*/
             },
         },
         created() {
-            this.loadCourses(); //load the user in the table
-            //Load the userlist if add or created a new user
+            this.loadCourses(); //load the course in the table
+            //Load the courselist if add or created a new course
             this.emitter.on("AfterCreate", () => {
                 this.loadCourses();
             })

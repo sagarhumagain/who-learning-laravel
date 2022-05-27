@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\CourseAssignedEvent;
+use App\Events\CourseEnrolledEvent;
 use App\Events\CourseCreatedEvent;
 use App\Http\Controllers\Api\BaseController;
 use App\Http\Requests\Course\CourseCreateValidation;
@@ -11,7 +11,7 @@ use App\Models\Course;
 use App\Models\CourseAssignmentSetting;
 use App\Models\CourseUser;
 use App\Models\User;
-use App\Notifications\CourseAssignedNotification;
+use App\Notifications\CourseEnrolledNotification;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
@@ -128,7 +128,7 @@ class CourseController extends BaseController
 
             //course assignement setting create
             CourseAssignmentSetting::create($assignmentFields);
-            event(new CourseAssignedEvent($request));
+            event(new CourseEnrolledEvent($request));
             //update certificate for normal users
             try {
                 if ($user->hasRole('normal-user') && $request->certificate_path && $request->completed_date) {
@@ -218,7 +218,8 @@ class CourseController extends BaseController
         $course->delete();
         return response()->json(true);
     }
-    public function updateAssignedCourse(UpdateCourseValidation $request)
+
+    public function updateEnrolledCourse(UpdateCourseValidation $request)
     {
         $user = auth()->user();
         try {
@@ -287,5 +288,41 @@ class CourseController extends BaseController
             $data['message']=$e->getMessage();
         }
         return response()->json($data);
+    }
+
+    public function listUnapprovedCourses()
+    {
+        $user = auth()->user();
+        //#TODO Check for permission
+        if ($user->hasRole('super-admin')) {
+            $user_course = CourseUser::where('is_approved', NULL)
+            ->orWhere('is_approved', 0)
+            ->with(['courses', 'users'])->paginate(20);
+        } else {
+          $user_course = [];
+        }
+        return $user_course;
+    }
+
+    public function listSuggestedCourses()
+    {
+        $user = auth()->user();
+        $suggestedCourses = Course::inRandomOrder()
+        ->limit(3) // here is yours limit
+        ->get();
+        return $suggestedCourses;
+    }
+
+    public function enrollToCourse(Request $request)
+    {
+      $user = auth()->user();
+      $count = CourseUser::where('user_id', $user->id)->where('course_id', $request->course_id)->count();
+      if($count == 0) {
+        CourseUser::create([
+          'user_id' => $user->id,
+          'course_id' => $request->course_id
+        ]);
+      }
+      response()->json(['success' => 'success'], 200);
     }
 }

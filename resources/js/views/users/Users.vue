@@ -7,7 +7,7 @@
                         <h3>User Management</h3>
 
                         <div class="card-tools">
-                            <button type="" class="btn btn-primary" @click="newModal()"><i class="fa fa-user-plus fa-fw"></i> Add New User</button>
+                            <button type="" class="btn btn-fill" @click="newModal()"><i class="fa fa-user-plus fa-fw"></i> Add New User</button>
                         </div>
                     </div>
                     <!-- /.card-header -->
@@ -29,23 +29,23 @@
                                 <td>{{user.email}}</td>
                                 
                                 <td>
-                                    <a href="#" @click="editUserModal(user)" class="btn btn-sm btn-success mr-2">Edit
-                                        <i class="fa fa-edit"></i>
+                                    <a href="#" @click="editUserModal(user)" class="m-2 color-sec-blue">
+                                        <i class="fa fa-edit" title="Edit User"></i>
                                     </a>
-                                    <a href="#" @click="verify(user,0)" class="btn btn-sm btn-success mr-2">Verify User
-                                        <i class="fa fa-check"></i>
-                                    </a>
-                                    <a href="#" @click="deleteUser(user.id)" class="btn btn-sm btn-danger mr-2">Delete
-                                        <i class="fa fa-trash"></i>
+                                    <!-- <a href="#" @click="verify(user,0)" class="m-2 color-green">
+                                        <i class="fa fa-check" title="Verify User"></i>
+                                    </a> -->
+                                    <a href="#" @click="deleteUser(user.id)" class="m-2 color-red">
+                                        <i class="fa fa-trash" title="Delete User"></i>
                                     </a>
                                                                     
                                 </td>
                                 <td>
                                     <div class="accordion" id="accordionExample">
                                         <div class="accordion-item rounded-0">
-                                            <button class="accordion-button rounded-0" type="button">
+                                            <button data-bs-toggle="collapse" :data-bs-target="'#history'+user.id" class="accordion-button rounded-0" type="button">
                                                 <a href="#" data-bs-toggle="collapse" :data-bs-target="'#history'+user.id" aria-expanded="true" aria-controls="collapseOne">Contract History</a>
-                                                <a href="#" type="" class="btn " @click="newContractModal(user.id,user.name)"><i class="fa fa-user-plus fa-fw"></i> Add New</a>
+                                                <a href="#" type="" class="btn " @click="newContractModal(user.id,user.name)"><i class="fa fa-plus fa-fw"></i> Add New</a>
                                             </button>
                                             <div :id="'history'+user.id" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                             <div class="accordion-body">
@@ -161,12 +161,12 @@
             
             <div class="form-group col-md-6">
                 <label for="first_name" >Contract Start Date*</label>
-                    <input type="text" v-model="form.contract_start" class="form-control"  placeholder="Contract Strat Date" :class="{ 'is-invalid': form.errors.has('contract_start') }">
+                    <input type="text" v-model="form.contract_start" class="form-control"  placeholder="Contract Start Date" :class="{ 'is-invalid': form.errors.has('contract_start') }">
                     <has-error :form="form" field="contract_start"></has-error>
             </div>
             <div class="form-group col-md-6">
                 <label for="first_name" >Contract End Date*</label>
-                    <input type="text" v-model="form.contract_end" class="form-control"  placeholder="Contract Strat Date" :class="{ 'is-invalid': form.errors.has('contract_end') }">
+                    <input type="text" v-model="form.contract_end" class="form-control"  placeholder="Contract End Date" :class="{ 'is-invalid': form.errors.has('contract_end') }">
                     <has-error :form="form" field="contract_end"></has-error>
             </div>
             <div class="form-group col-md-6">

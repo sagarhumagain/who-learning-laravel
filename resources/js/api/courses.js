@@ -13,5 +13,15 @@ export default (baseUrl, apiVersion) => ({
 
   async list() {
     return await axios.get(`${baseUrl}${apiVersion}/courses`);
-  }
+  },
+
+  async listUnapprovedCourse() {
+    return await axios.get(`${baseUrl}${apiVersion}/approvals/courses`);
+  },
+  async listSuggestedCourse() {
+    return await axios.get(`${baseUrl}${apiVersion}/suggest/courses`);
+  },
+  async enrollCourse(body) {
+    return await axios.get(`${baseUrl}${apiVersion}/enroll/course/`, body);
+  },
 });

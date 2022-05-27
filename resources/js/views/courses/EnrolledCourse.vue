@@ -4,7 +4,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3>Assigned Courses</h3>
+                        <h3>Enrolled Courses</h3>
 
                         <!-- <div class="card-tools">
                             <button type="" class="btn btn-primary" @click="newModal"><i class="fa fa-user-plus fa-fw"></i> Add New Course</button>
@@ -31,10 +31,10 @@
                                 <td>{{course.due_date}}</td>
                                 <td>{{course.description}}</td>
                                 <td>
-                                    <p class="text-danger" v-if="course.pivot.completed_date == null">Incomplete</p>
-                                    <p class="text-warning" v-else-if="course.pivot.is_approved == null && course.pivot.completed_date">Approval Pending</p>
-                                    <p class="text-warning" v-else-if="course.pivot.is_approved == '1' && course.pivot.completed_date">Approved</p>
-                                    <p class="text-warning" v-else-if="course.pivot.is_approved == '0' && course.pivot.completed_date">Disapproved</p>
+                                    <p class="color-red" v-if="course.pivot.completed_date == null">Incomplete</p>
+                                    <p class="color-yellow" v-else-if="course.pivot.is_approved == null && course.pivot.completed_date">Approval Pending</p>
+                                    <p class="color-green" v-else-if="course.pivot.is_approved == '1' && course.pivot.completed_date">Approved</p>
+                                    <p class="color-red" v-else-if="course.pivot.is_approved == '0' && course.pivot.completed_date">Disapproved</p>
                                 </td>
                                 <td>
                                     <!-- <a href="#" @click="editCourseModal(course.pivot)">
@@ -66,8 +66,24 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label for="first_name" >Completed Date*</label>
-                                <input type="text" v-model="form.completed_date" class="form-control"  placeholder="Contract Strat Date" :class="{ 'is-invalid': form.errors.has('completed_date') }">
+                                <label for="completed_date" >Completed Date*</label>
+                                <!-- <input type="text" v-model="form.completed_date" class="form-control"  placeholder="Completed Date" :class="{ 'is-invalid': form.errors.has('completed_date') }"> -->
+                                <v-date-picker v-model="form.completed_date"  name="completed_date" placeholder="Completed Date" class="form-control" :class="{ 'is-invalid': form.errors.has('completed_date')}"
+                                  :model-config="{
+                                    type: 'string',
+                                    mask: 'YYYY-MM-DD',
+                                  }"
+                                  :masks="masks"
+                                  mode="date"
+                                >
+                                  <template v-slot="{ inputValue, inputEvents }">
+                                    <input
+                                      class="custom-datepicker"
+                                      :value="inputValue"
+                                      v-on="inputEvents"
+                                    />
+                                  </template>
+                                </v-date-picker>
                                 <error-msg :errors="errors" field="completed_date"></error-msg>
                             </div>
                         
@@ -75,7 +91,7 @@
                                 <label for="file" class="control-label">Certificate Image *</label>
                                 <input type="file" name="certificate_path"  @change="onFileChange"
                                         placeholder="File"
-                                        class="btn btn-sm btn-info">
+                                        class="btn btn-sm btn-info btn-file-upload">
                                 <error-msg :errors="errors" field="certificate_path"></error-msg>
                             </div>                        
                         </div>
@@ -84,9 +100,9 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-times fa-fw"></i>Close</button>
-                        <button v-show="editmode" :disabled="disabled" type="submit" class="btn btn-success"><i class="fas fa-plus fa-fw"></i>Update</button>
-                        <button v-show="!editmode" :disabled="disabled" type="submit" class="btn btn-primary"><i class="fas fa-plus fa-fw"></i>Create</button>
+                        <button type="button" class="btn btn-red" data-bs-dismiss="modal"><i class="fas fa-times fa-fw"></i>Close</button>
+                        <button v-show="editmode" :disabled="disabled" type="submit" class="btn btn-green"><i class="fas fa-plus fa-fw"></i>Update</button>
+                        <button v-show="!editmode" :disabled="disabled" type="submit" class="btn btn-primary-blue"><i class="fas fa-plus fa-fw"></i>Create</button>
                     </div>
                 </form>
             </div>

@@ -11,6 +11,8 @@ use Spatie\Permission\Traits\HasRoles;
 use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use App\Models\Employee;
+use App\Models\Course;
+use App\Models\Pillar;
 
 class User extends Authenticatable implements Auditable
 {
@@ -54,9 +56,10 @@ class User extends Authenticatable implements Auditable
     {
         return $this->hasOne(Employee::class, 'user_id');
     }
+
     public function pillars()
     {
-        return $this->belongsToMany(Pillar::class);
+        return $this->belongsToMany(Pillar::class, 'pillar_user');
     }
 
     public function courses()

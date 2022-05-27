@@ -14,32 +14,32 @@
                 </div>
             </div> -->
             <div class="col-3">
-                <Card title="Total Courses">
-                  {{api.statistics.total_courses}}
+                <Card title="Total Enrolled Courses">
+                  {{counts.total_enrolled_courses}}
                 </Card>
             </div>
             <div class="col-3">
-                <Card title="Total hours">
-                  {{api.statistics.total_duration_completed}}/{{api.statistics.total_course_duration}}
+                <Card title="Total Completed Courses">
+                  {{counts.total_completed_courses}}
                 </Card>
-            </div>
-            <!-- <div class="col-3">
-                <Card title="Total Courses Duration (in hrs)">
-                  {{api.statistics.total_course_duration}}
+            </div> 
+            <div class="col-3">
+                <Card title="Required Learning Hours">
+                  {{counts.course_duration_required}}
                 </Card>
             </div>
             <div class="col-3">
-                <Card title="Total Courses Completed(in hrs)">
-                  {{api.statistics.total_duration_completed}}
+                <Card title="Completed Learning Hours">
+                  {{counts.course_duration_completed}}
                 </Card>
-            </div> --> 
+            </div>
             <div class="col-8">
               <div class="row">
                 <div class="col-4">
                   <Card title="Course Completion">
                     <div class="row">
-                      <div class="col-12" v-for="(chartData, index) in mandatoryCourseChart.chartDatas" :key="index">
-                        <DoughnutChart :chartData="chartData" :width="mandatoryCourseChart.width" :height="mandatoryCourseChart.height" :chartOptions="mandatoryCourseChart.chartOptions" />
+                      <div class="col-12" v-for="(chartData, index) in courseProgressChart.chartDatas" :key="index">
+                        <DoughnutChart :chartData="chartData" :width="courseProgressChart.width" :height="courseProgressChart.height" :chartOptions="courseProgressChart.chartOptions" />
                         <!-- <p class="text-center">{{chartData.name}}</p> -->
                       </div>
                     </div>
@@ -55,13 +55,6 @@
                   </Card>
                 </div>
               </div>
-                <Card title="Top Learners">
-                  <div class="row">
-                    <div class="col-12">
-                      <Table />
-                    </div>
-                  </div>
-                </Card>
             </div>
             <div class="col-4">
               <div class="row">
@@ -70,15 +63,20 @@
                     <Table :columnDefs="completedCourse.columnDefs" :rowData="completedCourse.rowData" />
                   </div>
                 </Card>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="row">
                 <Card title="Yearly Progress">
-                  <div class="col-12">
-                    <LineChart />
-                  </div>
+                    <div class="col-12">
+                      <LineChart :chartData="yearlyProgress" />
+                    </div>
                 </Card>
               </div>
             </div>
-
+            <SuggestedCourse />
         </div>
+        
     </div>
 </template>
 
@@ -90,6 +88,8 @@ import DoughnutChart from '@/components/DoughnutChart'
 import Table from '@/components/Table'
 import variables from '@/helpers/constants';
 import LineChart from '@/components/LineChart';
+import SuggestedCourse from '@/components/SuggestedCourse';
+
 
 export default {
     name:"dashboard",
@@ -97,7 +97,7 @@ export default {
         return {
             user:this.$store.state.auth.user,
             isLoaded: false,
-            mandatoryCourseChart: {
+            courseProgressChart: {
               height: 200,
               chartOptions: {
                 responsive: true,
@@ -106,45 +106,42 @@ export default {
               chartDatas: [
                 {
                   name: 'Completed Hours',
-                  labels: [ 'Completed', 'Remainging'],
-                  datasets: [ { data: [92, 8], backgroundColor: [variables.COLOR_SEC_GREEN, variables.COLOR_RED] } ],
+                  labels: [ 'Completed', 'Remaining'],
+                  datasets: [ { data: [], backgroundColor: [variables.COLOR_SEC_GREEN, variables.COLOR_RED] } ],
                 }
               ],
             },
             completedCourse: {
               columnDefs: [
                 { headerName: "Name", field: "name", sortable: true, filter: true },
-                { headerName: "Course Category", field: "course_category", sortable: true, filter: true },
+                // { headerName: "Course Category", field: "course_category", sortable: true, filter: true },
                 { headerName: "Credit Hours", field: "credit_hours", sortable: true, filter: true },
               ],
-              rowData: [
-                { name: "AMR-competency", course_category: "Antimicrobial Resistance channel", credit_hours: 8 },
-                { name: "Anaphylaxis", course_category: "Risk communication", credit_hours: .34 },
-                { name: "Cybersecurity Essentials & Preventing Phishing PLUS Cybersecurity Refresher.", course_category: "WHO Mandatory Trainings", credit_hours: 2 },
-              ]
+              rowData: []
             },
             deadlines: {
               columnDefs: [
                 { headerName: "Name", field: "name", sortable: true, filter: true },
-                { headerName: "Course Category", field: "course_category", sortable: true, filter: true },
+                { headerName: "Credit Hours", field: "credit_hours", sortable: true, filter: true },
                 { headerName: "Deadline", field: "due_date", sortable: true, filter: true },
               ],
-              rowData: [
-                { name: "Infodemic Management", course_category: "Risk communication", due_date: "2022-05-13" },
-                { name: "WHO United to Respect (expected to be rolled out soon)", course_category: "WHO Mandatory Trainings", due_date: "2022-05-18" },
-                { name: "Free Health Information Management Certificates | POLHN (csod.com)", course_category: "Information Management ", due_date: "2022-05-21" },
-              ]
+              rowData: []
             },
-            api: {
-              loaded: false,
-              chartData: null,
-              statistics: {
-                total_courses: 30,
-                total_staffs: 86,
-                total_course_duration: 100,
-                total_duration_completed: 92
-              },
-              
+            counts: {
+                total_enrolled_courses: '-',
+                course_duration_required: '-',
+                course_duration_completed: '-',
+                total_completed_courses: '-'
+            },
+            yearlyProgress: {
+              labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+              datasets: [
+                {
+                  label: 'Courses',
+                  backgroundColor: '#f87979',
+                  data: []
+                }
+              ]
             }
         }
     },
@@ -153,7 +150,35 @@ export default {
         BarChart,
         DoughnutChart,
         Table,
-        LineChart
+        LineChart,
+        SuggestedCourse
+    },
+    async created() {
+      let response;
+      response = await this.$api.statistics.fetchUserDashboardStats();
+      this.counts = {
+        ...this.counts,
+        ...response.data
+      };
+      let remainingRequiredHour = this.counts.course_duration_required - this.counts.course_duration_completed;
+      if(Math.sign(remainingRequiredHour)==-1){
+        remainingRequiredHour = 0
+      }
+      this.courseProgressChart.chartDatas[0].datasets[0].data = [this.counts.course_duration_completed, remainingRequiredHour];
+      response = await this.$api.statistics.fetchUserUpcomingDeadlines();
+      this.deadlines = {
+        ...this.deadlines,
+        rowData: response.data
+      };
+      response = await this.$api.statistics.fetchUserCompletedCourse();
+      this.completedCourse = {
+        ...this.completedCourse,
+        rowData: response.data
+      };
+      response = await this.$api.statistics.fetchUserYearlyProgress();
+      this.yearlyProgress.datasets[0].data = [
+        ...response.data
+      ];
     },
 }
 </script>

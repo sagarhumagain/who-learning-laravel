@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\;
+use App\Models\DesignationStaffType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 

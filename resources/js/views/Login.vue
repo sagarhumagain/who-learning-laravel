@@ -8,34 +8,6 @@
 
                         <h5 class="mt-8">Login</h5>
                         <hr/>
-                        <!-- <FormKit
-                          type="form"
-                          v-model="formData"
-                          :form-class="submitted ? 'hide' : 'show'"
-                          submit-label="Login"
-                          @submit="login"
-                        >
-                          <FormKit
-                            type="text"
-                            name="email"
-                            label="Email"
-                            placeholder="jane@who.int"
-                            help="What email should we use?"
-                            validation="required|email"
-                          />
-                          <FormKit
-                            type="password"
-                            name="password"
-                            label="Password"
-                            validation="required"
-                            :validation-messages="{
-                              matches: 'Password field cannot be empty',
-                            }"
-                            placeholder="Your password"
-                          />
-                        </FormKit>
-                        <h2>Modeled group values</h2>
-                        <pre class="form-data">{{ formData }}</pre> -->
                         <form action="javascript:void(0)" class="row" method="post">
                             <div class="form-group col-12">
                                 <label for="email" class="font-weight-bold">Email</label>
@@ -77,8 +49,8 @@ export default {
     data(){
         return {
             formData:{
-                email:"superadmin@who.int",
-                password:"superadmin123"
+                email:"normaluser@who.int",
+                password:"normaluser123"
             },
             processing:false
         }
@@ -89,18 +61,26 @@ export default {
             setEnums: 'choice/setEnums'
         }),
         async login(){
-          
-          const toast = useToast();
             this.processing = true;
             
             try {
+              this.$Progress.start();
               await this.$api.auth.getCsrfCookie();
               await this.$api.auth.login(this.formData);
               await this.$api.auth.getProfile();
               this.setEnums();
               this.signIn();
-            } catch (e) { 
-              toast.error(e.response.data.message);
+              this.$Progress.finish();
+            } catch (e) {
+              this.$swal({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    icon: 'error',
+                    title: e.response.data.message,
+                });
+                this.$Progress.fail();
             }
             this.processing = false;
         },

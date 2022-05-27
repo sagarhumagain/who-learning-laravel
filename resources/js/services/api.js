@@ -3,6 +3,7 @@ import Auth from "@/api/auth";
 import Notification from "@/api/notification";
 import Courses from "@/api/courses";
 import Enums from "@/api/enums";
+import Statistics from "@/api/statistics";
  // if (process.client) {
   //   const token = localStorage.getItem("token");
   //   // Set token when defined
@@ -17,6 +18,7 @@ import Enums from "@/api/enums";
     auth: Auth(baseUrl, apiVersion),
     notification: Notification(baseUrl, apiVersion),
     courses: Courses(baseUrl, apiVersion),
-    enums: Enums(baseUrl, apiVersion)
+    enums: Enums(baseUrl, apiVersion),
+    statistics: Statistics(baseUrl, apiVersion)
   };
   // inject("api", repositories);

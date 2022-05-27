@@ -4,9 +4,23 @@
 
   .v-sidebar-menu {
     background-color: $color-primary;
+
+    &.vsm_expanded {
+      .vsm--link_open {
+        background-color: $color-sec-blue !important;
+        .vsm--icon {
+          background-color: $color-sec-blue !important;
+        }
+      }
+    }
     .vsm--menu {
       .vsm--dropdown {
         background-color: $color-primary;
+      }
+      .vsm--link {
+        .vsm--icon {
+          background-color: transparent;
+        }
       }
       .vsm--link_hover {
         background-color: $color-sec-blue;

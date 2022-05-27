@@ -4,6 +4,7 @@
 // Core files
 @import "core/_reset";
 @import "core/_typography";
+@import "core/_custom";
 
 
 // Vendor Files
@@ -14,6 +15,7 @@
 @import "vendors/agGridCommunity";
 @import "vendors/vCalendar";
 @import "vendors/vueMultiSelect";
+@import "vendors/multiselect";
 // Components
 @import "components/card";
 @import "components/button";

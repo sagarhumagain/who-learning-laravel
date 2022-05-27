@@ -26,7 +26,7 @@ const Courses = () => import('@/views/courses/Courses.vue' /* webpackChunkName: 
 const Employee = () => import('@/views/users/Employee.vue' /* webpackChunkName: "resource/js/components/employee" */)
 const ApproveCourses = () => import('@/views/approvals/Courses.vue' /* webpackChunkName: "resource/js/components/approvalcourses" */)
 const ApproveEmployeeCourse = () => import('@/views/approvals/EmployeeCourse.vue' /* webpackChunkName: "resource/js/components/approvalemployeecourse" */)
-const AssignedCourse = () => import('@/views/courses/AssignedCourse.vue' /* webpackChunkName: "resource/js/components/assignedcourse" */)
+const EnrolledCourse = () => import('@/views/courses/EnrolledCourse.vue' /* webpackChunkName: "resource/js/components/assignedcourse" */)
 
 /* Authenticated Component */
 
@@ -161,9 +161,17 @@ if (roles.includes('super-admin')) {
       {
         name:"courses-list",
         path: '/courses',
-        component: AssignedCourse,
+        component: Courses,
         meta:{
             title:`List Courses`
+        }
+      },
+      {
+        name:"courses-enrolled",
+        path: '/enrolled/courses',
+        component: EnrolledCourse,
+        meta:{
+            title:`Enrolled Courses`
         }
       },
       {
