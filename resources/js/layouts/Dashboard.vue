@@ -156,12 +156,16 @@ export default {
                   icon: 'fa fa-book',
                   child: [
                     {
+                      href: '/enrolled/courses',
+                      title: 'Enrolled Courses'
+                    },
+                    {
                       href: '/courses/',
                       title: 'List Courses'
                     },
                     {
                       href: '/courses/create',
-                      title: 'Create a New Course'
+                      title: 'Create Course'
                     }
                   ]
                 },

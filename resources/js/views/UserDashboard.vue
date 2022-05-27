@@ -74,8 +74,9 @@
                 </Card>
               </div>
             </div>
-
+            <SuggestedCourse />
         </div>
+        
     </div>
 </template>
 
@@ -87,6 +88,8 @@ import DoughnutChart from '@/components/DoughnutChart'
 import Table from '@/components/Table'
 import variables from '@/helpers/constants';
 import LineChart from '@/components/LineChart';
+import SuggestedCourse from '@/components/SuggestedCourse';
+
 
 export default {
     name:"dashboard",
@@ -147,7 +150,8 @@ export default {
         BarChart,
         DoughnutChart,
         Table,
-        LineChart
+        LineChart,
+        SuggestedCourse
     },
     async created() {
       let response;

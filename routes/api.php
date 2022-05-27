@@ -61,7 +61,7 @@ Route::group(
         Route::resource('/contract-types', ContractTypeController::class);
 
         Route::resource('/courses', CourseController::class);
-        Route::put('/update-assigned-course', [CourseController::class, 'updateAssignedCourse']);
+        Route::put('/update-assigned-course', [CourseController::class, 'updateEnrolledCourse']);
 
         Route::resource('/designations', DesignationController::class);
         Route::resource('/pillars', PillarController::class);
@@ -85,5 +85,9 @@ Route::group(
         Route::get('/statistics/user-course-completed', [StatisticsController::class, 'fetchUserCompletedCourse']);
         Route::get('/statistics/user-course-deadline', [StatisticsController::class, 'fetchUserUpcomingDeadlines']);
         Route::get('/statistics/user-yearly-progress', [StatisticsController::class, 'fetchUserYearlyProgress']);
+        
+        Route::get('/approvals/courses', [CourseController::class, 'listUnapprovedCourses']);
+        Route::get('/suggest/courses', [CourseController::class, 'listSuggestedCourses']);
+        
     }
 );

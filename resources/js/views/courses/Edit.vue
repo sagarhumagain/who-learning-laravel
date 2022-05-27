@@ -7,54 +7,54 @@
                         <h1 class="text-center">Update Course</h1>
                         <hr/>
                         <form @submit.prevent="updateCourse()" @keydown="form.onKeydown($event)">
-                          <div class="form-group col-lg-8 col-md-12">
+                          <div class="form-group col-lg-12 col-md-12">
                               <label for="name" >Name *</label>
                               <input v-model="form.name" type="text" name="name" class="form-control" placeholder="Course Name" :class="{ 'is-invalid': form.errors.has('name')}" />
                               <div v-if="form.errors.has('name')" v-html="form.errors.get('name')" />
                           </div>
-                          <div class="form-group col-lg-8 col-md-12">
+                          <div class="form-group col-lg-12 col-md-12">
                               <label for="description" >Description *</label>
                               <textarea v-model="form.description"  name="description" class="form-control" placeholder="Description" :class="{ 'is-invalid': form.errors.has('description')}" />
                               <div v-if="form.errors.has('description')" v-html="form.errors.get('description')" />
                           </div>
-                          <div class="form-group col-lg-8 col-md-12">
+                          <div class="form-group col-lg-12 col-md-12">
                               <label for="url" >Course URL *</label>
                               <input v-model="form.url" type="text" name="url" placeholder="https://who.csod.com/ui/lms-learning-details/app/course/f526f260-fbdc-5ccb-84e0-04b6020f255b" class="form-control" :class="{ 'is-invalid': form.errors.has('url')}">
                               <div v-if="form.errors.has('url')" v-html="form.errors.get('url')" />
                           </div>
-                          <div class="form-group col-lg-8 col-md-12">
+                          <div class="form-group col-lg-12 col-md-12">
                               <label for="credit_hours" >Credit Hours *</label>
                               <input v-model="form.credit_hours" type="number" name="credit_hours" placeholder="Credit Hours" class="form-control" :class="{ 'is-invalid': form.errors.has('credit_hours')}">
                               <div v-if="form.errors.has('credit_hours')" v-html="form.errors.get('credit_hours')" />
                           </div>
-                          <div class="form-group col-lg-8 col-md-12">
+                          <div class="form-group col-lg-12 col-md-12">
                               <label for="url" >Source *</label>
                               <input v-model="form.source" type="text" name="source" placeholder="iLearn" class="form-control" :class="{ 'is-invalid': form.errors.has('source')}">
                               <div v-if="form.errors.has('source')" v-html="form.errors.get('source')" />
                           </div>
-                          <div class="form-group col-lg-8 col-md-12">
+                          <div class="form-group col-lg-12 col-md-12">
                               <label for="due_date" >Due Date</label>
-                              <input v-model="form.due_date" type="text" name="due_date" class="form-control" placeholder="Due Date" :class="{ 'is-invalid': form.errors.has('due_date')}" />
-                              <!-- <v-date-picker v-model="form.due_date"  name="due_date" placeholder="Due Date" class="form-control" :class="{ 'is-invalid': form.errors.has('due_date')}"
-                                model-config="{
-                                  type: 'string',
-                                  mask: 'YYYY-MM-DD',
-                                }"
-                                :masks="{ input: 'YYYY-MM-DD' }"
-                                mode="date"
-                              >
-                                <template v-slot="{ inputValue, inputEvents }">
-                                  <input
-                                    class="bg-white border px-2 py-1 rounded"
-                                    :value="inputValue"
-                                    v-on="inputEvents"
-                                  />
-                                </template>
-                              </v-date-picker> -->
+                              <!-- <input v-model="form.due_date" type="text" name="due_date" class="form-control" placeholder="Due Date" :class="{ 'is-invalid': form.errors.has('due_date')}" /> -->
+                              <v-date-picker v-model="form.due_date"  name="due_date" placeholder="Due Date" class="form-control" :class="{ 'is-invalid': form.errors.has('due_date')}"
+                                  :model-config="{
+                                    type: 'string',
+                                    mask: 'YYYY-MM-DD',
+                                  }"
+                                  :masks="masks"
+                                  mode="date"
+                                >
+                                  <template v-slot="{ inputValue, inputEvents }">
+                                    <input
+                                      class="custom-datepicker"
+                                      :value="inputValue"
+                                      v-on="inputEvents"
+                                    />
+                                  </template>
+                                </v-date-picker>
                               <div v-if="form.errors.has('due_date')" v-html="form.errors.get('due_date')" />
                           </div>
                            <h4>Course Category</h4>
-                            <div class="form-group col-lg-8 col-md-12">
+                            <div class="form-group col-lg-12 col-md-12">
                               <multiselect v-model="form.course_category_ids"
                                   tag-placeholder="Category"
                                   placeholder="Select Category"
@@ -116,8 +116,23 @@
                           </div>
                           <div v-if="this.role.isNormalUser()"> 
                             <div class="form-group col-md-8">
-                                <label for="first_name" >Completed Date</label>
-                                <input type="text" v-model="form.completed_date" class="form-control"  placeholder="Contract Strat Date" :class="{ 'is-invalid': form.errors.has('completed_date') }">
+                                <label for="completed_date" >Completed Date</label>
+                                <v-date-picker v-model="form.completed_date"  name="completed_date" placeholder="Completed Date" class="form-control" :class="{ 'is-invalid': form.errors.has('completed_date')}"
+                                  :model-config="{
+                                    type: 'string',
+                                    mask: 'YYYY-MM-DD',
+                                  }"
+                                  :masks="masks"
+                                  mode="date"
+                                >
+                                  <template v-slot="{ inputValue, inputEvents }">
+                                    <input
+                                      class="custom-datepicker"
+                                      :value="inputValue"
+                                      v-on="inputEvents"
+                                    />
+                                  </template>
+                                </v-date-picker>
                                 <error-msg :errors="errors" field="completed_date"></error-msg>
                             </div>
                         

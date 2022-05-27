@@ -161,12 +161,12 @@
             
             <div class="form-group col-md-6">
                 <label for="first_name" >Contract Start Date*</label>
-                    <input type="text" v-model="form.contract_start" class="form-control"  placeholder="Contract Strat Date" :class="{ 'is-invalid': form.errors.has('contract_start') }">
+                    <input type="text" v-model="form.contract_start" class="form-control"  placeholder="Contract Start Date" :class="{ 'is-invalid': form.errors.has('contract_start') }">
                     <has-error :form="form" field="contract_start"></has-error>
             </div>
             <div class="form-group col-md-6">
                 <label for="first_name" >Contract End Date*</label>
-                    <input type="text" v-model="form.contract_end" class="form-control"  placeholder="Contract Strat Date" :class="{ 'is-invalid': form.errors.has('contract_end') }">
+                    <input type="text" v-model="form.contract_end" class="form-control"  placeholder="Contract End Date" :class="{ 'is-invalid': form.errors.has('contract_end') }">
                     <has-error :form="form" field="contract_end"></has-error>
             </div>
             <div class="form-group col-md-6">

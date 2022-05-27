@@ -4,7 +4,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3>Assigned Courses</h3>
+                        <h3>Enrolled Courses</h3>
 
                         <!-- <div class="card-tools">
                             <button type="" class="btn btn-primary" @click="newModal"><i class="fa fa-user-plus fa-fw"></i> Add New Course</button>
@@ -66,8 +66,24 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label for="first_name" >Completed Date*</label>
-                                <input type="text" v-model="form.completed_date" class="form-control"  placeholder="Contract Strat Date" :class="{ 'is-invalid': form.errors.has('completed_date') }">
+                                <label for="completed_date" >Completed Date*</label>
+                                <!-- <input type="text" v-model="form.completed_date" class="form-control"  placeholder="Completed Date" :class="{ 'is-invalid': form.errors.has('completed_date') }"> -->
+                                <v-date-picker v-model="form.completed_date"  name="completed_date" placeholder="Completed Date" class="form-control" :class="{ 'is-invalid': form.errors.has('completed_date')}"
+                                  :model-config="{
+                                    type: 'string',
+                                    mask: 'YYYY-MM-DD',
+                                  }"
+                                  :masks="masks"
+                                  mode="date"
+                                >
+                                  <template v-slot="{ inputValue, inputEvents }">
+                                    <input
+                                      class="custom-datepicker"
+                                      :value="inputValue"
+                                      v-on="inputEvents"
+                                    />
+                                  </template>
+                                </v-date-picker>
                                 <error-msg :errors="errors" field="completed_date"></error-msg>
                             </div>
                         
