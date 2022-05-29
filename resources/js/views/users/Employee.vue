@@ -15,22 +15,22 @@
                                 <span>Change Profile</span>
                             </label>
                             <input id="file" type="file"  @change="$function.imageUpload($event, form ,'profile')" name="profile" class="form-input">
-                            <img v-if="form.profile != null"   class="profile-user-img img-fluid img-circle" :src="getProfilePhoto()" alt="User profile picture">
+                            <img v-if="form.profile != null"   class="profile-user-img img-fluid img-circle" :src="this.form.profile" alt="User profile picture">
                             <img  v-if="form.profile == null" src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&f=y" id="output" width="200" />
                             </div>
                         </div>
                         <ul class="list-group list-group-unbordered mb-3 mt-3">
                             <li class="list-group-item">
-                                <b>{{form.name}}</b>
                                 <a href="" traget="blank" class="float-right"><i class="fa fa-user"></i> </a>
+                                <b>{{form.name}}</b>
                             </li>
                             <li class="list-group-item">
-                                <b>{{form.email}}</b>
                                 <a href="" traget="blank" class="float-right"><i class="fa fa-envelope"></i> </a>
+                                <b>{{form.secondary_contact}}</b>
                             </li>
                             <li class="list-group-item">
-                                <b>{{form.phone}}</b>
                                 <a href="" traget="blank" class="float-right"><i class="fa fa-phone"></i> </a>
+                                <b>{{form.primary_contact}}</b>
                             </li>
                             
                            
@@ -100,19 +100,18 @@
 
                                         </div>
                                         <div class="form-group col-md-4">
-                                            <label for="" >Email *</label>
-
-                                                <input type="email" v-model="form.email" class="form-control"  placeholder="Email" :class="{ 'is-invalid': form.errors.has('email') }">
-                                                <has-error :form="form" field="email"></has-error>
-                                                
+                                            <label for="" >Primary Contact *</label>
+                                                <input type="number" v-model="form.primary_contact" class="form-control"  placeholder="Primary Contact No." :class="{ 'is-invalid': form.errors.has('primary_contact') }">
+                                                <has-error :form="form" field="primary_contact"></has-error> 
                                         </div>
                                         <div class="form-group col-md-4">
-                                            <label for="" >Phone *</label>
-
-                                                <input type="number" v-model="form.phone" class="form-control"  placeholder="Phone No." :class="{ 'is-invalid': form.errors.has('phone') }">
-                                                <has-error :form="form" field="phone"></has-error>
+                                            <label for="" >Secondary Contact *</label>
+                                                <input type="email" v-model="form.secondary_contact" class="form-control"  placeholder="Secondary Contact" :class="{ 'is-invalid': form.errors.has('secondary_contact') }">
+                                                <has-error :form="form" field="secondary_contact"></has-error>
                                                 
                                         </div>
+                                        
+                                        
                                         <div class="form-group col-md-4">
                                             <label for="" >Address *</label>
 
@@ -124,8 +123,23 @@
                                         <div class="form-group col-md-4">
                                             <label for="photo" class="control-label">Signature Image *</label>
                                                 <input type="file" accept="image/png" id="signature" @change="$function.imageUpload($event, form ,'signature')"  class="form-control">
-                                                <img class="img-lg mb-3 elevation-3 float-right"  :src="(this.form.signature && this.form.signature.length > 50) ? form.signature : getImage(form.signature)"/>
+                                                <img class="img-lg mb-3 elevation-3 float-right"  :src="form.signature"/>
                                             <has-error :form="form" field="signature"></has-error>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="supervisor" class="control-label">Supervisor*</label>
+                                            <multiselect v-model="form.supervisor_user_id"
+                                                tag-placeholder="Select Supervisor"
+                                                placeholder="Select Supervisor"
+                                                label = "name"
+                                                track_by = "id"
+                                                :options="Object.keys(supervisors).map(Number)"
+                                                :custom-label="opt => supervisors[opt]"
+                                                :multiple="false"
+                                                :allow-empty="false"
+                                                :taggable="true">
+                                            </multiselect>
+                                        <has-error :form="form" field="supervisor_user_id"></has-error>
                                         </div>
 
                                         <div class="col-md-12">
@@ -166,17 +180,19 @@ import Multiselect from 'vue-multiselect'
                 hide:true,              
                 updated:true,
                 user: this.$store.state.auth.user,
+                supervisors: this.$store.state.choice.supervisors,
                 form: new Form({
                     id: null,
                     name:null,
-                    email: null,
+                    secondary_contact: null,
                     user_id:null,
-                    phone: null,
+                    primary_contact: null,
                     profile:null,
+                    supervisor_user_id:null,
                     signature:null,
                     address: null,
                     group_id:null,
-                    emp_code:null,
+                    code:null,
                     password: null,
                     newpassword: null,
                     oldpassword: null,
@@ -186,10 +202,7 @@ import Multiselect from 'vue-multiselect'
         },
         
         methods: {
-            getImage(img){
-                if(img) return "/images/users/"+this.form.user_id +"/" + img;
-                return "/images/no-image.png"
-            },
+            
             check(){
                 if(this.form.newpassword == this.form.confirmpassword){
                     this.isActive = false ;
@@ -200,16 +213,11 @@ import Multiselect from 'vue-multiselect'
                     this.fc = false;
                 }
             },
-            getProfilePhoto(){
-                if(this.form.profile != null){
-                     let photo = (this.form.profile.length > 200) ? this.form.profile : "/images/users/"+this.form.user_id +"/thumbs/"+ 'small_'+this.form.profile;
-                return photo;
-                }
-            },
+            
             updatePassword() {
                 this.$Progress.start();
                 if(this.form.newpassword == this.form.confirmpassword){
-                    this.form.post('/api/updatePassword')
+                    this.form.post('/api/v1/updatePassword')
                    .then(res =>{
                              this.$swal(
                                 res.data.result,
@@ -240,7 +248,7 @@ import Multiselect from 'vue-multiselect'
                 }
             },
             async updateInfo() {
-                const response = await this.form.put('/api/profile/'+this.form.id);
+                const response = await this.form.put('/api/v1/profile/'+this.form.id);
                 try{
                     if(response.data.error == 'false'){
                         this.$swal(
@@ -249,7 +257,7 @@ import Multiselect from 'vue-multiselect'
                                 'success'
                             )
                         this.$Progress.finish();
-                        await this.$store.dispatch("fetchAuthUser");
+                        await this.$store.dispatch("auth/login");
                         this.emitter.emit('AfterCreate'); //Fire an reload event
                         this.updated = true
                     }else{
@@ -269,21 +277,19 @@ import Multiselect from 'vue-multiselect'
                     this.$Progress.fail();
                 }
             },
-            async loadProfile(){
-              //  await this.$store.dispatch("fetchAuthUser");
-              //   if(this.$store.state.auth_user.profile){
-              //           this.form.fill(this.$store.state.auth_user.profile);
-              //   }else{
-              //       this.form.name = this.auth_user.name;
-              //       this.form.email = this.auth_user.email;
-              //       this.form.user_id = this.auth_user.id;
-              //   }
+            async loadProfile(){                
+                if(this.$store.state.auth.user.employee != null){
+                        this.form.fill(this.$store.state.auth.user.employee);
+                        this.form.name = this.$store.state.auth.user.name;
+                }else{
+                    this.form.name = this.$store.state.auth.user.name;
+                    this.form.secondary_contact = this.$store.state.auth.user.email;
+                    this.form.user_id = this.$store.state.auth.user.id;
+                }
             }
         },
         created() {
-          console.log(this.user);
-          console.log(this.$store.state.auth.user);
-            // this.loadProfile();
+            this.loadProfile();
             this.emitter.on("AfterCreate",()=>{
                 this.loadProfile();
             })

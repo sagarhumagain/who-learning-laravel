@@ -17,14 +17,14 @@ return new class extends Migration {
             $table->timestamps();
             $table->string('primary_contact')->nullable();
             $table->string('secondary_contact')->nullable();
-            $table->string('image_path')->nullable();
+            $table->string('profile')->nullable();
             $table->bigInteger('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('CASCADE');
             $table->bigInteger('supervisor_user_id')->unsigned();
             $table->foreign('supervisor_user_id')->references('id')->on('users')->onDelete('NO ACTION');
             $table->text('address')->nullable();
-            $table->string('signature_path')->nullable();
-            $table->string('code')->unique()->nullable();
+            $table->string('signature')->nullable();
+            $table->string('emp_code')->unique()->nullable();
             $table->softDeletes();
         });
     }

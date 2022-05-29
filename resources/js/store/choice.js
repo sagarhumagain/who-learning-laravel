@@ -15,6 +15,8 @@ export default {
         designationStaffCategory: [],
         designationStaffType: [],
         staffCategoryStaffType: [],
+        supervisors: [],
+
     },
     getters:{
         pillars(state){
@@ -52,6 +54,9 @@ export default {
         },
         staffCategoryStaffType(state) {
           return state.staffCategoryStaffType
+        },
+        supervisors(state) {
+          return state.supervisors
         },
     },
     mutations:{
@@ -91,6 +96,9 @@ export default {
         SET_STAFF_CATEGORY_STAFF_TYPE (state, value) {
           state.staffCategoryStaffType = value
         },
+        SET_SUPERVISORS (state, value) {
+          state.supervisors = value
+        },
     },
     actions:{
         async setEnums({commit}){
@@ -120,6 +128,9 @@ export default {
             commit('SET_DESIGNATION_STAFF_TYPE',response.data);
             response = await $api.enums.staffCategoryStaffType();
             commit('SET_STAFF_CATEGORY_STAFF_TYPE',response.data);
+            response = await $api.enums.supervisors();
+            commit('SET_SUPERVISORS',response.data);
+
           }
           catch (e) {
             // commit('SET_USER',{})

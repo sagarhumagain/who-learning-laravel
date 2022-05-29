@@ -21,12 +21,12 @@ class Employee extends Model implements Auditable
     protected $fillable = [
       'primary_contact',
       'secondary_contact',
-      'image_path',
+      'profile',
       'user_id',
       'supervisor_user_id',
       'address',
-      'signature_path',
-      'code'
+      'signature',
+      'emp_code'
   ];
 
     /**
@@ -52,7 +52,7 @@ class Employee extends Model implements Auditable
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id'. 'id');
+        return $this->belongsTo(User::class);
     }
 
     /**
