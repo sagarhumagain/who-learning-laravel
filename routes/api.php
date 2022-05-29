@@ -18,8 +18,10 @@ use App\Http\Controllers\Api\ContractTypeStaffCategoryController;
 use App\Http\Controllers\Api\ContractTypeStaffTypeController;
 use App\Http\Controllers\Api\DesignationStaffCategoryController;
 use App\Http\Controllers\Api\DesignationStaffTypeController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\StaffCategoryStaffTypeController;
 use App\Http\Controllers\Api\StatisticsController;
+use App\Http\Controllers\Api\SupervisorController;
 use App\Http\Controllers\Auth\LoginController;
 
 /*
@@ -43,13 +45,17 @@ Route::group(
         Route::apiResources(['user'=>UserController::class]);
         Route::apiResources(['contract'=>ContractController::class]);
        
-        Route::get('/profile', [UserController::class, 'getProfile']);
+        Route::post('updatePassword', 'ProfileController@updatePassword');
+
+        Route::apiResources(['profile' => ProfileController::class]);
 
         // Route::apiResources(['role'         =>'RoleController']);
 
         // Route::apiResources(['permission'   =>'PermissionController']);
-        // Route::post('updatePassword', 'ProfileController@updatePassword');
-        // Route::apiResources(['profile'      =>'ProfileController']);
+
+        Route::apiResources(['supervisors' => SupervisorController::class]);
+
+
 
         Route::post('/read_all', [BaseController::class, 'readAll']);
         Route::post('/read_notification', [BaseController::class, 'read']);
@@ -88,6 +94,5 @@ Route::group(
         
         Route::get('/approvals/courses', [CourseController::class, 'listUnapprovedCourses']);
         Route::get('/suggest/courses', [CourseController::class, 'listSuggestedCourses']);
-        
     }
 );

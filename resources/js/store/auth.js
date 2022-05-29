@@ -2,6 +2,7 @@ import axios from 'axios';
 import router from '@/router';
 import {apiRepositories as $api} from '@/services/api';
 
+
 export default {
     namespaced: true,
     state:{
@@ -27,6 +28,7 @@ export default {
     },
     actions:{
         async login({commit}){
+
           try{
             const response = await $api.auth.getProfile();
             commit('SET_USER',response.data);

@@ -119,6 +119,9 @@ export default (baseUrl, apiVersion) => ({
 
   async staffCategoryStaffType() {
     return await axios.get(`${baseUrl}${apiVersion}/staff-category-staff-type`);
+  },
+  async supervisors() {
+    return await axios.get(`${baseUrl}${apiVersion}/supervisors`);
   }
 
 
