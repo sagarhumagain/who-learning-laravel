@@ -4,7 +4,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3>Assigned Courses</h3>
+                        <h3>Approve Certificates</h3>
 
                         <!-- <div class="card-tools">
                             <button type="" class="btn btn-primary" @click="newModal"><i class="fa fa-user-plus fa-fw"></i> Add New Course</button>
@@ -19,30 +19,32 @@
                                 <th style="width:25%">Course Name</th>
                                 <th>Credit Hours</th>
                                 <th>Due Date</th>
-                                <th>Description</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                                <th>User</th>
+                                <th>Completed Date</th>
+                                <th>Approval Status</th>
+                                <th>Action</th>
                             </tr>
                             <tr v-for="(course, index) in courses.data" :key="course.id">
                                 <td>{{index + 1}}</td>
-                                <td>{{course.name}}
-                                </td>
+                                <td>{{course.name}}</td>
                                 <td>{{course.credit_hours}}</td>
                                 <td>{{course.due_date}}</td>
-                                <td>{{course.description}}</td>
+                                <td>{{course.email}}</td>
+                                <td>{{course.completed_date}}</td>
+                                
                                 <td>
-                                    <p class="color-red" v-if="course.pivot.completed_date == null">Incomplete</p>
-                                    <p class="color-yellow" v-else-if="course.pivot.is_approved == null && course.pivot.completed_date">Approval Pending</p>
-                                    <p class="color-green" v-else-if="course.pivot.is_approved == '1' && course.pivot.completed_date">Approved</p>
-                                    <p class="color-red" v-else-if="course.pivot.is_approved == '0' && course.pivot.completed_date">Disapproved</p>
+                                    <p class="color-red" v-if="course.completed_date == null">Incomplete</p>
+                                    <p class="color-yellow" v-else-if="course.is_approved == null && course.completed_date">Approval Pending</p>
+                                    <p class="color-green" v-else-if="course.is_approved == '1' && course.completed_date">Approved</p>
+                                    <p class="color-red" v-else-if="course.is_approved == '0' && course.completed_date">Disapproved</p>
                                 </td>
                                 <td>
                                     <!-- <a href="#" @click="editCourseModal(course.pivot)">
                                         <i class="fa fa-edit"></i>
                                     </a> -->
-                                    <router-link class="project-link mr-3" :to="{ name: 'courses-edit', params: { course: course.pivot , id: course.pivot.course_id} }">
+                                    <!-- <router-link class="project-link mr-3" :to="{ name: 'courses-edit', params: { course: course , id: course.course_id} }"> -->
                                         <i class="fa fa-edit"></i>
-                                    </router-link>
+                                    <!-- </router-link> -->
                                     
                                 </td>
                             </tr>
@@ -118,7 +120,7 @@
     import ErrorMsg from '@/components/error-msg';
 
     export default {
-        name:'assigned-course',
+        name:'approve-certificates',
         components: {
             Multiselect,
             HasError,
@@ -205,8 +207,7 @@
             /*==== Start of Show existing User function ====*/
             async loadCourse() {
                 const response  = await  this.$api.courses.listUnapprovedCourse();
-                console.log(response);
-                this.courses = data.data
+                this.courses = response.data
             },
         },
         created() {

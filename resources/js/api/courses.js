@@ -27,4 +27,7 @@ export default (baseUrl, apiVersion) => ({
   async listUserEnrolledCourses() {
     return await axios.get(`${baseUrl}${apiVersion}/course_user`);
   },
+  async getExceededDeadlines() {
+    return await axios.get(`${baseUrl}${apiVersion}/deadlines-exceed`);
+  }
 });

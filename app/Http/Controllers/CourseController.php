@@ -17,6 +17,7 @@ use App\Notifications\CourseEnrolledNotification;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\DB;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -252,7 +253,7 @@ class CourseController extends BaseController
                         'course_id' => $course->id,
                         'assigned_by_user_id' => $user->id,
                     ];
-                    $users = User::leftJoin(\DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
+                    $users = User::leftJoin(DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
                         $join->on('users.id', '=', 't2.user_id');
                     })
                     ->where(function ($q) use ($assignmentFields) {
@@ -309,9 +310,12 @@ class CourseController extends BaseController
         $user = auth()->user();
         //#TODO Check for permission
         if ($user->hasRole('super-admin')) {
-            $user_course = CourseUser::where('is_approved', null)
-            ->orWhere('is_approved', 0)
-            ->with(['courses', 'users'])->paginate(20);
+            $user_course = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
+            ->join('users', 'course_user.user_id', '=', 'users.id')
+            ->select(DB::raw('courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date'))
+            ->where('course_user.is_approved', null)
+            ->whereNotNull('course_user.completed_date')
+            ->paginate(20);
         } else {
             $user_course = [];
         }
@@ -353,5 +357,22 @@ class CourseController extends BaseController
         $user = User::where('id', $auth_user->id)->firstOrFail();
         $course_user = $user->courses()->paginate(20);
         return $course_user;
+    }
+
+    public function getExceededDeadlines()
+    {
+        $user = auth()->user();
+        //#TODO Check for permission
+        if ($user->hasRole('super-admin')) {
+            $user_course = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
+            ->join('users', 'course_user.user_id', '=', 'users.id')
+            ->select(DB::raw('courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date'))
+            ->whereDate('courses.due_date', '>', date('Y-m-d'))
+            ->whereNull('course_user.completed_date')
+            ->get();
+        } else {
+            $user_course = [];
+        }
+        return $user_course;
     }
 }
