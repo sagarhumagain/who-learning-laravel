@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\CourseEnrolledEvent;
+use App\Events\CourseAssignedEvent;
 use App\Events\CourseCreatedEvent;
 use App\Http\Controllers\Api\BaseController;
 use App\Http\Requests\Course\CourseCreateValidation;
@@ -24,7 +24,8 @@ class CourseController extends BaseController
     public function __construct(Course $model)
     {
         $this->model = $model;
-        $this->folder_path = 'images'.DIRECTORY_SEPARATOR.$this->folder;
+        $this->folder_path = 'images'.DIRECTORY_SEPARATOR.$this->folder;        
+
     }
     /**
      * Display a listing of the resource.
@@ -128,7 +129,7 @@ class CourseController extends BaseController
 
             //course assignement setting create
             CourseAssignmentSetting::create($assignmentFields);
-            event(new CourseEnrolledEvent($request));
+            event(new CourseAssignedEvent($request));
             //update certificate for normal users
             try {
                 if ($user->hasRole('normal-user') && $request->certificate_path && $request->completed_date) {
