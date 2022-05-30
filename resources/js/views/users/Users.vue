@@ -16,10 +16,12 @@
                             <tbody>
                             <tr class="bg-light">
                                 <th>S.N.</th>
-                                <th style="width:25%">Name</th>
+                                <th>Name</th>
                                 <th>Email</th>
                                 <th>Actions</th>
                                 <th>Contract History </th>
+                                <th>Courses</th>
+
                             </tr>
                             <tr v-for="(user, index) in users.data" :key="user.id">
                                 
@@ -60,13 +62,47 @@
                                                         <td>{{contract.contract_start}}</td>
                                                         <td>{{contract.contract_end}}</td>
                                                         <td>
-                                                            <a href="#" @click="editContractModal(contract)" class="btn btn-sm btn-success mr-2">
+                                                            <a href="#" @click="editContractModal(contract)" class="m-2">
                                                                 <i class="fa fa-edit"></i>
                                                             </a>
-                                                            <a href="#" @click="deleteUser(contract.id)" class="btn btn-sm btn-danger mr-2">
+                                                            <a href="#" @click="deleteUser(contract.id)" class="">
                                                                 <i class="fa fa-trash"></i>
                                                             </a>
                                                                                             
+                                                        </td>
+
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                
+
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="accordion" id="accordionExample">
+                                        <div class="accordion-item rounded-0">
+                                            <button data-bs-toggle="collapse" :data-bs-target="'#course'+user.id" class="accordion-button rounded-0" type="button">
+                                                <a href="#" data-bs-toggle="collapse" :data-bs-target="'#course'+user.id" aria-expanded="true" aria-controls="collapseOne">Enrolled Courses</a>
+                                                <a href="#" type="" class="btn"><i class="fa fa-plus fa-fw"></i></a>
+
+                                            </button>
+                                            <div :id="'course'+user.id" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                            <div class="accordion-body">
+                                                <table class="table table-hover">
+                                                    <tbody>
+                                                    <tr class="bg-light">
+                                                        <th>Course Name </th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                    <tr v-for="course in user.courses" :key="course.id">
+                                                        <td>{{course.name}}</td>
+                                                        <td>
+                                                            <a href="#" @click="viewCertificate(course.pivot)" class="">
+                                                                <i class="fa fa-edit"></i>
+                                                            </a>                          
                                                         </td>
 
                                                     </tr>
@@ -296,6 +332,9 @@
             }
         },
         methods: {
+            viewCertificate(val){
+                this.$router.push({name:'courses-edit',params:{id:val.course_id}});
+            },
             newModal() {
                 this.editmode = false;
                 this.form.reset();
