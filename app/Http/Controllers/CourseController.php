@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CertificateUpdateEvent;
 use App\Events\CourseAssignedEvent;
 use App\Events\CourseCreatedEvent;
+use App\Events\CourseUpdateEvent;
 use App\Http\Controllers\Api\BaseController;
 use App\Http\Requests\Course\CourseCreateValidation;
 use App\Http\Requests\Course\UpdateCourseValidation;
@@ -24,8 +26,7 @@ class CourseController extends BaseController
     public function __construct(Course $model)
     {
         $this->model = $model;
-        $this->folder_path = 'images'.DIRECTORY_SEPARATOR.$this->folder;        
-
+        $this->folder_path = 'images'.DIRECTORY_SEPARATOR.$this->folder;
     }
     /**
      * Display a listing of the resource.
@@ -144,6 +145,7 @@ class CourseController extends BaseController
                             'completed_date' => $request->completed_date
                         ];
                     $course_user->update($data);
+                    event(new CertificateUpdateEvent($course_user));
                 }
             } catch (Exception $e) {
                 $data['error'] = true;
@@ -195,9 +197,13 @@ class CourseController extends BaseController
      */
     public function update(Request $request, $id)
     {
+        $user = auth()->user();
         try {
             $course = Course::findOrFail($id);
             $course->update($request->all());
+            if ($user->hasRole(['super-admin','course-admin'])) {
+                event(new CourseUpdateEvent($course));
+            }
 
             $data['error'] = false;
             $data['message'] = "Course Updated Successfully";
@@ -226,6 +232,9 @@ class CourseController extends BaseController
         try {
             $course = Course::findOrFail($request->id);
             $course->update($request->all());
+            if ($user->hasRole(['super-admin','course-admin'])) {
+                event(new CourseUpdateEvent($course));
+            }
             if ($request->course_category_ids) {
                 $courseCategoryIds = parent::filterArrayByKey($request->course_category_ids, 'id');
                 $course->courseCategories()->sync($courseCategoryIds);
@@ -276,7 +285,9 @@ class CourseController extends BaseController
                     } else {
                         $data['completed_date'] = $request->completed_date;
                     }
+
                     $course_user->update($data);
+                    event(new CertificateUpdateEvent($course_user));
                 } catch (Exception $e) {
                     $data['error'] = true;
                     $data['message'] = $e->getMessage();
@@ -296,11 +307,11 @@ class CourseController extends BaseController
         $user = auth()->user();
         //#TODO Check for permission
         if ($user->hasRole('super-admin')) {
-            $user_course = CourseUser::where('is_approved', NULL)
+            $user_course = CourseUser::where('is_approved', null)
             ->orWhere('is_approved', 0)
             ->with(['courses', 'users'])->paginate(20);
         } else {
-          $user_course = [];
+            $user_course = [];
         }
         return $user_course;
     }
@@ -316,14 +327,14 @@ class CourseController extends BaseController
 
     public function enrollToCourse(Request $request)
     {
-      $user = auth()->user();
-      $count = CourseUser::where('user_id', $user->id)->where('course_id', $request->course_id)->count();
-      if($count == 0) {
-        CourseUser::create([
+        $user = auth()->user();
+        $count = CourseUser::where('user_id', $user->id)->where('course_id', $request->course_id)->count();
+        if ($count == 0) {
+            CourseUser::create([
           'user_id' => $user->id,
           'course_id' => $request->course_id
         ]);
-      }
-      response()->json(['success' => 'success'], 200);
+        }
+        response()->json(['success' => 'success'], 200);
     }
 }

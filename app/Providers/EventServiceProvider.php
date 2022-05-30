@@ -2,11 +2,15 @@
 
 namespace App\Providers;
 
+use App\Events\CertificateUpdateEvent;
 use App\Events\CourseAssignedEvent;
 use App\Events\CourseCreatedEvent;
+use App\Events\CourseUpdateEvent;
 use App\Events\Welcome;
+use App\Listeners\CertificateUpdateListener;
 use App\Listeners\CourseAssignedListener;
 use App\Listeners\CourseCreatedListener;
+use App\Listeners\CourseUpdateListener;
 use App\Listeners\SendWelcomeNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -28,8 +32,14 @@ class EventServiceProvider extends ServiceProvider
         CourseCreatedEvent::class => [
             CourseCreatedListener::class,
         ],
+        CourseUpdateEvent::class => [
+            CourseUpdateListener::class,
+        ],
         CourseAssignedEvent::class => [
             CourseAssignedListener::class,
+        ],
+        CertificateUpdateEvent::class => [
+            CertificateUpdateListener::class,
         ],
     ];
 

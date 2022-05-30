@@ -14,7 +14,7 @@
         </div>
         <div class="d-flex flex-column align-items-end">
         <span class=" text-muted text-sm">{{$filters.duration(notification.created_at)}} ago</span>
-        <a class=" text-muted text-sm" href="">Read More</a>
+        <a class=" text-muted text-sm" :href="notification.data.link">Read More</a>
         </div>
 
         </a>
