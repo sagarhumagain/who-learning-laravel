@@ -17,6 +17,7 @@ use App\Notifications\CourseEnrolledNotification;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\DB;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -35,12 +36,11 @@ class CourseController extends BaseController
      */
     public function index(Request $request)
     {
+      #TODO Refactor code to check permission, separate single course view to different method, remove data key.
         $auth_user = auth()->user();
         if ($auth_user->hasRole('normal-user') && !$request->id) {
             $user_course = User::where('id', $auth_user->id)->firstOrFail();
-            $courses['data'] = $user_course->courses(function ($q) {
-                $q->where('is_approved', 1);
-            })->paginate(20);
+            $courses['data'] = Course::where('is_approved', 1)->with('courseCategories')->paginate(20);
         } elseif ($request->id) {
             if ($auth_user->hasRole('super-admin')) {
                 $courses =  Course::where('id', $request->id)->with('courseAssignment', 'courseCategories')->firstOrFail();
@@ -200,6 +200,9 @@ class CourseController extends BaseController
         $user = auth()->user();
         try {
             $course = Course::findOrFail($id);
+            if ($course->is_approved == 1 && !$user->hasRole(['super-admin', 'course-admin'])) {
+              throw new \Exception('Please contact the admin to edit courses which are already approved in the system.');
+            }
             $course->update($request->all());
             if ($user->hasRole(['super-admin','course-admin'])) {
                 event(new CourseUpdateEvent($course));
@@ -250,7 +253,7 @@ class CourseController extends BaseController
                         'course_id' => $course->id,
                         'assigned_by_user_id' => $user->id,
                     ];
-                    $users = User::leftJoin(\DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
+                    $users = User::leftJoin(DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
                         $join->on('users.id', '=', 't2.user_id');
                     })
                     ->where(function ($q) use ($assignmentFields) {
@@ -307,9 +310,12 @@ class CourseController extends BaseController
         $user = auth()->user();
         //#TODO Check for permission
         if ($user->hasRole('super-admin')) {
-            $user_course = CourseUser::where('is_approved', null)
-            ->orWhere('is_approved', 0)
-            ->with(['courses', 'users'])->paginate(20);
+            $user_course = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
+            ->join('users', 'course_user.user_id', '=', 'users.id')
+            ->select(DB::raw('courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date'))
+            ->where('course_user.is_approved', null)
+            ->whereNotNull('course_user.completed_date')
+            ->paginate(20);
         } else {
             $user_course = [];
         }
@@ -327,14 +333,46 @@ class CourseController extends BaseController
 
     public function enrollToCourse(Request $request)
     {
-        $user = auth()->user();
-        $count = CourseUser::where('user_id', $user->id)->where('course_id', $request->course_id)->count();
-        if ($count == 0) {
-            CourseUser::create([
+      $course_id = $request->course_id;
+      $user = auth()->user();
+      $count = CourseUser::where('user_id', $user->id)->where('course_id', $course_id)->count();
+      if($count == 0) {
+        CourseUser::create([
           'user_id' => $user->id,
-          'course_id' => $request->course_id
+          'course_id' => $course_id
         ]);
         }
         response()->json(['success' => 'success'], 200);
+    }
+
+    /**
+     * Display a listing of the user enrolled courses.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listEnrolledCourse(Request $request)
+    {
+      #TODO Refactor code to check permission, separate single course view to different method, remove data key.
+      $auth_user = auth()->user();
+        $user = User::where('id', $auth_user->id)->firstOrFail();
+        $course_user = $user->courses()->paginate(20);
+        return $course_user;
+    }
+
+    public function getExceededDeadlines()
+    {
+        $user = auth()->user();
+        //#TODO Check for permission
+        if ($user->hasRole('super-admin')) {
+            $user_course = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
+            ->join('users', 'course_user.user_id', '=', 'users.id')
+            ->select(DB::raw('courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date'))
+            ->whereDate('courses.due_date', '>', date('Y-m-d'))
+            ->whereNull('course_user.completed_date')
+            ->get();
+        } else {
+            $user_course = [];
+        }
+        return $user_course;
     }
 }

@@ -21,7 +21,13 @@ export default (baseUrl, apiVersion) => ({
   async listSuggestedCourse() {
     return await axios.get(`${baseUrl}${apiVersion}/suggest/courses`);
   },
-  async enrollCourse(body) {
-    return await axios.get(`${baseUrl}${apiVersion}/enroll/course/`, body);
+  async enrollToCourse(body={}) {
+    return await axios.post(`${baseUrl}${apiVersion}/enroll/course`, body);
   },
+  async listUserEnrolledCourses() {
+    return await axios.get(`${baseUrl}${apiVersion}/course_user`);
+  },
+  async getExceededDeadlines() {
+    return await axios.get(`${baseUrl}${apiVersion}/deadlines-exceed`);
+  }
 });

@@ -60,6 +60,7 @@ class UserController extends Controller
         $input['password'] = Hash::make($input['password']);
         $user = User::create($input);
         $user->assignRole($request['roles']);
+        //#TODO assign course assignment settings during registration
         // try {
         //     $contract = Contract::create($input);
         // } catch (Exception $e) {

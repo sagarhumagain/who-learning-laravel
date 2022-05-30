@@ -109,10 +109,13 @@ export default {
                   ]
                 },
                 {
-                  href: '/users',
                   title: 'Users',
                   icon: 'fa fa-user',
                   child: [
+                    {
+                      href: '/users/',
+                      title: 'Manage Users'
+                    },
                     {
                       href: '/user/profile',
                       title: 'View profile'
@@ -133,8 +136,8 @@ export default {
                       title: 'Approve Courses'
                     },
                     {
-                      href: '/approve/employee-course',
-                      title: 'Approve Employee Courses'
+                      href: '/approve/certificates',
+                      title: 'Approve Certifications'
                     }
                   ]
                 },

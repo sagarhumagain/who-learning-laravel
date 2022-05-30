@@ -42,6 +42,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(
     ['prefix' => 'v1', 'middleware' => ['auth:sanctum']],
     function () {
+        Route::post('/enroll/course', [CourseController::class, 'enrollToCourse']);
+        Route::get('/course_user', [CourseController::class, 'listEnrolledCourse']);
+        
         Route::apiResources(['user'=>UserController::class]);
         Route::apiResources(['contract'=>ContractController::class]);
        
@@ -94,5 +97,6 @@ Route::group(
         
         Route::get('/approvals/courses', [CourseController::class, 'listUnapprovedCourses']);
         Route::get('/suggest/courses', [CourseController::class, 'listSuggestedCourses']);
+        Route::get('/deadlines-exceed', [CourseController::class, 'getExceededDeadlines']);
     }
 );

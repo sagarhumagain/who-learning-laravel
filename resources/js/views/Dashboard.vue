@@ -34,14 +34,14 @@
                 </Card>
             </div>
             <div class="col-8">
-                <Card title="Mandatory Courses Overview">
+                <!-- <Card title="Mandatory Courses Overview">
                   <div class="row">
                     <div class="col-4" v-for="(chartData, index) in mandatoryCourseChart.chartDatas" :key="index">
                       <DoughnutChart :chartData="chartData" :width="mandatoryCourseChart.width" :height="mandatoryCourseChart.height" :chartOptions="mandatoryCourseChart.chartOptions" />
                       <p class="text-center">{{chartData.name}}</p>
                     </div>
                   </div>
-                </Card>
+                </Card> -->
                 <!-- <Card title="Top Learners">
                   <div class="row">
                     <div class="col-12">
@@ -49,6 +49,20 @@
                     </div>
                   </div>
                 </Card> -->
+                <Card title="Pending Approvals">
+                  <div class="row">
+                    <div class="col-12">
+                      <Table :columnDefs="approvals.columnDefs" :rowData="approvals.rowData" />
+                    </div>
+                  </div>
+                </Card>
+                <Card title="Exceeded Deadlines">
+                  <div class="row">
+                    <div class="col-12">
+                      <Table :columnDefs="exceededDeadlines.columnDefs" :rowData="exceededDeadlines.rowData" />
+                    </div>
+                  </div>
+                </Card>
             </div>
             <div class="col-4">
               <div class="row">
@@ -78,6 +92,24 @@ export default {
         return {
             user:this.$store.state.auth.user,
             isLoaded: false,
+            approvals: {
+              columnDefs: [
+                { headerName: "Name", field: "name", sortable: true, filter: true },
+                // { headerName: "Credit Hours", field: "credit_hours", sortable: true, filter: true },
+                { headerName: "User", field: "email", sortable: true, filter: true },
+                { headerName: "Completed Date", field: "completed_date", sortable: true, filter: true },
+              ],
+              rowData: []
+            },
+            exceededDeadlines: {
+              columnDefs: [
+                { headerName: "Name", field: "name", sortable: true, filter: true },
+                // { headerName: "Credit Hours", field: "credit_hours", sortable: true, filter: true },
+                { headerName: "User", field: "email", sortable: true, filter: true },
+                { headerName: "Deadline", field: "due_date", sortable: true, filter: true },
+              ],
+              rowData: []
+            },
             mandatoryCourseChart: {
               height: 200,
               chartOptions: {
@@ -136,6 +168,17 @@ export default {
         ...this.counts,
         ...response.data
       }
+      response = await this.$api.courses.listUnapprovedCourse();
+      this.approvals = {
+        ...this.approvals,
+        rowData: response.data.data
+      };
+      response = await this.$api.courses.getExceededDeadlines();
+      console.log(response);
+      this.exceededDeadlines = {
+        ...this.exceededDeadlines,
+        rowData: response.data
+      };
   },
 }
 </script>
