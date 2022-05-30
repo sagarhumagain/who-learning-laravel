@@ -9,33 +9,33 @@
                         <form @submit.prevent="updateCourse()" @keydown="form.onKeydown($event)">
                           <div class="form-group col-lg-12 col-md-12">
                               <label for="name" >Name *</label>
-                              <input v-model="form.name" type="text" name="name" class="form-control" placeholder="Course Name" :class="{ 'is-invalid': form.errors.has('name')}" />
+                              <input :disabled="course_disabled" v-model="form.name" type="text" name="name" class="form-control" placeholder="Course Name" :class="{ 'is-invalid': form.errors.has('name')}" />
                               <div v-if="form.errors.has('name')" v-html="form.errors.get('name')" />
                           </div>
                           <div class="form-group col-lg-12 col-md-12">
                               <label for="description" >Description *</label>
-                              <textarea v-model="form.description"  name="description" class="form-control" placeholder="Description" :class="{ 'is-invalid': form.errors.has('description')}" />
+                              <textarea v-model="form.description"  :disabled="course_disabled" name="description" class="form-control" placeholder="Description" :class="{ 'is-invalid': form.errors.has('description')}" />
                               <div v-if="form.errors.has('description')" v-html="form.errors.get('description')" />
                           </div>
                           <div class="form-group col-lg-12 col-md-12">
                               <label for="url" >Course URL *</label>
-                              <input v-model="form.url" type="text" name="url" placeholder="https://who.csod.com/ui/lms-learning-details/app/course/f526f260-fbdc-5ccb-84e0-04b6020f255b" class="form-control" :class="{ 'is-invalid': form.errors.has('url')}">
+                              <input v-model="form.url" :disabled="course_disabled" type="text" name="url" placeholder="https://who.csod.com/ui/lms-learning-details/app/course/f526f260-fbdc-5ccb-84e0-04b6020f255b" class="form-control" :class="{ 'is-invalid': form.errors.has('url')}">
                               <div v-if="form.errors.has('url')" v-html="form.errors.get('url')" />
                           </div>
                           <div class="form-group col-lg-12 col-md-12">
                               <label for="credit_hours" >Credit Hours *</label>
-                              <input v-model="form.credit_hours" type="number" name="credit_hours" placeholder="Credit Hours" class="form-control" :class="{ 'is-invalid': form.errors.has('credit_hours')}">
+                              <input v-model="form.credit_hours" :disabled="course_disabled" type="number" name="credit_hours" placeholder="Credit Hours" class="form-control" :class="{ 'is-invalid': form.errors.has('credit_hours')}">
                               <div v-if="form.errors.has('credit_hours')" v-html="form.errors.get('credit_hours')" />
                           </div>
                           <div class="form-group col-lg-12 col-md-12">
                               <label for="url" >Source *</label>
-                              <input v-model="form.source" type="text" name="source" placeholder="iLearn" class="form-control" :class="{ 'is-invalid': form.errors.has('source')}">
+                              <input v-model="form.source" :disabled="course_disabled" type="text" name="source" placeholder="iLearn" class="form-control" :class="{ 'is-invalid': form.errors.has('source')}">
                               <div v-if="form.errors.has('source')" v-html="form.errors.get('source')" />
                           </div>
                           <div class="form-group col-lg-12 col-md-12">
                               <label for="due_date" >Due Date</label>
                               <!-- <input v-model="form.due_date" type="text" name="due_date" class="form-control" placeholder="Due Date" :class="{ 'is-invalid': form.errors.has('due_date')}" /> -->
-                              <v-date-picker v-model="form.due_date"  name="due_date" placeholder="Due Date" class="form-control" :class="{ 'is-invalid': form.errors.has('due_date')}"
+                              <v-date-picker v-model="form.due_date" :disabled="course_disabled" name="due_date" placeholder="Due Date" class="form-control" :class="{ 'is-invalid': form.errors.has('due_date')}"
                                   :model-config="{
                                     type: 'string',
                                     mask: 'YYYY-MM-DD',
@@ -46,6 +46,7 @@
                                   <template v-slot="{ inputValue, inputEvents }">
                                     <input
                                       class="custom-datepicker"
+                                      :disabled="course_disabled"
                                       :value="inputValue"
                                       v-on="inputEvents"
                                     />
@@ -60,6 +61,7 @@
                                   placeholder="Select Category"
                                   label="name" track-by="id"
                                   :options="course_categories"
+                                  :disabled="course_disabled"
                                   :multiple="true"
                                   :taggable="true"
                                   >
@@ -118,6 +120,7 @@
                             <div class="form-group col-md-8">
                                 <label for="completed_date" >Completed Date</label>
                                 <v-date-picker v-model="form.completed_date"  name="completed_date" placeholder="Completed Date" class="form-control" :class="{ 'is-invalid': form.errors.has('completed_date')}"
+                                  :disabled="course_user_disabled"
                                   :model-config="{
                                     type: 'string',
                                     mask: 'YYYY-MM-DD',
@@ -127,6 +130,7 @@
                                 >
                                   <template v-slot="{ inputValue, inputEvents }">
                                     <input
+                                      :disabled="course_user_disabled"
                                       class="custom-datepicker"
                                       :value="inputValue"
                                       v-on="inputEvents"
@@ -140,6 +144,7 @@
                                 <label for="file" class="control-label">Certificate Image </label>
                                 <input type="file" name="certificate_path"  @change="onFileChange"
                                         placeholder="File"
+                                        :disabled="course_user_disabled"
                                         class="btn btn-sm btn-info btn-file-upload">
                                 <error-msg :errors="errors" field="certificate_path"></error-msg>
                             </div>                        
@@ -183,7 +188,8 @@ export default {
             course_categories: this.$store.state.choice.courseCategories,
             disabled:false,
             errors:{},
-
+            course_disabled: true,
+            course_user_disabled: true,
             form: new Form({
               id: null,
               name: null,
@@ -199,7 +205,7 @@ export default {
               staff_designation_ids: null,
               course_category_ids: null,
               completed_date: null,
-              certificate_path:null
+              certificate_path:null,
             })
 
         }
@@ -291,10 +297,12 @@ export default {
             try{
                 const response  = await  axios.get("/api/v1/courses?id=" + this.$route.params.id);
                 this.form.fill(response.data);
+                this.form.is_course_approved = response.data.is_approved;
                 this.form.course_category_ids =  response.data.course_categories;
                 if(response.data.users){
                     this.form.completed_date = response.data.users[0].pivot.completed_date;
                     this.form.certificate_path = response.data.users[0].pivot.certificate_path;
+                    this.form.course_user_approved = response.data.users[0].pivot.is_approved;
                 }
                 if(response.data.course_assignment){
                     //filter out the pillar_ids
@@ -322,9 +330,22 @@ export default {
                 console.log(e)
             }
         },
+        setFormDisabled(){
+          if(this.role.isSuperAdmin() || this.role.isCourseAdmin()){
+            this.course_disabled = false;
+          }
+          // #TODO check if course created by normal user, & let edit if course is not approved
+          // if(this.role.isNormalUser() && !this.form.is_course_approved){
+          //   this.course_disabled = false;
+          // }
+          if(this.role.isNormalUser() && this.form.course_user_approved !== 1){
+            this.course_user_disabled = false;
+          }
+        }
     },
-    created() {
-        this.loadCourse()
+    async created() {
+        await this.loadCourse();
+        this.setFormDisabled();
     }
 }
 </script>

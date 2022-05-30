@@ -35,12 +35,11 @@ class CourseController extends BaseController
      */
     public function index(Request $request)
     {
+      #TODO Refactor code to check permission, separate single course view to different method, remove data key.
         $auth_user = auth()->user();
         if ($auth_user->hasRole('normal-user') && !$request->id) {
             $user_course = User::where('id', $auth_user->id)->firstOrFail();
-            $courses['data'] = $user_course->courses(function ($q) {
-                $q->where('is_approved', 1);
-            })->paginate(20);
+            $courses['data'] = Course::where('is_approved', 1)->with('courseCategories')->paginate(20);
         } elseif ($request->id) {
             if ($auth_user->hasRole('super-admin')) {
                 $courses =  Course::where('id', $request->id)->with('courseAssignment', 'courseCategories')->firstOrFail();
@@ -200,6 +199,9 @@ class CourseController extends BaseController
         $user = auth()->user();
         try {
             $course = Course::findOrFail($id);
+            if ($course->is_approved == 1 && !$user->hasRole(['super-admin', 'course-admin'])) {
+              throw new \Exception('Please contact the admin to edit courses which are already approved in the system.');
+            }
             $course->update($request->all());
             if ($user->hasRole(['super-admin','course-admin'])) {
                 event(new CourseUpdateEvent($course));
@@ -327,14 +329,29 @@ class CourseController extends BaseController
 
     public function enrollToCourse(Request $request)
     {
-        $user = auth()->user();
-        $count = CourseUser::where('user_id', $user->id)->where('course_id', $request->course_id)->count();
-        if ($count == 0) {
-            CourseUser::create([
+      $course_id = $request->course_id;
+      $user = auth()->user();
+      $count = CourseUser::where('user_id', $user->id)->where('course_id', $course_id)->count();
+      if($count == 0) {
+        CourseUser::create([
           'user_id' => $user->id,
-          'course_id' => $request->course_id
+          'course_id' => $course_id
         ]);
         }
         response()->json(['success' => 'success'], 200);
+    }
+
+    /**
+     * Display a listing of the user enrolled courses.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listEnrolledCourse(Request $request)
+    {
+      #TODO Refactor code to check permission, separate single course view to different method, remove data key.
+      $auth_user = auth()->user();
+        $user = User::where('id', $auth_user->id)->firstOrFail();
+        $course_user = $user->courses()->paginate(20);
+        return $course_user;
     }
 }

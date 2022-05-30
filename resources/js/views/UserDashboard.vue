@@ -122,7 +122,7 @@ export default {
             deadlines: {
               columnDefs: [
                 { headerName: "Name", field: "name", sortable: true, filter: true },
-                { headerName: "Credit Hours", field: "credit_hours", sortable: true, filter: true },
+                // { headerName: "Credit Hours", field: "credit_hours", sortable: true, filter: true },
                 { headerName: "Deadline", field: "due_date", sortable: true, filter: true },
               ],
               rowData: []

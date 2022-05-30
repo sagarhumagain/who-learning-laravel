@@ -21,7 +21,7 @@
                                 <th>Due Date</th>
                                 <th>Description</th>
                                 <th>Course Category</th>
-                                <th>Status</th>
+                                <th v-show="role.isSuperAdmin() || role.isCourseAdmin()">Status</th>
                                 <th>Actions</th>
                             </tr>
                             <tr v-for="(course, index) in courses.data" :key="course.id">
@@ -33,7 +33,7 @@
                                 <td>
                                     <p v-for="(cat,index) in course.course_categories" :key="cat.id" >{{index+1+') '}}{{cat.name}}</p> 
                                 </td>
-                                <td>
+                                <td v-show="role.isSuperAdmin() || role.isCourseAdmin()">
                                     <span v-if="course.is_approved == null" class="color-yellow">Approval Pending</span>
                                     <span v-else-if="course.is_approved == 1" class="color-green">Approved</span>
                                     <span v-else-if="course.is_approved == 0" class="color-red">Disapproved</span>
@@ -214,22 +214,22 @@
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Yes, enroll!'
-                }).then((result) => {
+                }).then(async (result) => {
                     if (result.value) {
-                        this.form.delete('/api/v1/courses' + id).then(() => {
-                            this.$swal(
+                        try {
+                          let response = await this.$api.courses.enrollToCourse({course_id: id});
+                          this.$swal(
                                 'Enrolled!',
                                 'You have successfully enrolled to the course.',
                                 'success'
-                            )
-                            // this.emitter.emit('AfterCreate'); //Fire an reload event
-                        }).catch(() => {
-                            this.$swal(
-                                'Warning!',
-                                'Couldnot enroll to course.',
-                                'warning'
-                            )
-                        })
+                            );
+                        } catch(e) {
+                          this.$swal(
+                              'Warning!',
+                              'Couldnot enroll to course.',
+                              'warning'
+                          )
+                        }
                     }
 
                 })
@@ -246,11 +246,16 @@
             },
         },
         created() {
-            this.loadCourses(); //load the course in the table
-            //Load the courselist if add or created a new course
-            this.emitter.on("AfterCreate", () => {
-                this.loadCourses();
-            })
+            // if(this.role.isNormalUser()){
+
+            // } else {
+              this.loadCourses(); //load the course in the table
+              //Load the courselist if add or created a new course
+              this.emitter.on("AfterCreate", () => {
+                  this.loadCourses();
+              })
+            // }
+            
             
         }
     

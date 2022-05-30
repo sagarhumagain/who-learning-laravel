@@ -42,6 +42,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(
     ['prefix' => 'v1', 'middleware' => ['auth:sanctum']],
     function () {
+        Route::post('/enroll/course', [CourseController::class, 'enrollToCourse']);
+        Route::get('/course_user', [CourseController::class, 'listEnrolledCourse']);
+        
         Route::apiResources(['user'=>UserController::class]);
         Route::apiResources(['contract'=>ContractController::class]);
        
