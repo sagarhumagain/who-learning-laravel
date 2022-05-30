@@ -32,7 +32,9 @@ class UserController extends Controller
 
     public function index()
     {
-        $data['data']= $this->user->with('roles', 'employee', 'pillars')->with('contracts', function ($q) {
+        $data['data']= $this->user->with('roles', 'employee', 'pillars')->with('courses', function ($q) {
+            $q->where('courses.is_approved', 1)->orWhereNull('courses.is_approved');
+        })->with('contracts', function ($q) {
             $q->latest()->get();
         })->latest()->paginate(100);
         $data['roles'] = Role::select('name', 'id')->get();
@@ -126,15 +128,5 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
         return ['message' =>'User Deleted'];
-    }
-
-    public function getProfile()
-    {
-        $user = auth()->user();
-        $data = $user->toArray();
-        $data['employee'] = $user->employee();
-        $data['permissions'] = $user->getAllPermissions()->pluck('name');
-        $data['roles'] = $user->getRoleNames();
-        return $data;
     }
 }
