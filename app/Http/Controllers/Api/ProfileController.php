@@ -17,7 +17,7 @@ class ProfileController extends BaseController
         $this->model = $model;
         $this->folder_path = 'images'.DIRECTORY_SEPARATOR.$this->folder;
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -26,7 +26,8 @@ class ProfileController extends BaseController
     public function index()
     {
         $user = auth()->user();
-        $data = $user->with('employee')->first();
+        $data = auth()->user();
+        $data = User::where('id', auth()->user()->id)->with('employee')->first();
         $data['permissions'] = $user->getAllPermissions()->pluck('name');
         $data['roles'] = $user->getRoleNames();
         return $data;

@@ -53,7 +53,7 @@ import {
   AlertError,
   AlertErrors,
   AlertSuccess
-} from 
+} from
 'vform/src/components/bootstrap5'
 
 app.component(Button.name, Button);
@@ -102,11 +102,12 @@ const emitter = mitt();
 app.config.globalProperties.emitter = emitter;
 
 import RoleGate from "./ACL/role-gate";
-const roles = getRoles();
+const user= store.getters['auth/user']
+const roles = user.roles
 app.config.globalProperties.role = new RoleGate(roles);
 
 import PermissionGate from "./ACL/permission-gate";
-const Permissions = getPermissions();
+const Permissions = user.permissions
 app.config.globalProperties.permission = new PermissionGate(Permissions);
 
 
@@ -119,6 +120,6 @@ const options = {
     confirmButtonColor: '#41b882',
     cancelButtonColor: '#ff7674',
   };
-  
+
 app.use(VueSweetalert2, options);
 app.mount('#app');

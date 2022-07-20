@@ -62,7 +62,7 @@ export default {
         }),
         async login(){
             this.processing = true;
-            
+
             try {
               this.$Progress.start();
               await this.$api.auth.getCsrfCookie();

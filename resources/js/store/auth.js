@@ -24,7 +24,7 @@ export default {
         SET_USER (state, value) {
             state.user = value
         },
-       
+
     },
     actions:{
         async login({commit}){
@@ -34,6 +34,8 @@ export default {
             commit('SET_USER',response.data);
             commit('SET_AUTHENTICATED',true);
             router.push({name:'dashboard'})
+                location.reload();
+
           }
           catch (e) {
             commit('SET_USER',{})

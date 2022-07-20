@@ -31,7 +31,7 @@
                                 <td>{{course.due_date}}</td>
                                 <td>{{course.email}}</td>
                                 <td>{{course.completed_date}}</td>
-                                
+
                                 <td>
                                     <p class="color-red" v-if="course.completed_date == null">Incomplete</p>
                                     <p class="color-yellow" v-else-if="course.is_approved == null && course.completed_date">Approval Pending</p>
@@ -39,78 +39,30 @@
                                     <p class="color-red" v-else-if="course.is_approved == '0' && course.completed_date">Disapproved</p>
                                 </td>
                                 <td>
-                                    <!-- <a href="#" @click="editCourseModal(course.pivot)">
-                                        <i class="fa fa-edit"></i>
-                                    </a> -->
-                                    <!-- <router-link class="project-link mr-3" :to="{ name: 'courses-edit', params: { course: course , id: course.course_id} }"> -->
-                                        <i class="fa fa-edit"></i>
-                                    <!-- </router-link> -->
-                                    
+                                    <a href="#" @click="coureseDetail(course.certificate)">
+                                        <i class="fa fa-file mr-2"></i>
+                                    </a>
+                                     <a href="#" @click="approveCourse(course)">
+                                        <i class="fa fa-check"></i>
+                                    </a>
+
                                 </td>
                             </tr>
                             </tbody></table>
                     </div>
-                    
+
                 </div>
                 <!-- /.card -->
             </div>
         </div>
 
-        <div class="modal fade" id="addNewCourse" tabindex="-1" role="dialog" aria-labelledby="addNewCourseLabel'" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" v-show="!editmode" >Add New </h5>
-                    <h5 class="modal-title" v-show="editmode" >Update </h5>
-                    
-                </div>
-                <form  @submit.prevent="editmode ? updateInfo() : createInfo()">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label for="completed_date" >Completed Date*</label>
-                                <!-- <input type="text" v-model="form.completed_date" class="form-control"  placeholder="Completed Date" :class="{ 'is-invalid': form.errors.has('completed_date') }"> -->
-                                <v-date-picker v-model="form.completed_date"  name="completed_date" placeholder="Completed Date" class="form-control" :class="{ 'is-invalid': form.errors.has('completed_date')}"
-                                  :model-config="{
-                                    type: 'string',
-                                    mask: 'YYYY-MM-DD',
-                                  }"
-                                  :masks="masks"
-                                  mode="date"
-                                >
-                                  <template v-slot="{ inputValue, inputEvents }">
-                                    <input
-                                      class="custom-datepicker"
-                                      :value="inputValue"
-                                      v-on="inputEvents"
-                                    />
-                                  </template>
-                                </v-date-picker>
-                                <error-msg :errors="errors" field="completed_date"></error-msg>
-                            </div>
-                        
-                            <div class="form-group col-md-6">
-                                <label for="file" class="control-label">Certificate Image *</label>
-                                <input type="file" name="certificate_path"  @change="onFileChange"
-                                        placeholder="File"
-                                        class="btn btn-sm btn-info btn-file-upload">
-                                <error-msg :errors="errors" field="certificate_path"></error-msg>
-                            </div>                        
-                        </div>
-                        <div class="modal-body">
-                            <iframe :src="'/'+form.certificate_path" v-if="form.certificate_path && form.certificate_path.length > 8" width="100%" height="500px"></iframe>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-red" data-bs-dismiss="modal"><i class="fas fa-times fa-fw"></i>Close</button>
-                        <button v-show="editmode" :disabled="disabled" type="submit" class="btn btn-green"><i class="fas fa-plus fa-fw"></i>Update</button>
-                        <button v-show="!editmode" :disabled="disabled" type="submit" class="btn btn-primary-blue"><i class="fas fa-plus fa-fw"></i>Create</button>
-                    </div>
-                </form>
+
+    </div>
+    <modal-view  :modal_data="v_modal_data">
+            <div class="card-body table-responsive p-0">
+                    <iframe :src="'/'+certificate" width="100%" height="700px"></iframe>
             </div>
-        </div>
-    </div>
-    </div>
+        </modal-view>
 </template>
 <script>
     import Multiselect from 'vue-multiselect'
@@ -118,6 +70,8 @@
     import { Button, HasError, AlertError } from 'vform/src/components/bootstrap5'
     import Modal from '@/components/Modal';
     import ErrorMsg from '@/components/error-msg';
+    import ModalView from '@/components/ModalView';
+
 
     export default {
         name:'approve-certificates',
@@ -125,7 +79,8 @@
             Multiselect,
             HasError,
             Modal,
-            ErrorMsg
+            ErrorMsg,
+            ModalView
         },
         /*Filling the data into form*/
         data() {
@@ -134,16 +89,70 @@
                 disabled: false,
                 courses: {},
                 errors:{},
+                certificate:null,
                 form: new Form({
                     id: null,
                     course_id: null,
+                    user_id:null,
                     completed_date: null,
                     is_approved: null,
                     certificate_path: null,
-                }),                
+                }),
+                v_modal_data:{
+                    modal_size:'modal-lg',
+                    modal_name:'viewCourseDetails',
+                    title:'Certificate'
+                },
             }
         },
         methods: {
+            coureseDetail(val){
+                this.certificate = null
+                this.certificate = val
+                $('#'+this.v_modal_data.modal_name).modal('show');
+            },
+            approveCourse(val){
+                this.form.reset();
+                console.log(val);
+                this.form.fill(val);
+                this.form.post('/api/v1/approve-course')
+                .then((response) => {
+                        if(response.data.error == 'true'){
+                            this.$swal({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                icon: 'warning',
+                                title: response.data.message,
+                            })
+                            this.$Progress.fail();
+                            this.disabled=false;
+                        }
+                        else{
+                            $('#addNewCourse').modal('hide');
+                            this.$swal({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                icon: 'success',
+                                title: response.data.message,
+                            })
+                            this.disabled=false
+                            this.emitter.emit('AfterCreate'); //Fire an reload event
+                            this.$Progress.finish();
+                        }
+                    }).catch(({response}) => {
+                            this.$swal(
+                                'Error!',
+                                "Something Went Wrong.",
+                                'warning'
+                            )
+                            this.disabled=false;
+                            this.$Progress.fail();
+                    })
+            },
              onFileChange(e){
                 console.log(e.target.files[0]);
                 this.form.certificate_path = e.target.files[0];
@@ -202,7 +211,7 @@
                             this.disabled=false;
                             this.$Progress.fail();
                     })
-            
+
             },
             /*==== Start of Show existing User function ====*/
             async loadCourse() {
@@ -216,9 +225,9 @@
             this.emitter.on("AfterCreate", () => {
                 this.loadCourse();
             })
-            
+
         }
-    
+
     }
 </script>
 
@@ -229,6 +238,8 @@ box-shadow: 0 0 0 0.2rem rgb(73 231 25 / 25%) !important;
 }
 .invalid-feedback{
     display: block;
+    }.mr-2{
+        margin-right:10px
     }
 </style>
 
