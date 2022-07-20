@@ -30,13 +30,14 @@ const EnrolledCourse = () => import('@/views/courses/EnrolledCourse.vue' /* webp
 
 /* Authenticated Component */
 
-const roles = getRoles();
+const roles = store.getters['auth/user'].roles || []
 let routeChildrens
 if (roles.includes('super-admin')) {
+
   routeChildrens = [
     {
         name:"dashboard",
-        path: '/',
+        path: '/dashboard',
         component: Dashboard,
         meta:{
             title:`Dashboard`
@@ -109,10 +110,19 @@ if (roles.includes('super-admin')) {
       }
     ];
 } else {
+
     routeChildrens = [
+        {
+            name:"employee",
+            path: '/user/profile',
+            component: Employee,
+            meta:{
+                title:`Profile Management`
+            }
+          },
       {
           name:"dashboard",
-          path: '/',
+          path: '/dashboard',
           component: UserDashboard,
           meta:{
               title:`Dashboard`
@@ -159,14 +169,8 @@ if (roles.includes('super-admin')) {
         },
         props: true,
       },
-      {
-        name:"employee",
-        path: '/user/profile',
-        component: Employee,
-        meta:{
-            title:`Profile Management`
-        }
-      }
+
+
     ];
 }
 const Routes = [
@@ -196,7 +200,7 @@ const Routes = [
         },
         children: routeChildrens
        },
-    
+
 ]
 
 const router = VueRouter.createRouter({

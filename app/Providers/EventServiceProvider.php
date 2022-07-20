@@ -3,11 +3,13 @@
 namespace App\Providers;
 
 use App\Events\CertificateUpdateEvent;
+use App\Events\CourseApprovalEvent;
 use App\Events\CourseAssignedEvent;
 use App\Events\CourseCreatedEvent;
 use App\Events\CourseUpdateEvent;
 use App\Events\Welcome;
 use App\Listeners\CertificateUpdateListener;
+use App\Listeners\CourseApprovalListener;
 use App\Listeners\CourseAssignedListener;
 use App\Listeners\CourseCreatedListener;
 use App\Listeners\CourseUpdateListener;
@@ -40,6 +42,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         CertificateUpdateEvent::class => [
             CertificateUpdateListener::class,
+        ],
+        CourseApprovalEvent::class => [
+            CourseApprovalListener::class,
         ],
     ];
 

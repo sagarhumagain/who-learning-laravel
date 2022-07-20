@@ -5,7 +5,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" v-show="!editmode" >Add New </h5>
                     <h5 class="modal-title" v-show="editmode" >Update </h5>
-                    
+
                 </div>
                 <form  @submit.prevent="editmode ? updateInfo() : createInfo()">
                     <div class="modal-body">
@@ -98,7 +98,7 @@ export default {
                 this.disabled=false
                 this.$Progress.fail(); //End the progress bar
             })
-                    
+
         },
         updateInfo(){
             this.$Progress.start();
@@ -139,16 +139,16 @@ export default {
                     this.disabled=false;
                     this.$Progress.fail();
             })
-            
-            
+
+
         },
     },
     created(){
         this.emitter.on('editing',(item)=>{
             this.form.fill(item);
         })
-       
+
     }
-    
+
 }
 </script>

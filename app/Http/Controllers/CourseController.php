@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\CertificateUpdateEvent;
+use App\Events\CourseApprovalEvent;
 use App\Events\CourseAssignedEvent;
 use App\Events\CourseCreatedEvent;
 use App\Events\CourseUpdateEvent;
@@ -36,7 +37,7 @@ class CourseController extends BaseController
      */
     public function index(Request $request)
     {
-      #TODO Refactor code to check permission, separate single course view to different method, remove data key.
+        #TODO Refactor code to check permission, separate single course view to different method, remove data key.
         $auth_user = auth()->user();
         if ($auth_user->hasRole('normal-user') && !$request->id) {
             $user_course = User::where('id', $auth_user->id)->firstOrFail();
@@ -135,7 +136,7 @@ class CourseController extends BaseController
             try {
                 if ($user->hasRole('normal-user') && $request->certificate_path && $request->completed_date) {
                     $course_user = CourseUser::where('course_id', $course->id)->where('user_id', $user->id)->firstOrFail();
-        
+
                     $path =  $this->folder_path.DIRECTORY_SEPARATOR.auth()->user()->id;
                     parent::checkFolderExist($path);
                     $fileName = $course->id.'_certificate'.'.'.$request->certificate_path->getClientOriginalExtension();
@@ -201,7 +202,7 @@ class CourseController extends BaseController
         try {
             $course = Course::findOrFail($id);
             if ($course->is_approved == 1 && !$user->hasRole(['super-admin', 'course-admin'])) {
-              throw new \Exception('Please contact the admin to edit courses which are already approved in the system.');
+                throw new \Exception('Please contact the admin to edit courses which are already approved in the system.');
             }
             $course->update($request->all());
             if ($user->hasRole(['super-admin','course-admin'])) {
@@ -267,7 +268,7 @@ class CourseController extends BaseController
                     })->select('users.id as id')
                     ->get();
                     $course->users()->sync($users);
-                    
+
                     CourseAssignmentSetting::where('course_id', $course->id)->update($assignmentFields);
                 } catch (Exception $e) {
                     $data['error'] = true;
@@ -312,7 +313,7 @@ class CourseController extends BaseController
         if ($user->hasRole('super-admin')) {
             $user_course = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
             ->join('users', 'course_user.user_id', '=', 'users.id')
-            ->select(DB::raw('courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date'))
+            ->select(DB::raw('course_user.user_id as user_id,courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date,course_user.certificate_path as certificate'))
             ->where('course_user.is_approved', null)
             ->whereNotNull('course_user.completed_date')
             ->paginate(20);
@@ -333,11 +334,11 @@ class CourseController extends BaseController
 
     public function enrollToCourse(Request $request)
     {
-      $course_id = $request->course_id;
-      $user = auth()->user();
-      $count = CourseUser::where('user_id', $user->id)->where('course_id', $course_id)->count();
-      if($count == 0) {
-        CourseUser::create([
+        $course_id = $request->course_id;
+        $user = auth()->user();
+        $count = CourseUser::where('user_id', $user->id)->where('course_id', $course_id)->count();
+        if ($count == 0) {
+            CourseUser::create([
           'user_id' => $user->id,
           'course_id' => $course_id
         ]);
@@ -352,8 +353,8 @@ class CourseController extends BaseController
      */
     public function listEnrolledCourse(Request $request)
     {
-      #TODO Refactor code to check permission, separate single course view to different method, remove data key.
-      $auth_user = auth()->user();
+        #TODO Refactor code to check permission, separate single course view to different method, remove data key.
+        $auth_user = auth()->user();
         $user = User::where('id', $auth_user->id)->firstOrFail();
         $course_user = $user->courses()->paginate(20);
         return $course_user;
@@ -374,5 +375,19 @@ class CourseController extends BaseController
             $user_course = [];
         }
         return $user_course;
+    }
+    public function approveCourse(Request $request)
+    {
+        try {
+            $course_user = CourseUser::where('user_id', $request->user_id)->where('course_id', $request->course_id)->first();
+            $course_user->update(['is_approved'=> 1]);
+            event(new CourseApprovalEvent($course_user));
+            $data['error'] = false;
+            $data['message'] = "Course Updated Successfully";
+        } catch (Exception $e) {
+            $data['error'] = true;
+            $data['message'] = $e->getMessage();
+        }
+        return response()->json($data);
     }
 }

@@ -84,7 +84,6 @@ import Card from '@/components/Card'
 import BarChart from '@/components/BarChart'
 import DoughnutChart from '@/components/DoughnutChart'
 import Table from '@/components/Table'
-import variables from '@/helpers/constants';
 
 export default {
     name:"dashboard",
@@ -180,5 +179,7 @@ export default {
         rowData: response.data
       };
   },
+
+
 }
 </script>

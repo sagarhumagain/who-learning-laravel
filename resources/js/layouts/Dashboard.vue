@@ -32,7 +32,7 @@
                         </li>
                     </ul>
                 </div>
-                
+
             </div>
         </nav>
         <main class="main-view mt-3" :class="[{'collapsed' : collapsed}, {'onmobile' : isOnMobile}]">
@@ -45,42 +45,15 @@
 import {mapActions} from 'vuex';
 import Notification from '@/components/Notification';
 import { getRoles } from '@/helpers/auth';
+import store from '@/store';
+
 export default {
     name: "dashboard-layout",
     components: {
         Notification,
     },
-    methods: {
-      
-      onCollapse (collapsed) {
-        console.log(collapsed);
-        // this.collapsed = collapsed
-      },
-      onItemClick (event, item) {
-        console.log('onItemClick');
-      },
-      ...mapActions({
-            signOut:"auth/logout"
-        }),
-        async logout(){
-            await axios.post('/logout').then(({data})=>{
-                this.signOut()
-                this.$router.push({name:"login"})
-            });
-        },
-        onResize () {
-          if (window.innerWidth <= 767) {
-            this.isOnMobile = true
-            this.collapsed = true
-          } else {
-            this.isOnMobile = false
-            this.collapsed = false
-          }
-        }
-    },
-    
-    data(){
-        const roles = getRoles();
+     data(){
+        const roles = store.getters['auth/user'].roles
         let menuItems;
         if (roles.includes('super-admin')) {
           menuItems = [
@@ -89,7 +62,7 @@ export default {
                   hiddenOnCollapse: true
                 },
                 {
-                  href: '/',
+                  href: '/dashboard',
                   title: 'Dashboard',
                   icon: 'fa fa-gauge'
                 },
@@ -149,7 +122,7 @@ export default {
                   hiddenOnCollapse: true
                 },
                 {
-                  href: '/',
+                  href: '/dashboard',
                   title: 'Dashboard',
                   icon: 'fa fa-gauge'
                 },
@@ -172,6 +145,12 @@ export default {
                     }
                   ]
                 },
+                {
+                href: '/user/profile',
+                title: 'View profile',
+                icon: 'fa fa-user'
+                },
+
               ];
         }
         return {
@@ -180,6 +159,38 @@ export default {
             user:this.$store.state.auth.user,
             menu: menuItems
         }
-    }
+    },
+    methods: {
+
+      onCollapse (collapsed) {
+        console.log(collapsed);
+        // this.collapsed = collapsed
+      },
+      onItemClick (event, item) {
+        console.log('onItemClick');
+      },
+      ...mapActions({
+            signOut:"auth/logout"
+        }),
+        async logout(){
+            await axios.post('/logout').then(({data})=>{
+                this.signOut()
+                this.$router.push({name:"login"})
+            });
+        },
+        onResize () {
+          if (window.innerWidth <= 767) {
+            this.isOnMobile = true
+            this.collapsed = true
+          } else {
+            this.isOnMobile = false
+            this.collapsed = false
+          }
+        },
+
+    },
+
+
+
 }
 </script>

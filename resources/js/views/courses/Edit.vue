@@ -116,7 +116,7 @@
                             </multiselect>
 
                           </div>
-                          <div v-if="this.role.isNormalUser()"> 
+                          <div v-if="this.role.isNormalUser()">
                             <div class="form-group col-md-8">
                                 <label for="completed_date" >Completed Date</label>
                                 <v-date-picker v-model="form.completed_date"  name="completed_date" placeholder="Completed Date" class="form-control" :class="{ 'is-invalid': form.errors.has('completed_date')}"
@@ -139,7 +139,7 @@
                                 </v-date-picker>
                                 <error-msg :errors="errors" field="completed_date"></error-msg>
                             </div>
-                        
+
                             <div class="form-group col-md-8">
                                 <label for="file" class="control-label">Certificate Image </label>
                                 <input type="file" name="certificate_path"  @change="onFileChange"
@@ -147,9 +147,9 @@
                                         :disabled="course_user_disabled"
                                         class="btn btn-sm btn-info btn-file-upload">
                                 <error-msg :errors="errors" field="certificate_path"></error-msg>
-                            </div>                        
+                            </div>
                           </div>
-                         
+
                           <button type="submit" :disabled="disabled" class="btn-fill">
                             Update
                           </button>
@@ -206,7 +206,8 @@ export default {
               course_category_ids: null,
               completed_date: null,
               certificate_path:null,
-            })
+            }),
+            course : this.$route.params.course
 
         }
     },

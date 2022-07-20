@@ -44,10 +44,10 @@ Route::group(
     function () {
         Route::post('/enroll/course', [CourseController::class, 'enrollToCourse']);
         Route::get('/course_user', [CourseController::class, 'listEnrolledCourse']);
-        
+
         Route::apiResources(['user'=>UserController::class]);
         Route::apiResources(['contract'=>ContractController::class]);
-       
+
         Route::post('updatePassword', 'ProfileController@updatePassword');
 
         Route::apiResources(['profile' => ProfileController::class]);
@@ -94,8 +94,10 @@ Route::group(
         Route::get('/statistics/user-course-completed', [StatisticsController::class, 'fetchUserCompletedCourse']);
         Route::get('/statistics/user-course-deadline', [StatisticsController::class, 'fetchUserUpcomingDeadlines']);
         Route::get('/statistics/user-yearly-progress', [StatisticsController::class, 'fetchUserYearlyProgress']);
-        
+
         Route::get('/approvals/courses', [CourseController::class, 'listUnapprovedCourses']);
+        Route::post('/approve-course', [CourseController::class, 'approveCourse']);
+
         Route::get('/suggest/courses', [CourseController::class, 'listSuggestedCourses']);
         Route::get('/deadlines-exceed', [CourseController::class, 'getExceededDeadlines']);
     }

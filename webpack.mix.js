@@ -49,4 +49,5 @@ mix.webpackConfig({
 
 mix.js('resources/js/app.js', 'public/js')
     .vue()
-    .sass('resources/sass/app.scss', 'public/css').version();
+    .sass('resources/sass/app.scss', 'public/css').version()
+    .browserSync('http://127.0.0.1:8000');

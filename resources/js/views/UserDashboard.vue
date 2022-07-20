@@ -22,7 +22,7 @@
                 <Card title="Total Completed Courses">
                   {{counts.total_completed_courses}}
                 </Card>
-            </div> 
+            </div>
             <div class="col-3">
                 <Card title="Required Learning Hours">
                   {{counts.course_duration_required}}
@@ -76,7 +76,7 @@
             </div>
             <SuggestedCourse />
         </div>
-        
+
     </div>
 </template>
 
@@ -89,7 +89,6 @@ import Table from '@/components/Table'
 import variables from '@/helpers/constants';
 import LineChart from '@/components/LineChart';
 import SuggestedCourse from '@/components/SuggestedCourse';
-
 
 export default {
     name:"dashboard",
@@ -180,5 +179,9 @@ export default {
         ...response.data
       ];
     },
+  beforeMount(){
+    // location.reload();
+  }
+
 }
 </script>
