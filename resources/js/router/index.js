@@ -3,6 +3,8 @@ import * as VueRouter from 'vue-router'
 import store from '@/store'
 import { getRoles } from '@/helpers/auth'
 
+import Nav from '@/components/Nav'
+
 
 
 /* Guest Component */
@@ -27,13 +29,13 @@ const Employee = () => import('@/views/users/Employee.vue' /* webpackChunkName: 
 const ApproveCourses = () => import('@/views/approvals/Courses.vue' /* webpackChunkName: "resource/js/components/approvalcourses" */)
 const ApproveCertificates = () => import('@/views/approvals/Certificates.vue' /* webpackChunkName: "resource/js/components/certificates" */)
 const EnrolledCourse = () => import('@/views/courses/EnrolledCourse.vue' /* webpackChunkName: "resource/js/components/assignedcourse" */)
-
 /* Authenticated Component */
 
-const roles = store.getters['auth/user'].roles || []
+// const roles = store.getters['auth/user'].roles || []
+const roles = store.state.auth.user.roles || []
+console.log(store.state.auth.user)
 let routeChildrens
-if (roles.includes('super-admin')) {
-
+if (roles?.includes('super-admin')) {
   routeChildrens = [
     {
         name:"dashboard",
@@ -110,7 +112,6 @@ if (roles.includes('super-admin')) {
       }
     ];
 } else {
-
     routeChildrens = [
         {
             name:"employee",

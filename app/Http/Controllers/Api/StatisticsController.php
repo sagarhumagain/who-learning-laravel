@@ -28,7 +28,7 @@ class StatisticsController extends Controller
       '#EF3842' //color-red
     ];
   //superadmin-start
-   
+
     public function fetchTopLearners()
     {
         $data =[];
@@ -46,7 +46,7 @@ class StatisticsController extends Controller
         ->select(DB::raw('courses.name as name, course_user.completed_date as completed_date'))
         ->where('course_course_category.course_category_id', $courseCategoryId)
         ->take(6)->get();
-        
+
         $groupedCourses = $courses->groupBy('name');
         foreach($groupedCourses as $courseName => $courses) {
           $completed = $remaining = 0;
@@ -143,7 +143,7 @@ class StatisticsController extends Controller
       return response()->json($data);
     }
     //superadmin-end
-    
+
     //normal-user
 
     public function fetchUserDashboardStats()
@@ -155,7 +155,7 @@ class StatisticsController extends Controller
       ->where('course_user.user_id', $user->id)->get();
       $data['total_enrolled_courses'] = $courseUsers->count();
       $data['total_completed_courses'] = 0;
-      $data['course_duration_required'] = 100; 
+      $data['course_duration_required'] = 100;
       $data['course_duration_completed'] = 0;
       foreach ($courseUsers as $courseUser) {
         if($courseUser->credit_hours && $courseUser->is_approved) {
@@ -212,6 +212,6 @@ class StatisticsController extends Controller
       $finalData = array_values($data);
       return response()->json($finalData);
     }
-    
+
 
 }

@@ -24,7 +24,7 @@
                           </div>
                           <div class="form-group col-lg-12 col-md-12">
                               <label for="credit_hours" >Credit Hours *</label>
-                              <input v-model="form.credit_hours" type="number" name="credit_hours" placeholder="Credit Hours" class="form-control" :class="{ 'is-invalid': form.errors.has('credit_hours')}">
+                              <input v-model="form.credit_hours" type="text" name="credit_hours" placeholder="Credit Hours" class="form-control" :class="{ 'is-invalid': form.errors.has('credit_hours')}">
                               <error-msg :errors="errors" field="credit_hours"></error-msg>
                           </div>
                           <div class="form-group col-lg-12 col-md-12">
@@ -114,7 +114,7 @@
                             </multiselect>
 
                           </div>
-                          <div v-if="this.role.isNormalUser()"> 
+                          <div v-if="this.role.isNormalUser()">
                             <div class="form-group col-md-8">
                                 <label for="completed_date" >Completed Date</label>
                                 <!-- <input type="text" v-model="form.completed_date" class="form-control"  placeholder="Completed Date" :class="{ 'is-invalid': form.errors.has('completed_date') }"> -->
@@ -136,17 +136,17 @@
                                 </v-date-picker>
                                 <error-msg :errors="errors" field="completed_date"></error-msg>
                             </div>
-                        
+
                             <div class="form-group col-md-8">
                                 <label for="file" class="control-label">Certificate Image </label>
                                 <input type="file" name="certificate_path"  @change="onFileChange"
                                         placeholder="File"
                                         class="btn btn-sm btn-info btn-file-upload">
                                 <error-msg :errors="errors" field="certificate_path"></error-msg>
-                            </div>                        
+                            </div>
                           </div>
-                        
-                        
+
+
                           <button type="submit" :disabled="form.busy" class="btn-fill">
                             Create
                           </button>
@@ -256,7 +256,7 @@ export default {
                     this.$Progress.finish();
                     this.$router.push({name:'courses-list'})
                 }
-            } catch ({response}) { 
+            } catch ({response}) {
                 if(response.status == 500) {
                      this.$swal(
                         'Error!',
@@ -279,7 +279,7 @@ export default {
     },
     created() {
         // this.emitter.on("afterSuccess", () => {
-            
+
         // });
     }
 }

@@ -9,14 +9,14 @@ export default {
         authenticated:false,
         user:{}
     },
-    getters:{
-        authenticated(state){
-            return state.authenticated
-        },
-        user(state){
-            return state.user
-        }
-    },
+    // getters:{
+    //     authenticated(state){
+    //         return state.authenticated
+    //     },
+    //     user(state){
+    //         return state.user
+    //     }
+    // },
     mutations:{
         SET_AUTHENTICATED (state, value) {
             state.authenticated = value
@@ -28,14 +28,11 @@ export default {
     },
     actions:{
         async login({commit}){
-
           try{
             const response = await $api.auth.getProfile();
             commit('SET_USER',response.data);
             commit('SET_AUTHENTICATED',true);
-            router.push({name:'dashboard'})
-                location.reload();
-
+            await router.push({name:'dashboard'})
           }
           catch (e) {
             commit('SET_USER',{})

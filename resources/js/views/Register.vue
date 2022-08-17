@@ -2,9 +2,12 @@
     <div class="container h-100">
         <div class="row h-100 align-items-center">
             <div class="col-12 col-md-6 offset-md-3">
-                <div class="card shadow sm">
+                <div class="card shadow sm mt-4 rounded-0">
                     <div class="card-body">
-                        <h1 class="text-center">Register</h1>
+                        <div class="text-center">
+                            <img src="/images/logo.png" alt="WHO Logo" height="100">
+                        </div>
+                        <h1 class="">Register</h1>
                         <hr/>
                         <form action="javascript:void(0)" @submit="register" class="row" method="post">
                             <div class="form-group col-12">
@@ -21,14 +24,14 @@
                             </div>
                             <div class="form-group col-12">
                                 <label for="password_confirmation" class="font-weight-bold">Confirm Password</label>
-                                <input type="password_confirmation" name="password_confirmation" v-model="user.password_confirmation" id="password_confirmation" placeholder="Enter Password" class="form-control">
+                                <input type="password" name="password_confirmation" v-model="user.password_confirmation" id="password_confirmation" placeholder="Enter Password" class="form-control">
                             </div>
-                            <div class="col-12 mb-2">
-                                <button type="submit" :disabled="processing" class="btn btn-primary btn-block">
+                            <div class="col-12 mb-2 text-center">
+                                <button type="submit" :disabled="processing" class="btn-fill mt-3">
                                     {{ processing ? "Please wait" : "Register" }}
                                 </button>
                             </div>
-                            <div class="col-12 text-center">
+                            <div class="col-12 text-center mt-3">
                                 <label>Already have an account? <router-link :to="{name:'login'}">Login Now!</router-link></label>
                             </div>
                         </form>

@@ -33,11 +33,11 @@ dom.watch();
 import Functions from "./functions";
 
 
+
+
 // /*Sweet alert start*/
 
 const app = createApp({});
-
-app.config.globalProperties.$function = new Functions(app);
 app.use(router);
 app.use(store);
 app.use(VueSidebarMenu);
@@ -102,7 +102,7 @@ const emitter = mitt();
 app.config.globalProperties.emitter = emitter;
 
 import RoleGate from "./ACL/role-gate";
-const user= store.getters['auth/user']
+const user= store.state.auth.user;
 const roles = user.roles
 app.config.globalProperties.role = new RoleGate(roles);
 
@@ -120,6 +120,7 @@ const options = {
     confirmButtonColor: '#41b882',
     cancelButtonColor: '#ff7674',
   };
+app.config.globalProperties.$function = new Functions(app);
 
 app.use(VueSweetalert2, options);
 app.mount('#app');

@@ -25,13 +25,12 @@ class CourseCreateValidation extends FormRequest
     {
         return [
             'name' => 'required',
-            'description' => 'required',
             'credit_hours' => 'required|numeric',
             'url' => 'required|url',
             'source' => 'required',
             'due_date' => '',
             'completed_date'  => 'required_with:certificate_path',
-            'certificate_path'  => 'required_with:completed_date'
+            'certificate_path' => 'required_with:completed_date',
         ];
     }
 }

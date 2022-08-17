@@ -24,23 +24,23 @@
 
                             </tr>
                             <tr v-for="(user, index) in users.data" :key="user.id">
-                                
+
                                 <td>{{index + 1}}</td>
                                 <td>{{user.name}}
                                 </td>
                                 <td>{{user.email}}</td>
-                                
+
                                 <td>
                                     <a href="#" @click="editUserModal(user)" class="m-2 color-sec-blue">
                                         <i class="fa fa-edit" title="Edit User"></i>
                                     </a>
-                                    <!-- <a href="#" @click="verify(user,0)" class="m-2 color-green">
-                                        <i class="fa fa-check" title="Verify User"></i>
-                                    </a> -->
+                                     <a href="#" @click="editUserProfile(user)" class="">
+                                        <i class="fa fa-user"></i>
+                                    </a>
                                     <a href="#" @click="deleteUser(user.id)" class="m-2 color-red">
                                         <i class="fa fa-trash" title="Delete User"></i>
                                     </a>
-                                                                    
+
                                 </td>
                                 <td>
                                     <div class="accordion" id="accordionExample">
@@ -65,16 +65,17 @@
                                                             <a href="#" @click="editContractModal(contract)" class="m-2">
                                                                 <i class="fa fa-edit"></i>
                                                             </a>
+
                                                             <a href="#" @click="deleteUser(contract.id)" class="">
                                                                 <i class="fa fa-trash"></i>
                                                             </a>
-                                                                                            
+
                                                         </td>
 
                                                     </tr>
                                                     </tbody>
                                                 </table>
-                                
+
 
                                             </div>
                                             </div>
@@ -102,13 +103,13 @@
                                                         <td>
                                                             <a href="#" @click="viewCertificate(course.pivot)" class="">
                                                                 <i class="fa fa-edit"></i>
-                                                            </a>                          
+                                                            </a>
                                                         </td>
 
                                                     </tr>
                                                     </tbody>
                                                 </table>
-                                
+
 
                                             </div>
                                             </div>
@@ -118,7 +119,7 @@
                             </tr>
                             </tbody></table>
                     </div>
-                    
+
                 </div>
                 <!-- /.card -->
             </div>
@@ -151,7 +152,7 @@
                     :taggable="true"
                     >
                 </multiselect>
-            </div>    
+            </div>
             <div class="form-group col-md-6">
                 <h6>Pillars</h6>
                 <multiselect v-model="form.pillar_id"
@@ -163,21 +164,8 @@
                     :taggable="true"
                     >
                 </multiselect>
-            </div> 
-            <div class="form-group col-md-6">
-                <h6>Supervisor</h6>
-                <multiselect v-model="form.supervisor_user_id"
-                    tag-placeholder="Select Supervisor"
-                    placeholder="Select Supervisor"
-                    label = "name"
-                    track_by = "id"
-                    :options="Object.keys(supervisors).map(Number)"
-                    :custom-label="opt => supervisors[opt]"
-                    :multiple="false"
-                    :allow-empty="false"
-                    :taggable="true">
-                </multiselect>
-            </div>    
+            </div>
+
 
             <div class="form-group col-md-6">
                 <label for="password" >Password *</label>
@@ -191,10 +179,29 @@
                     <has-error :form="form" field="confirmpassword"></has-error>
             </div>
         </modal>
+
+<!-- supervisor -->
+        <modal :form="pform" :modal_data="p_modal_data" :editmode="true" :api_url="'v1/profile'  ">
+            <div class="form-group col-md-12">
+                <h6>Supervisor</h6>
+                <multiselect v-model="pform.supervisor_user_id"
+                    tag-placeholder="Select Supervisor"
+                    placeholder="Select Supervisor"
+                    label = "name"
+                    track_by = "id"
+                    :options="Object.keys(supervisors).map(Number)"
+                    :custom-label="opt => supervisors[opt]"
+                    :multiple="false"
+                    :allow-empty="false"
+                    :taggable="true">
+                </multiselect>
+            </div>
+        </modal>
+
 <!-- contract modal -->
         <modal :form="form" :modal_data="c_modal_data" :editmode="editmode" :api_url="'v1/contract'">
             <h4 class="modal-header">Contract Information : {{this.form.name}}</h4>
-            
+
             <div class="form-group col-md-6">
                 <label for="first_name" >Contract Start Date*</label>
                     <input type="text" v-model="form.contract_start" class="form-control"  placeholder="Contract Start Date" :class="{ 'is-invalid': form.errors.has('contract_start') }">
@@ -217,7 +224,7 @@
                     :taggable="true"
                     >
                 </multiselect>
-            </div> 
+            </div>
 
             <div class="form-group col-md-6">
                 <h6>Designation</h6>
@@ -231,7 +238,7 @@
                     :taggable="true"
                     >
                 </multiselect>
-            </div> 
+            </div>
             <div class="form-group col-md-6">
                 <h6>Contract Type</h6>
                 <multiselect v-model="form.contract_type_id"
@@ -244,7 +251,7 @@
                     :taggable="true"
                     >
                 </multiselect>
-            </div> 
+            </div>
             <div class="form-group col-md-6">
                 <h6>Staff Category</h6>
                 <multiselect v-model="form.staff_category_id"
@@ -257,7 +264,7 @@
                     :taggable="true"
                     >
                 </multiselect>
-            </div> 
+            </div>
             <div class="col-md-6 mt-3">
                 <div class="form-group  form-control">
                     <input v-model="form.is_active" true-value="1" false-value="0" type="checkbox" name="is_active"  class="form-check-input" :class="{ 'is-invalid': form.errors.has('is_active') }">
@@ -267,7 +274,7 @@
                 </div>
             </div>
         </modal>
-    
+
     </div>
 </template>
 <script>
@@ -303,6 +310,10 @@
                     modal_size:'modal-lg',
                     modal_name:'addNewContract'
                 },
+                p_modal_data:{
+                    modal_size:'',
+                    modal_name:'addProfile'
+                },
                 isActive: true,
                 fc: false,
 
@@ -326,9 +337,14 @@
                     staff_category_id:null,
                     contract_type_id:null,
                 }),
-                
+                pform: new Form({
+                    id: null,
+                    user_id:null,
+                    supervisor_user_id:null,
+                }),
+
                 api_url:null,
-                
+
             }
         },
         methods: {
@@ -353,6 +369,19 @@
                 user_data.pillar_id = user.pillars.length ? user.pillars : null;
                 user_data.supervisor_user_id = user.employee ? user.employee.supervisor_user_id : null;
                 $('#addNewUser').modal('show');
+                this.emitter.emit('editing', user_data);
+            },
+            editUserProfile(user){
+                const user_data = user
+                user_data.user_id = user.id
+                if(user_data.employee){
+                    user_data.supervisor_user_id = user.employee.supervisor_user_id
+                    user_data.id = user_data.employee.id
+                }else{
+                    user_data.id = null
+                }
+                this.editmode = true;
+                $('#addProfile').modal('show');
                 this.emitter.emit('editing', user_data);
             },
             editContractModal(contract){
@@ -445,9 +474,9 @@
             this.emitter.on("AfterCreate", () => {
                 this.loadUsers();
             })
-            
+
         }
-    
+
     }
 </script>
 

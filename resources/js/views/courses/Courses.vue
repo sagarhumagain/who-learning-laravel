@@ -4,7 +4,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3>Course Management</h3>
+                        <h3>Courses</h3>
 
                         <div class="card-tools">
                             <button type="" class="btn btn-fill" @click="newCourse"><i class="fa fa-book fa-fw"></i> Add New Course</button>
@@ -31,7 +31,7 @@
                                 <td>{{course.due_date}}</td>
                                 <td>{{course.description}}</td>
                                 <td>
-                                    <p v-for="(cat,index) in course.course_categories" :key="cat.id" >{{index+1+') '}}{{cat.name}}</p> 
+                                    <p v-for="(cat,index) in course.course_categories" :key="cat.id" >{{index+1+') '}}{{cat.name}}</p>
                                 </td>
                                 <td v-show="role.isSuperAdmin() || role.isCourseAdmin()">
                                     <span v-if="course.is_approved == null" class="color-yellow">Approval Pending</span>
@@ -42,7 +42,7 @@
                                     <!-- <a href="#" @click="editCourse(course,course.id)" class="btn btn-sm btn-success mr-2">Edit
                                         <i class="fa fa-edit"></i>
                                     </a> -->
-                                    <div v-if="this.role.isNormalUser()"> 
+                                    <div v-if="this.role.isNormalUser()">
                                        <a href="#" class="m-2 color-primary" @click="enrollCourse(course.id)" >
                                         <i class="fa fa-circle-arrow-right"  title="Enroll Course"></i>
                                       </a>
@@ -51,7 +51,7 @@
                                         <router-link class="project-link m-2 color-sec-blue" :to="{ name: 'courses-edit', params: { course: course , id: course.id} }">
                                           <i class="fa fa-edit"  title="Edit Course"></i>
                                         </router-link>
-                                      
+
                                         <a href="#" class="m-2 color-red" @click="deleteCourse(course.id)" >
                                             <i class="fa fa-trash"  title="Delete Course"></i>
                                         </a>
@@ -62,19 +62,19 @@
                                             <i class="fa fa-times" title="Disapprove Course"></i>
                                         </a>
                                     </div>
-                                     
-                                   
+
+
                                 </td>
                             </tr>
                             </tbody></table>
                     </div>
-                    
+
                 </div>
                 <!-- /.card -->
             </div>
         </div>
 
-      
+
     </div>
 </template>
 <script>
@@ -104,9 +104,9 @@
                     url:null,
                     is_approved:null
                 }),
-                
+
                 api_url:null,
-                
+
             }
         },
         methods: {
@@ -128,7 +128,7 @@
                         this.form.fill(course)
                         this.form.is_approved = val;
                         const response  = await this.form.put('/api/v1/courses/'+this.form.id)
-                    
+
                         if(response.data.error == true){
                             this.$swal({
                                 toast: true,
@@ -172,11 +172,11 @@
                             )
                         }
                     }
-                    
-                }
-            
 
-                
+                }
+
+
+
 
             },
             deleteCourse(id) {
@@ -223,10 +223,11 @@
                                 'You have successfully enrolled to the course.',
                                 'success'
                             );
+                            this.emitter.emit('AfterCreate')
                         } catch(e) {
                           this.$swal(
                               'Warning!',
-                              'Couldnot enroll to course.',
+                              'Could not enroll to course.',
                               'warning'
                           )
                         }
@@ -234,13 +235,13 @@
 
                 })
             },
-            
+
 
             /*==== Start of Show existing Course function ====*/
             async loadCourses() {
                 const {data}  = await  axios.get("/api/v1/courses")
                 this.courses = data.data,
-                
+
                 this.api_url = 'api/courses'
                 /*==== End of existing Course ====*/
             },
@@ -255,10 +256,10 @@
                   this.loadCourses();
               })
             // }
-            
-            
+
+
         }
-    
+
     }
 </script>
 

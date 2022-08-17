@@ -6,9 +6,9 @@
                 <!-- Profile Image -->
                 <div class="card card-primary card-outline">
                     <div class="card-body box-profile">
-                        
+
                         <div class="text-center">
-                            
+
                             <div class="profile-pic">
                             <label class="-label" for="file">
                                 <span class="glyphicon glyphicon-camera"></span>
@@ -32,15 +32,15 @@
                                 <a href="" traget="blank" class="float-right"><i class="fa fa-phone"></i> </a>
                                 <b>{{form.primary_contact}}</b>
                             </li>
-                            
-                           
+
+
                         </ul>
                     </div>
                     <!-- /.card-body -->
                 </div>
                 <!-- /.card -->
             </div>
-          
+
             <!-- /.col -->
             <div class="col-md-12 mt-5">
                 <div class="card">
@@ -96,30 +96,30 @@
 
                                                 <input type="text" v-model="form.name" class="form-control"  placeholder="First Name" :class="{ 'is-invalid': form.errors.has('name') }">
                                                 <has-error :form="form" field="name"></has-error>
-                                                
+
 
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label for="" >Primary Contact *</label>
                                                 <input type="number" v-model="form.primary_contact" class="form-control"  placeholder="Primary Contact No." :class="{ 'is-invalid': form.errors.has('primary_contact') }">
-                                                <has-error :form="form" field="primary_contact"></has-error> 
+                                                <has-error :form="form" field="primary_contact"></has-error>
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label for="" >Secondary Contact *</label>
                                                 <input type="email" v-model="form.secondary_contact" class="form-control"  placeholder="Secondary Contact" :class="{ 'is-invalid': form.errors.has('secondary_contact') }">
                                                 <has-error :form="form" field="secondary_contact"></has-error>
-                                                
+
                                         </div>
-                                        
-                                        
+
+
                                         <div class="form-group col-md-4">
                                             <label for="" >Address *</label>
 
                                                 <input type="text" v-model="form.address" class="form-control" placeholder="Address" :class="{ 'is-invalid': form.errors.has('address') }">
                                                 <has-error :form="form" field="address"></has-error>
-                                                
+
                                         </div>
-                                        
+
                                         <div class="form-group col-md-4">
                                             <label for="photo" class="control-label">Signature Image *</label>
                                                 <input type="file" accept="image/png" id="signature" @change="$function.imageUpload($event, form ,'signature')"  class="form-control">
@@ -128,7 +128,7 @@
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label for="supervisor" class="control-label">Supervisor*</label>
-                                            <multiselect v-model="form.supervisor_user_id"
+                                            <multiselect v-model="form.supervisor_user_id" disabled
                                                 tag-placeholder="Select Supervisor"
                                                 placeholder="Select Supervisor"
                                                 label = "name"
@@ -167,6 +167,7 @@
 import Multiselect from 'vue-multiselect'
 
     import Form from 'vform'
+    import {mapActions} from 'vuex'
     import { Button, HasError, AlertError } from 'vform/src/components/bootstrap5'
     export default {
         components: {
@@ -176,8 +177,8 @@ import Multiselect from 'vue-multiselect'
         data() {
             return {
                 isActive:true,
-                fc:false, 
-                hide:true,              
+                fc:false,
+                hide:true,
                 updated:true,
                 user: this.$store.state.auth.user,
                 supervisors: this.$store.state.choice.supervisors,
@@ -200,9 +201,9 @@ import Multiselect from 'vue-multiselect'
                 })
             }
         },
-        
+
         methods: {
-            
+
             check(){
                 if(this.form.newpassword == this.form.confirmpassword){
                     this.isActive = false ;
@@ -213,7 +214,7 @@ import Multiselect from 'vue-multiselect'
                     this.fc = false;
                 }
             },
-            
+
             updatePassword() {
                 this.$Progress.start();
                 if(this.form.newpassword == this.form.confirmpassword){
@@ -256,8 +257,7 @@ import Multiselect from 'vue-multiselect'
                                 response.data.message,
                                 'success'
                             )
-                        this.$Progress.finish();
-                        await this.$store.dispatch("auth/login");
+                            await this.$store.dispatch("auth/login");
                         this.emitter.emit('AfterCreate'); //Fire an reload event
                         this.updated = true
                     }else{
@@ -277,17 +277,22 @@ import Multiselect from 'vue-multiselect'
                     this.$Progress.fail();
                 }
             },
-            async loadProfile(){                
-                if(this.$store.state.auth.user.employee != null){
+            async loadProfile(){
+                if(!this.user){
+                    await this.signIn();
+                }
+                if(this.$store.state.auth.user.employee){
                         this.form.fill(this.$store.state.auth.user.employee);
-                        this.form.name = this.$store.state.auth.user.name;
                 }else{
-                    this.form.name = this.$store.state.auth.user.name;
-                    this.form.secondary_contact = this.$store.state.auth.user.email;
                     this.form.user_id = this.$store.state.auth.user.id;
                 }
+                    this.form.name = this.$store.state.auth.user.name;
+                    this.form.secondary_contact = this.$store.state.auth.user.email;
             }
         },
+       ...mapActions({
+            signIn:'auth/login',
+        }),
         created() {
             this.loadProfile();
             this.emitter.on("AfterCreate",()=>{

@@ -3,7 +3,7 @@
         <div class="sidebar-main">
           <sidebar-menu :collapsed="collapsed" :menu="menu" v-model:collapsed="collapsed"
             @update:collapsed="onCollapse"
-            @item-click="onItemClick"/>
+           />
         </div>
         <nav class="navbar navbar-expand-lg navbar-main" :class="[{'collapsed' : collapsed}, {'onmobile' : isOnMobile}]">
             <a href="/" class="navbar-brand">WHO Learning Tracker</a>
@@ -53,9 +53,9 @@ export default {
         Notification,
     },
      data(){
-        const roles = store.getters['auth/user'].roles
+        const roles = store.state.auth.user.roles
         let menuItems;
-        if (roles.includes('super-admin')) {
+        if (roles?.includes('super-admin')) {
           menuItems = [
                 {
                   header: 'Main Navigation',
@@ -163,11 +163,11 @@ export default {
     methods: {
 
       onCollapse (collapsed) {
-        console.log(collapsed);
+        // console.log(collapsed);
         // this.collapsed = collapsed
       },
       onItemClick (event, item) {
-        console.log('onItemClick');
+        // console.log('onItemClick');
       },
       ...mapActions({
             signOut:"auth/logout"

@@ -1,15 +1,20 @@
 <template>
+<Nav/>
     <div class="container h-100">
         <div class="row h-100 align-items-center">
             <div class="col-12 col-md-6 offset-md-3">
-                <div class="card shadow sm">
+                <div class="card shadow sm mt-4 rounded-0">
                     <div class="card-body">
-                      <img src="/images/logo.svg" alt="WHO Logo" height="100">
+                        <div class="text-center">
+                            <img src="/images/logo.png" alt="WHO Logo" height="100">
+                        </div>
 
-                        <h5 class="mt-8">Login</h5>
+                        <h5 class="mt-8">Welcome Back !</h5>
+                        <a href="#" class="mt-2"> Sign in to continue.</a>
+
                         <hr/>
                         <form action="javascript:void(0)" class="row" method="post">
-                            <div class="form-group col-12">
+                            <div class="form-group col-12 mb-3">
                                 <label for="email" class="font-weight-bold">Email</label>
                                 <input type="text" v-model="formData.email" name="email" id="email" class="form-control">
                             </div>
@@ -17,12 +22,12 @@
                                 <label for="password" class="font-weight-bold">Password</label>
                                 <input type="password" v-model="formData.password" name="password" id="password" class="form-control">
                             </div>
-                            <div class="col-12 mb-2">
-                                <button type="submit" :disabled="processing" @click="login" class="btn-fill">
+                            <div class="col-12 mb-2 text-center mt-3 ">
+                                <button type="submit" :disabled="processing" @click="login" class="btn-fill ">
                                     {{ processing ? "Please wait" : "Login" }}
                                 </button>
                             </div>
-                            <div class="col-12 text-center">
+                            <div class="col-12 text-center mt-3">
                                 <label>Don't have an account? <router-link :to="{name:'register'}">Register Now!</router-link></label>
                             </div>
                         </form>
@@ -35,8 +40,9 @@
 
 <script>
 import { ref } from 'vue'
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { useToast } from "vue-toastification";
+import Nav from '../components/Nav.vue';
 
 export default {
     name:"login",
@@ -55,21 +61,27 @@ export default {
             processing:false
         }
     },
+    components:{
+        Nav
+    },
+
     methods:{
         ...mapActions({
             signIn:'auth/login',
             setEnums: 'choice/setEnums'
         }),
+        ...mapState({
+            roles: state => state.auth.user.roles,
+        }),
         async login(){
             this.processing = true;
-
             try {
               this.$Progress.start();
               await this.$api.auth.getCsrfCookie();
               await this.$api.auth.login(this.formData);
               await this.$api.auth.getProfile();
-              this.setEnums();
-              this.signIn();
+               this.setEnums();
+               this.signIn();
               this.$Progress.finish();
             } catch (e) {
               this.$swal({
@@ -87,3 +99,4 @@ export default {
     }
 }
 </script>
+

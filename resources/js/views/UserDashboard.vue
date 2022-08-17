@@ -1,8 +1,11 @@
 <template>
+<Nav/>
+
     <div class="container">
       <h3>Dashboard.</h3>
 
         <div class="row">
+
             <!-- <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-header">
@@ -67,14 +70,15 @@
             </div>
             <div class="col-12">
               <div class="row">
-                <Card title="Yearly Progress">
+                <Card :title="'Yearly Progress ('+ new Date().getFullYear() + ')'">
                     <div class="col-12">
                       <LineChart :chartData="yearlyProgress" />
                     </div>
                 </Card>
               </div>
             </div>
-            <SuggestedCourse />
+            <Slider :data="suggestedCourses" :title="'Suggested Courses'" />
+
         </div>
 
     </div>
@@ -89,11 +93,13 @@ import Table from '@/components/Table'
 import variables from '@/helpers/constants';
 import LineChart from '@/components/LineChart';
 import SuggestedCourse from '@/components/SuggestedCourse';
+import Slider from '@/components/slider';
 
 export default {
     name:"dashboard",
     data(){
         return {
+            suggestedCourses:[],
             user:this.$store.state.auth.user,
             isLoaded: false,
             courseProgressChart: {
@@ -150,7 +156,19 @@ export default {
         DoughnutChart,
         Table,
         LineChart,
-        SuggestedCourse
+        SuggestedCourse,
+        Slider
+    },
+    methods:{
+        async fetchSuggestedCourse () {
+        let response = await this.$api.courses.listSuggestedCourse();
+        this.suggestedCourses = response.data.filter(item=>{
+            return item.courses.length >= 1
+        })
+
+      },
+
+
     },
     async created() {
       let response;
@@ -178,6 +196,8 @@ export default {
       this.yearlyProgress.datasets[0].data = [
         ...response.data
       ];
+      this.fetchSuggestedCourse();
+
     },
   beforeMount(){
     // location.reload();

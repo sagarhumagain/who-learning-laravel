@@ -4,15 +4,14 @@ export default class RoleGate{
     }
 
     isSuperAdmin(){
-        return this.roles && this.roles.includes("super-admin");
+        return this.roles && this.roles?.includes("super-admin");
     }
     isCourseAdmin(){
-        return this.roles && this.roles.includes("course-admin");
+        return this.roles && this.roles?.includes("course-admin");
     }
     isNormalUser(){
-        return this.roles && this.roles.includes("normal-user");
+        return this.roles && this.roles?.includes("normal-user");
     }
-   
-   
+
+
 }
-   

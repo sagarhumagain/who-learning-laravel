@@ -40,12 +40,12 @@
                                     <router-link class="project-link mr-3" :to="{ name: 'courses-edit', params: { course: course.pivot , id: course.id} }">
                                         <i class="fa fa-edit"></i>
                                     </router-link>
-                                    
+
                                 </td>
                             </tr>
                             </tbody></table>
                     </div>
-                    
+
                 </div>
                 <!-- /.card -->
             </div>
@@ -57,7 +57,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" v-show="!editmode" >Add New </h5>
                     <h5 class="modal-title" v-show="editmode" >Update </h5>
-                    
+
                 </div>
                 <form  @submit.prevent="editmode ? updateInfo() : createInfo()">
                     <div class="modal-body">
@@ -83,14 +83,14 @@
                                 </v-date-picker>
                                 <error-msg :errors="errors" field="completed_date"></error-msg>
                             </div>
-                        
+
                             <div class="form-group col-md-6">
                                 <label for="file" class="control-label">Certificate Image *</label>
                                 <input type="file" name="certificate_path"  @change="onFileChange"
                                         placeholder="File"
                                         class="btn btn-sm btn-info btn-file-upload">
                                 <error-msg :errors="errors" field="certificate_path"></error-msg>
-                            </div>                        
+                            </div>
                         </div>
                         <div class="modal-body">
                             <iframe :src="'/'+form.certificate_path" v-if="form.certificate_path && form.certificate_path.length > 8" width="100%" height="500px"></iframe>
@@ -135,12 +135,11 @@
                     completed_date: null,
                     is_approved: null,
                     certificate_path: null,
-                }),                
+                }),
             }
         },
         methods: {
              onFileChange(e){
-                console.log(e.target.files[0]);
                 this.form.certificate_path = e.target.files[0];
             },
             editCourseModal(course){
@@ -197,7 +196,7 @@
                             this.disabled=false;
                             this.$Progress.fail();
                     })
-            
+
             },
             /*==== Start of Show existing User function ====*/
             async loadCourse() {
@@ -211,10 +210,8 @@
             this.emitter.on("AfterCreate", () => {
                 this.loadCourse();
             })
-
-            
         }
-    
+
     }
 </script>
 

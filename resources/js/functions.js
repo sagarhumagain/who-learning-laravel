@@ -1,4 +1,4 @@
-
+import VueSweetalert2 from 'vue-sweetalert2';
 
 export default class Functions{
     imageUpload(e,data,field) {
@@ -17,11 +17,40 @@ export default class Functions{
               })
         }
     }
-   
+    enrollCourse(id) {
+        this.$swal({
+            title: 'Are you sure to enroll to this course?',
+            text: "",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, enroll!'
+        }).then(async (result) => {
+            if (result.value) {
+                try {
+                  let response = await this.$api.courses.enrollToCourse({course_id: id});
+                  this.$swal(
+                        'Enrolled!',
+                        'You have successfully enrolled to the course.',
+                        'success'
+                    );
+                    this.emitter.emit('AfterEnrolledCreate')
+                } catch(e) {
+                  this.$swal(
+                      'Warning!',
+                      'Could not enroll to course.',
+                      'warning'
+                  )
+                }
+            }
+
+        })
+    }
+
+
+
 }
 
 
 
 
 
-    

@@ -1,4 +1,6 @@
 <template>
+<Nav/>
+
     <div class="container">
       <h3>Dashboard</h3>
 
@@ -173,7 +175,6 @@ export default {
         rowData: response.data.data
       };
       response = await this.$api.courses.getExceededDeadlines();
-      console.log(response);
       this.exceededDeadlines = {
         ...this.exceededDeadlines,
         rowData: response.data

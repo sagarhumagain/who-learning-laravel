@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,11 +17,8 @@ use Illuminate\Support\Facades\Auth;
 Route::get('{any}', function () {
     return view('welcome');
 })->where('any', '.*');
-
 Auth::routes();
-
-
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth','sanctum']], function () {
     // Route::resource('roles', RoleController::class);
     // Route::resource('users', UserController::class);
     // Route::resource('products', ProductController::class);

@@ -32,7 +32,7 @@
                                 <td>{{course.due_date}}</td>
                                 <td>{{course.description}}</td>
                                 <td>
-                                    <p v-for="(cat,index) in course.course_categories" :key="cat.id" >{{index+1+') '}}{{cat.name}}</p> 
+                                    <p v-for="(cat,index) in course.course_categories" :key="cat.id" >{{index+1+') '}}{{cat.name}}</p>
                                 </td>
                                 <td>
                                     <span v-if="course.is_approved == null" class="color-yellow">Approval Pending</span>
@@ -46,7 +46,7 @@
                                     <router-link class="project-link m-2 color-sec-blue" :to="{ name: 'courses-edit', params: { course: course , id: course.id} }">
                                         <i class="fa fa-edit"  title="Edit Course"></i>
                                     </router-link>
-                                  
+
                                     <a href="#" class="m-2 color-red" @click="deleteCourse(course.id)" >
                                         <i class="fa fa-trash"  title="Delete Course"></i>
                                     </a>
@@ -56,18 +56,18 @@
                                     <a href="#" class="m-2 color-red" @click="approveCourse(course,false)" >
                                         <i class="fa fa-times" title="Disapprove Course"></i>
                                     </a>
-                                   
+
                                 </td>
                             </tr>
                             </tbody></table>
                     </div>
-                    
+
                 </div>
                 <!-- /.card -->
             </div>
         </div>
 
-      
+
     </div>
 </template>
 <script>
@@ -88,7 +88,7 @@
             return {
                 editmode: false,
                 courses: {},
-                
+
                 form: new Form({
                     id: null,
                     name: null,
@@ -98,9 +98,9 @@
                     url:null,
                     is_approved:null
                 }),
-                
+
                 api_url:null,
-                
+
             }
         },
         methods: {
@@ -122,7 +122,7 @@
                         this.form.fill(course)
                         this.form.is_approved = val;
                         const response  = await this.form.put('/api/v1/courses/'+this.form.id)
-                    
+
                         if(response.data.error == true){
                             this.$swal({
                                 toast: true,
@@ -166,11 +166,11 @@
                             )
                         }
                     }
-                    
-                }
-            
 
-                
+                }
+
+
+
 
             },
             deleteCourse(id) {
@@ -201,13 +201,13 @@
 
                 })
             },
-            
+
 
             /*==== Start of Show existing Course function ====*/
             async loadCourses() {
                 const {data}  = await  axios.get("/api/v1/courses")
                 this.courses = data.data,
-                
+
                 this.api_url = 'api/courses'
                 /*==== End of existing Course ====*/
             },
@@ -218,9 +218,9 @@
             this.emitter.on("AfterCreate", () => {
                 this.loadCourses();
             })
-            
+
         }
-    
+
     }
 </script>
 

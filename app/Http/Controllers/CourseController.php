@@ -12,6 +12,7 @@ use App\Http\Requests\Course\CourseCreateValidation;
 use App\Http\Requests\Course\UpdateCourseValidation;
 use App\Models\Course;
 use App\Models\CourseAssignmentSetting;
+use App\Models\CourseCategory;
 use App\Models\CourseUser;
 use App\Models\User;
 use App\Notifications\CourseEnrolledNotification;
@@ -40,8 +41,8 @@ class CourseController extends BaseController
         #TODO Refactor code to check permission, separate single course view to different method, remove data key.
         $auth_user = auth()->user();
         if ($auth_user->hasRole('normal-user') && !$request->id) {
-            $user_course = User::where('id', $auth_user->id)->firstOrFail();
-            $courses['data'] = Course::where('is_approved', 1)->with('courseCategories')->paginate(20);
+            $enrolled_courses = $auth_user->courses()->pluck('course_id');
+            $courses['data'] = Course::whereNotIn('id', $enrolled_courses)->where('is_approved', 1)->with('courseCategories')->paginate(20);
         } elseif ($request->id) {
             if ($auth_user->hasRole('super-admin')) {
                 $courses =  Course::where('id', $request->id)->with('courseAssignment', 'courseCategories')->firstOrFail();
@@ -88,7 +89,7 @@ class CourseController extends BaseController
         if ($user->hasRole(['super-admin'])) {
             $courseFields['is_approved'] = true;
         } else {
-            $courseFields['is_approved'] = false;
+            $courseFields['is_approved'] = 0;
         }
         try {
             //course create
@@ -326,9 +327,14 @@ class CourseController extends BaseController
     public function listSuggestedCourses()
     {
         $user = auth()->user();
-        $suggestedCourses = Course::inRandomOrder()
-        ->limit(3) // here is yours limit
-        ->get();
+
+        $course = $user->courses()->pluck('course_id');
+        $suggestedCourses = CourseCategory::whereHas('courses', function ($q) use ($course) {
+            $q->whereIn('courses.id', $course);
+        })->with('courses', function ($q) use ($course) {
+            $q->whereNotIn('courses.id', $course);
+        })->inRandomOrder()->get()->take(10);
+
         return $suggestedCourses;
     }
 

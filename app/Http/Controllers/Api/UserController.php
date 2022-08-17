@@ -107,7 +107,7 @@ class UserController extends Controller
             }
             $user->update($request->all());
             $user->syncRoles($roles);
-           
+
             $data['error']='false';
             $data['message']='User Info! Has Been Updated';
         } catch (\Exception $exception) {

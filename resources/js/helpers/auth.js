@@ -1,6 +1,5 @@
 import store from '@/store';
-const user = JSON.parse(JSON.stringify(store.getters['auth/user']));
-
+const user = store.state.auth.user
 export const getRoles = () => {
   return user.roles||[];
 }
