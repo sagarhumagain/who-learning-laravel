@@ -113,7 +113,6 @@
             },
             approveCourse(val){
                 this.form.reset();
-                console.log(val);
                 this.form.fill(val);
                 this.form.post('/api/v1/approve-course')
                 .then((response) => {
@@ -154,7 +153,6 @@
                     })
             },
              onFileChange(e){
-                console.log(e.target.files[0]);
                 this.form.certificate_path = e.target.files[0];
             },
             editCourseModal(course){

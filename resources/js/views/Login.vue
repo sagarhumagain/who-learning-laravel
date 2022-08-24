@@ -64,7 +64,6 @@ export default {
     components:{
         Nav
     },
-
     methods:{
         ...mapActions({
             signIn:'auth/login',
@@ -80,9 +79,9 @@ export default {
               await this.$api.auth.getCsrfCookie();
               await this.$api.auth.login(this.formData);
               await this.$api.auth.getProfile();
-               this.setEnums();
-               this.signIn();
-              this.$Progress.finish();
+               await this.setEnums();
+               await this.signIn();
+
             } catch (e) {
               this.$swal({
                     toast: true,
@@ -95,6 +94,7 @@ export default {
                 this.$Progress.fail();
             }
             this.processing = false;
+            this.$router.go();
         },
     }
 }

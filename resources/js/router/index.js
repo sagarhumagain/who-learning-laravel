@@ -6,7 +6,6 @@ import { getRoles } from '@/helpers/auth'
 import Nav from '@/components/Nav'
 
 
-
 /* Guest Component */
 const Login = () => import('@/views/Login.vue' /* webpackChunkName: "resource/js/components/login" */)
 const Register = () => import('@/views/Register.vue' /* webpackChunkName: "resource/js/components/register" */)
@@ -32,148 +31,149 @@ const EnrolledCourse = () => import('@/views/courses/EnrolledCourse.vue' /* webp
 /* Authenticated Component */
 
 // const roles = store.getters['auth/user'].roles || []
-const roles = store.state.auth.user.roles || []
-console.log(store.state.auth.user)
-let routeChildrens
-if (roles?.includes('super-admin')) {
-  routeChildrens = [
-    {
-        name:"dashboard",
-        path: '/dashboard',
-        component: Dashboard,
-        meta:{
-            title:`Dashboard`
-        }
-    },
-    {
-      name:"courses-list",
-      path: '/courses',
-      component: Courses,
-      meta:{
-          title:`List Courses`
-      }
-    },
-    {
-      name:"course-create",
-      path: '/courses/create',
-      component: CourseCreate,
-      meta:{
-          title:`Create Courses`
-      }
-    },
-    {
-      name:"course-view",
-      path: '/courses/:id',
-      component: CourseView,
-      meta:{
-          title:`View Course`
-      }
-    },
-    {
-      name:"courses-edit",
-      path: '/courses/:id/edit',
-      component: CourseEdit,
-      meta:{
-          title:`Edit Course`
-      },
-      props: true,
-    },
-    {
-        name:"users",
-        path: '/users',
-        component: Users,
-        meta:{
-            title:`Users Management`
-        }
-      },
-      {
-        name:"employee",
-        path: '/user/profile',
-        component: Employee,
-        meta:{
-            title:`Profile Management`
-        }
-      },
-      {
-        name:"approve-courses",
-        path: '/approve/courses',
-        component: ApproveCourses,
-        meta:{
-            title:`Approve Courses`
-        }
-      },
-      {
-        name:"approve-certificates",
-        path: '/approve/certificates',
-        component: ApproveCertificates,
-        meta:{
-            title:`Approve Certificates`
-        }
-      }
-    ];
-} else {
-    routeChildrens = [
-        {
-            name:"employee",
-            path: '/user/profile',
-            component: Employee,
+
+let routeChildrens;
+const roles = store.state.auth.user.roles || [];
+    if (roles?.includes('super-admin')) {
+        routeChildrens = [
+          {
+              name:"dashboard",
+              path: '/dashboard',
+              component: Dashboard,
+              meta:{
+                  title:`Dashboard`
+              }
+          },
+          {
+            name:"courses-list",
+            path: '/courses',
+            component: Courses,
             meta:{
-                title:`Profile Management`
+                title:`List Courses`
             }
           },
-      {
-          name:"dashboard",
-          path: '/dashboard',
-          component: UserDashboard,
-          meta:{
-              title:`Dashboard`
-          }
-      },
-      {
-        name:"courses-list",
-        path: '/courses',
-        component: Courses,
-        meta:{
-            title:`List Courses`
-        }
-      },
-      {
-        name:"courses-enrolled",
-        path: '/enrolled/courses',
-        component: EnrolledCourse,
-        meta:{
-            title:`Enrolled Courses`
-        }
-      },
-      {
-        name:"course-create",
-        path: '/courses/create',
-        component: CourseCreate,
-        meta:{
-            title:`Create Courses`
-        }
-      },
-      {
-        name:"course-view",
-        path: '/courses/:id',
-        component: CourseView,
-        meta:{
-            title:`View Course`
-        }
-      },
-      {
-        name:"courses-edit",
-        path: '/courses/:id/edit',
-        component: CourseEdit,
-        meta:{
-            title:`Edit Course`
-        },
-        props: true,
-      },
+          {
+            name:"course-create",
+            path: '/courses/create',
+            component: CourseCreate,
+            meta:{
+                title:`Create Courses`
+            }
+          },
+          {
+            name:"course-view",
+            path: '/courses/:id',
+            component: CourseView,
+            meta:{
+                title:`View Course`
+            }
+          },
+          {
+            name:"courses-edit",
+            path: '/courses/:id/edit',
+            component: CourseEdit,
+            meta:{
+                title:`Edit Course`
+            },
+            props: true,
+          },
+          {
+              name:"users",
+              path: '/users',
+              component: Users,
+              meta:{
+                  title:`Users Management`
+              }
+            },
+            {
+              name:"employee",
+              path: '/user/profile',
+              component: Employee,
+              meta:{
+                  title:`Profile Management`
+              }
+            },
+            {
+              name:"approve-courses",
+              path: '/approve/courses',
+              component: ApproveCourses,
+              meta:{
+                  title:`Approve Courses`
+              }
+            },
+            {
+              name:"approve-certificates",
+              path: '/approve/certificates',
+              component: ApproveCertificates,
+              meta:{
+                  title:`Approve Certificates`
+              }
+            }
+          ];
+      } else {
+          routeChildrens = [
+              {
+                  name:"employee",
+                  path: '/user/profile',
+                  component: Employee,
+                  meta:{
+                      title:`Profile Management`
+                  }
+                },
+            {
+                name:"dashboard",
+                path: '/dashboard',
+                component: UserDashboard,
+                meta:{
+                    title:`Dashboard`
+                }
+            },
+            {
+              name:"courses-list",
+              path: '/courses',
+              component: Courses,
+              meta:{
+                  title:`List Courses`
+              }
+            },
+            {
+              name:"courses-enrolled",
+              path: '/enrolled/courses',
+              component: EnrolledCourse,
+              meta:{
+                  title:`Enrolled Courses`
+              }
+            },
+            {
+              name:"course-create",
+              path: '/courses/create',
+              component: CourseCreate,
+              meta:{
+                  title:`Create Courses`
+              }
+            },
+            {
+              name:"course-view",
+              path: '/courses/:id',
+              component: CourseView,
+              meta:{
+                  title:`View Course`
+              }
+            },
+            {
+              name:"courses-edit",
+              path: '/courses/:id/edit',
+              component: CourseEdit,
+              meta:{
+                  title:`Edit Course`
+              },
+              props: true,
+            },
 
 
-    ];
-}
+          ];
+      }
+
 const Routes = [
     {
         name:"login",
@@ -212,7 +212,7 @@ const router = VueRouter.createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    document.title = `${to.meta.title} - ${process.env.APP_NAME}`
+    document.title = `${to.meta.title} - ${process.env.APP_NAME}`;
     if(to.meta.middleware=="guest"){
         if(store.state.auth.authenticated){
             next({name:"dashboard"})
