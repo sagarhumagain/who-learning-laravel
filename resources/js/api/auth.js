@@ -26,4 +26,10 @@ export default (baseUrl, apiVersion ) => ({
   async getProfile() {
     return await axios.get(`${baseUrl}${apiVersion}/profile`);
   },
+  async getAuthRoles() {
+    return await axios.get(`${baseUrl}${apiVersion}/auth-permissions`);
+  },
+  async getAuthPermissions() {
+    return await axios.get(`${baseUrl}${apiVersion}/auth-roles`);
+  },
 });

@@ -3,7 +3,6 @@ import * as VueRouter from 'vue-router'
 import store from '@/store'
 import { getRoles } from '@/helpers/auth'
 
-import Nav from '@/components/Nav'
 
 
 /* Guest Component */
@@ -33,11 +32,10 @@ const EnrolledCourse = () => import('@/views/courses/EnrolledCourse.vue' /* webp
 // const roles = store.getters['auth/user'].roles || []
 
 let routeChildrens;
-const roles = store.state.auth.user.roles || [];
-    if (roles?.includes('super-admin')) {
+
         routeChildrens = [
           {
-              name:"dashboard",
+              name:"admin-dashboard",
               path: '/dashboard',
               component: Dashboard,
               meta:{
@@ -86,6 +84,22 @@ const roles = store.state.auth.user.roles || [];
               }
             },
             {
+                name:"courses-enrolled",
+                path: '/enrolled/courses',
+                component: EnrolledCourse,
+                meta:{
+                    title:`Enrolled Courses`
+                }
+              },
+              {
+                name:"approve-courses",
+                path: '/approve/courses',
+                component: ApproveCourses,
+                meta:{
+                    title:`Approve Courses`
+                }
+              },
+            {
               name:"employee",
               path: '/user/profile',
               component: Employee,
@@ -93,14 +107,7 @@ const roles = store.state.auth.user.roles || [];
                   title:`Profile Management`
               }
             },
-            {
-              name:"approve-courses",
-              path: '/approve/courses',
-              component: ApproveCourses,
-              meta:{
-                  title:`Approve Courses`
-              }
-            },
+
             {
               name:"approve-certificates",
               path: '/approve/certificates',
@@ -108,11 +115,8 @@ const roles = store.state.auth.user.roles || [];
               meta:{
                   title:`Approve Certificates`
               }
-            }
-          ];
-      } else {
-          routeChildrens = [
-              {
+            },
+            {
                   name:"employee",
                   path: '/user/profile',
                   component: Employee,
@@ -121,58 +125,20 @@ const roles = store.state.auth.user.roles || [];
                   }
                 },
             {
-                name:"dashboard",
+                name:"user-dashboard",
                 path: '/dashboard',
                 component: UserDashboard,
                 meta:{
                     title:`Dashboard`
                 }
             },
-            {
-              name:"courses-list",
-              path: '/courses',
-              component: Courses,
-              meta:{
-                  title:`List Courses`
-              }
-            },
-            {
-              name:"courses-enrolled",
-              path: '/enrolled/courses',
-              component: EnrolledCourse,
-              meta:{
-                  title:`Enrolled Courses`
-              }
-            },
-            {
-              name:"course-create",
-              path: '/courses/create',
-              component: CourseCreate,
-              meta:{
-                  title:`Create Courses`
-              }
-            },
-            {
-              name:"course-view",
-              path: '/courses/:id',
-              component: CourseView,
-              meta:{
-                  title:`View Course`
-              }
-            },
-            {
-              name:"courses-edit",
-              path: '/courses/:id/edit',
-              component: CourseEdit,
-              meta:{
-                  title:`Edit Course`
-              },
-              props: true,
-            },
+
+
+
+
 
 
           ];
-      }
 
 const Routes = [
     {
@@ -194,6 +160,7 @@ const Routes = [
         }
     },
     {
+        name:"dashboard",
         path:"/",
         component:DahboardLayout,
         meta:{
@@ -203,6 +170,7 @@ const Routes = [
        },
 
 ]
+
 
 const router = VueRouter.createRouter({
   history: VueRouter.createWebHistory(),

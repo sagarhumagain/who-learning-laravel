@@ -1,5 +1,4 @@
 <template>
-<Nav/>
     <div class="container h-100">
         <div class="row h-100 align-items-center">
             <div class="col-12 col-md-6 offset-md-3">
@@ -42,7 +41,7 @@
 import { ref } from 'vue'
 import { mapActions, mapState } from 'vuex';
 import { useToast } from "vue-toastification";
-import Nav from '../components/Nav.vue';
+import store from '@/store';
 
 export default {
     name:"login",
@@ -61,27 +60,28 @@ export default {
             processing:false
         }
     },
-    components:{
-        Nav
-    },
     methods:{
         ...mapActions({
             signIn:'auth/login',
             setEnums: 'choice/setEnums'
         }),
         ...mapState({
-            roles: state => state.auth.user.roles,
+            roles: state => store.state.auth.user.roles,
         }),
         async login(){
             this.processing = true;
             try {
               this.$Progress.start();
-              await this.$api.auth.getCsrfCookie();
-              await this.$api.auth.login(this.formData);
-              await this.$api.auth.getProfile();
-               await this.setEnums();
-               await this.signIn();
-
+                await this.$api.auth.getCsrfCookie();
+                await this.$api.auth.login(this.formData);
+                await this.$api.auth.getProfile();
+                this.setEnums();
+                await this.signIn();
+                if(store.state.auth.user.roles?.includes('super-admin') ){
+                  await  this.$router.push({name:'admin-dashboard'})
+                }else{
+                  await   this.$router.push({name:'user-dashboard'})
+                }
             } catch (e) {
               this.$swal({
                     toast: true,
@@ -94,7 +94,6 @@ export default {
                 this.$Progress.fail();
             }
             this.processing = false;
-            this.$router.go();
         },
     }
 }

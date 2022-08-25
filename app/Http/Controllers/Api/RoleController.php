@@ -108,7 +108,7 @@ class RoleController extends Controller
         $response['error']='true';
         try {
             $role = $this->model->findOrFail($id);
-            
+
             $role->delete();
 
             $response['error']='false';
@@ -122,4 +122,5 @@ class RoleController extends Controller
     {
         return auth()->user()->getRoleNames();
     }
+
 }

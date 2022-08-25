@@ -1,6 +1,4 @@
 <template>
-<Nav/>
-
     <div class="container">
       <h3>Dashboard.</h3>
 
@@ -96,7 +94,7 @@ import SuggestedCourse from '@/components/SuggestedCourse';
 import Slider from '@/components/slider';
 
 export default {
-    name:"dashboard",
+    name:"user-dashboard",
     data(){
         return {
             suggestedCourses:[],
@@ -199,9 +197,7 @@ export default {
       this.fetchSuggestedCourse();
 
     },
-  beforeMount(){
-    // location.reload();
-  }
+
 
 }
 </script>

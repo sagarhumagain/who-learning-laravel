@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" v-role="'super-admin'">
         <div class="row pt-5" >
             <div class="col-md-12">
                 <div class="card">
@@ -276,17 +276,24 @@
         </modal>
 
     </div>
+
+    <div v-role:unless="'super-admin'" class="container ">
+        <page-not-found/>
+    </div>
 </template>
 <script>
   import Multiselect from 'vue-multiselect'
     import Form from 'vform'
+    import PageNotFound from "./../../components/PageNotFound.vue"
+
     import { Button, HasError, AlertError } from 'vform/src/components/bootstrap5'
     import Modal from '@/components/Modal';
     export default {
         components: {
             HasError,
             Multiselect,
-            Modal
+            Modal,
+            PageNotFound
         },
         data() {
 

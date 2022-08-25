@@ -1,6 +1,4 @@
 <template>
-<Nav/>
-
     <div class="container">
       <h3>Dashboard</h3>
 
@@ -88,7 +86,7 @@ import DoughnutChart from '@/components/DoughnutChart'
 import Table from '@/components/Table'
 
 export default {
-    name:"dashboard",
+    name:"admin-dashboard",
     data(){
         return {
             user:this.$store.state.auth.user,
@@ -180,6 +178,7 @@ export default {
         rowData: response.data
       };
   },
+
 
 
 }

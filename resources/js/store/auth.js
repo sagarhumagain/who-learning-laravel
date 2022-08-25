@@ -7,7 +7,10 @@ export default {
     namespaced: true,
     state:{
         authenticated:false,
-        user:{}
+        user:{},
+        roles:[],
+        permissions:[]
+
     },
     // getters:{
     //     authenticated(state){
@@ -31,14 +34,15 @@ export default {
           try{
             const response = await $api.auth.getProfile();
             commit('SET_USER',response.data);
+
             commit('SET_AUTHENTICATED',true);
-            await router.push({name:'dashboard'})
-          }
+        }
           catch (e) {
             commit('SET_USER',{})
             commit('SET_AUTHENTICATED',false)
           }
         },
+
         logout({commit}){
             commit('SET_USER',{})
             commit('SET_AUTHENTICATED',false)

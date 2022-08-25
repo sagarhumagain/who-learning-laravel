@@ -21,7 +21,7 @@
                                 <th>Due Date</th>
                                 <th>Description</th>
                                 <th>Course Category</th>
-                                <th v-show="role.isSuperAdmin() || role.isCourseAdmin()">Status</th>
+                                <th v-role:any="'super-admin|course-admin'">Status</th>
                                 <th>Actions</th>
                             </tr>
                             <tr v-for="(course, index) in courses.data" :key="course.id">
@@ -33,7 +33,7 @@
                                 <td>
                                     <p v-for="(cat,index) in course.course_categories" :key="cat.id" >{{index+1+') '}}{{cat.name}}</p>
                                 </td>
-                                <td v-show="role.isSuperAdmin() || role.isCourseAdmin()">
+                                <td v-role:any="'super-admin|course-admin'">
                                     <span v-if="course.is_approved == null" class="color-yellow">Approval Pending</span>
                                     <span v-else-if="course.is_approved == 1" class="color-green">Approved</span>
                                     <span v-else-if="course.is_approved == 0" class="color-red">Disapproved</span>
@@ -42,12 +42,12 @@
                                     <!-- <a href="#" @click="editCourse(course,course.id)" class="btn btn-sm btn-success mr-2">Edit
                                         <i class="fa fa-edit"></i>
                                     </a> -->
-                                    <div v-if="this.role.isNormalUser()">
+                                    <div v-role="'normal-user'">
                                        <a href="#" class="m-2 color-primary" @click="enrollCourse(course.id)" >
                                         <i class="fa fa-circle-arrow-right"  title="Enroll Course"></i>
                                       </a>
                                     </div>
-                                    <div v-else>
+                                    <div v-role:any="'super-admin|course-admin'">
                                         <router-link class="project-link m-2 color-sec-blue" :to="{ name: 'courses-edit', params: { course: course , id: course.id} }">
                                           <i class="fa fa-edit"  title="Edit Course"></i>
                                         </router-link>

@@ -1,4 +1,5 @@
 <?php
+
 namespace Api;
 
 use App\Http\Controllers\Api\BaseController;
@@ -18,7 +19,9 @@ use App\Http\Controllers\Api\ContractTypeStaffCategoryController;
 use App\Http\Controllers\Api\ContractTypeStaffTypeController;
 use App\Http\Controllers\Api\DesignationStaffCategoryController;
 use App\Http\Controllers\Api\DesignationStaffTypeController;
+use App\Http\Controllers\Api\PermissionController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\StaffCategoryStaffTypeController;
 use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\SupervisorController;
@@ -45,7 +48,9 @@ Route::group(
         Route::post('/enroll/course', [CourseController::class, 'enrollToCourse']);
         Route::get('/course_user', [CourseController::class, 'listEnrolledCourse']);
 
-        Route::apiResources(['user'=>UserController::class]);
+        Route::group(['middleware' => ['role:super-admin']], function () {
+            Route::apiResources(['user'=>UserController::class]);
+        });
         Route::apiResources(['contract'=>ContractController::class]);
 
         Route::post('updatePassword', 'ProfileController@updatePassword');
@@ -57,7 +62,6 @@ Route::group(
         // Route::apiResources(['permission'   =>'PermissionController']);
 
         Route::apiResources(['supervisors' => SupervisorController::class]);
-
 
 
         Route::post('/read_all', [BaseController::class, 'readAll']);

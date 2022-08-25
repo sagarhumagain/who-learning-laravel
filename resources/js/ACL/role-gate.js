@@ -1,6 +1,7 @@
 export default class RoleGate{
     constructor(roles){
         this.roles = roles;
+        console.log(roles);
     }
 
     isSuperAdmin(){

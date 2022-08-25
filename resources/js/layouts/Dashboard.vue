@@ -44,11 +44,9 @@
 <script>
 import {mapActions} from 'vuex';
 import Notification from '@/components/Notification';
-import { getRoles } from '@/helpers/auth';
 import store from '@/store';
-
 export default {
-    name: "dashboard-layout",
+    name: "dashboard",
     components: {
         Notification,
     },
@@ -169,8 +167,14 @@ export default {
       onItemClick (event, item) {
         // console.log('onItemClick');
       },
+        setACL(){
+            this.$gates.setPermissions(store.state.auth.user.permissions);
+            this.$gates.setRoles(store.state.auth.user.roles);
+
+        },
       ...mapActions({
-            signOut:"auth/logout"
+            signOut:"auth/logout",
+
         }),
         async logout(){
             await axios.post('/logout').then(({data})=>{
@@ -188,7 +192,12 @@ export default {
           }
         },
 
+
     },
+    created(){
+        this.setACL();
+    }
+
 
 
 

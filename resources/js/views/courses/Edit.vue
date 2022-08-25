@@ -116,7 +116,7 @@
                             </multiselect>
 
                           </div>
-                          <div v-if="this.role.isNormalUser()">
+                          <div v-role="'normal-user'">
                             <div class="form-group col-md-8">
                                 <label for="completed_date" >Completed Date</label>
                                 <v-date-picker v-model="form.completed_date"  name="completed_date" placeholder="Completed Date" class="form-control" :class="{ 'is-invalid': form.errors.has('completed_date')}"

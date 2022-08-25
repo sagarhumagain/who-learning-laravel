@@ -65,7 +65,7 @@
                                   >
                               </multiselect>
                             </div>
-                          <div v-if="this.permission.CanAssignCourse()">
+                          <div v-permission="'course_assignment'">
                             <h4>Assign To</h4>
                             <multiselect v-model="form.pillar_ids"
                                 tag-placeholder="Pillars"
@@ -114,7 +114,7 @@
                             </multiselect>
 
                           </div>
-                          <div v-if="this.role.isNormalUser()">
+                          <div v-role="'normal-user'">
                             <div class="form-group col-md-8">
                                 <label for="completed_date" >Completed Date</label>
                                 <!-- <input type="text" v-model="form.completed_date" class="form-control"  placeholder="Completed Date" :class="{ 'is-invalid': form.errors.has('completed_date') }"> -->
@@ -161,10 +161,7 @@
 <script>
 import { mapActions } from 'vuex'
 import Form from 'vform'
-import { useToast } from "vue-toastification"
 import Multiselect from 'vue-multiselect'
-import { getRoles } from '@/helpers/auth'
-import { getPermissions } from '@/helpers/auth'
 import ErrorMsg from '@/components/error-msg'
 
 const mask = "YYYY-MM-DD";
@@ -206,18 +203,7 @@ export default {
             })
         }
     },
-    value: {
-      // get() {
-      //   return this.valueString ? locale.parse(this.form.completed_date, mask) : null;
-      // },
-      // set(val) {
-      //   this.valueString = val ? locale.format(val, mask) : "";
-      // }
-    },
     methods:{
-        ...mapActions({
-            // signIn:'auth/login'
-        }),
         onFileChange(event){
               const file = event.target.files[0];
               this.form.certificate_path = file
@@ -277,10 +263,5 @@ export default {
             }
         },
     },
-    created() {
-        // this.emitter.on("afterSuccess", () => {
-
-        // });
-    }
 }
 </script>

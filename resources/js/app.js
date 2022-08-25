@@ -27,6 +27,7 @@ import { dom } from "@fortawesome/fontawesome-svg-core";
 import VCalendar from 'v-calendar';
 import 'v-calendar/dist/style.css';
 import { getRoles } from '@/helpers/auth';
+import VueGates from 'vue-gates';
 
 dom.watch();
 
@@ -101,20 +102,9 @@ import mitt from 'mitt';
 const emitter = mitt();
 app.config.globalProperties.emitter = emitter;
 
-import RoleGate from "./ACL/role-gate";
-const user= store.state.auth.user;
-const roles = user.roles
-app.config.globalProperties.role = new RoleGate(roles);
-
-import PermissionGate from "./ACL/permission-gate";
-const Permissions = user.permissions
-app.config.globalProperties.permission = new PermissionGate(Permissions);
-
-
 // /*Sweet alert start*/
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
-import { getPermissions } from './helpers/auth';
 
 const options = {
     confirmButtonColor: '#41b882',
@@ -122,5 +112,8 @@ const options = {
   };
 app.config.globalProperties.$function = new Functions(app);
 
+app.use(VueGates,{
+
+});
 app.use(VueSweetalert2, options);
 app.mount('#app');
