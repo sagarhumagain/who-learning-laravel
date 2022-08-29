@@ -46,7 +46,7 @@ import {mapActions} from 'vuex';
 import Notification from '@/components/Notification';
 import store from '@/store';
 export default {
-    name: "dashboard",
+    name: "layout-dashboard",
     components: {
         Notification,
     },
@@ -174,7 +174,6 @@ export default {
         },
       ...mapActions({
             signOut:"auth/logout",
-
         }),
         async logout(){
             await axios.post('/logout').then(({data})=>{

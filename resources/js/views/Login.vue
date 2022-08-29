@@ -65,23 +65,14 @@ export default {
             signIn:'auth/login',
             setEnums: 'choice/setEnums'
         }),
-        ...mapState({
-            roles: state => store.state.auth.user.roles,
-        }),
         async login(){
             this.processing = true;
             try {
               this.$Progress.start();
                 await this.$api.auth.getCsrfCookie();
                 await this.$api.auth.login(this.formData);
-                await this.$api.auth.getProfile();
+                this.signIn();
                 this.setEnums();
-                await this.signIn();
-                if(store.state.auth.user.roles?.includes('super-admin') ){
-                  await  this.$router.push({name:'admin-dashboard'})
-                }else{
-                  await   this.$router.push({name:'user-dashboard'})
-                }
             } catch (e) {
               this.$swal({
                     toast: true,
@@ -94,6 +85,7 @@ export default {
                 this.$Progress.fail();
             }
             this.processing = false;
+
         },
     }
 }

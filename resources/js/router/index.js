@@ -16,7 +16,6 @@ const DahboardLayout = () => import('@/layouts/Dashboard.vue' /* webpackChunkNam
 
 /* Authenticated Component */
 const Dashboard = () => import('@/views/Dashboard.vue' /* webpackChunkName: "resource/js/components/dashboard" */)
-const UserDashboard = () => import('@/views/UserDashboard.vue' /* webpackChunkName: "resource/js/components/userdashboard" */)
 const CoursesList = () => import('@/views/courses/List.vue' /* webpackChunkName: "resource/js/components/courseslist" */)
 const CourseCreate = () => import('@/views/courses/Create.vue' /* webpackChunkName: "resource/js/components/coursecreate" */)
 const CourseView = () => import('@/views/courses/View.vue' /* webpackChunkName: "resource/js/components/courseview" */)
@@ -34,14 +33,7 @@ const EnrolledCourse = () => import('@/views/courses/EnrolledCourse.vue' /* webp
 let routeChildrens;
 
         routeChildrens = [
-          {
-              name:"admin-dashboard",
-              path: '/dashboard',
-              component: Dashboard,
-              meta:{
-                  title:`Dashboard`
-              }
-          },
+
           {
             name:"courses-list",
             path: '/courses',
@@ -124,16 +116,14 @@ let routeChildrens;
                       title:`Profile Management`
                   }
                 },
-            {
-                name:"user-dashboard",
-                path: '/dashboard',
-                component: UserDashboard,
-                meta:{
-                    title:`Dashboard`
-                }
-            },
-
-
+                {
+                    name:"dashboard",
+                    path: '/dashboard',
+                    component: Dashboard,
+                    meta:{
+                        title:`Dashboard`
+                    }
+                },
 
 
 
@@ -159,8 +149,8 @@ const Routes = [
             title:`Register`
         }
     },
+
     {
-        name:"dashboard",
         path:"/",
         component:DahboardLayout,
         meta:{
@@ -168,6 +158,7 @@ const Routes = [
         },
         children: routeChildrens
        },
+
 
 ]
 
@@ -181,17 +172,21 @@ const router = VueRouter.createRouter({
 
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title} - ${process.env.APP_NAME}`;
-    if(to.meta.middleware=="guest"){
-        if(store.state.auth.authenticated){
-            next({name:"dashboard"})
-        }
-        next()
-    }else{
+    if(to.meta.middleware=="auth"){
         if(store.state.auth.authenticated){
             next()
         }else{
             next({name:"login"})
         }
+    }
+    else if(to.meta.middleware=="guest"){
+        if(store.state.auth.authenticated){
+            next({name:"dashboard"})
+        }
+        next()
+    }
+    else{
+        next({name:"login"})
     }
 })
 

@@ -67,7 +67,7 @@
                                   >
                               </multiselect>
                             </div>
-                          <div v-if="this.permission.CanAssignCourse()">
+                          <div v-role="'course_assignment'">
                             <h4>Assign To</h4>
                             <multiselect v-model="form.pillar_ids"
                                 tag-placeholder="Pillars"
@@ -331,14 +331,14 @@ export default {
             }
         },
         setFormDisabled(){
-          if(this.role.isSuperAdmin() || this.role.isCourseAdmin()){
+          if(this.$gates.hasAnyRole('super-admin|course-admin')){
             this.course_disabled = false;
           }
           // #TODO check if course created by normal user, & let edit if course is not approved
           // if(this.role.isNormalUser() && !this.form.is_course_approved){
           //   this.course_disabled = false;
           // }
-          if(this.role.isNormalUser() && this.form.course_user_approved !== 1){
+          if(this.$gates.hasRole('normal-user') && this.form.course_user_approved !== 1){
             this.course_user_disabled = false;
           }
         }

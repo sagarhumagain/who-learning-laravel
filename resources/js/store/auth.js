@@ -34,8 +34,10 @@ export default {
           try{
             const response = await $api.auth.getProfile();
             commit('SET_USER',response.data);
-
             commit('SET_AUTHENTICATED',true);
+            if(router.currentRoute._value.path == '/login'){
+                router.push({name:'dashboard'})
+            }
         }
           catch (e) {
             commit('SET_USER',{})

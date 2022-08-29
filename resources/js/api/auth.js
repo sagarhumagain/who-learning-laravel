@@ -22,7 +22,6 @@ export default (baseUrl, apiVersion ) => ({
   async getActiveUser() {
     return await axios.get('/api/user');
   },
-
   async getProfile() {
     return await axios.get(`${baseUrl}${apiVersion}/profile`);
   },

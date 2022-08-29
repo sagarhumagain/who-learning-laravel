@@ -5,10 +5,10 @@
 </h3>
     <div class="card-body shadow-0  ">
             <carousel :items-to-show="2">
-                <slide v-for="(item,index) in data" :key="item.id" >
+                <slide v-for="item in data" :key="item.id" >
                     <div class="who-card shadow-0"  >
                         <h4 class="text-center">{{item.name}}</h4>
-                        <div class="who-card  shadow-0 table-responsive" v-for="(item, index) in item.courses" :key="item.id">
+                        <div class="who-card  shadow-0 table-responsive" v-for="item in item.courses" :key="item.id">
                             <table class="w-100 text-center">
                                 <tr>
                                     <th>Name</th>
@@ -81,10 +81,6 @@ export default {
 
 
     },
-    created(){
-
-    },
-
 
 }
 </script>
