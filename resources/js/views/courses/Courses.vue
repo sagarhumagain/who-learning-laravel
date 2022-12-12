@@ -1,6 +1,8 @@
 <template>
     <div class="container">
-        <div class="row pt-5" >
+        <div class="row" >
+            <search-filter :api_url='this.api_url' />
+
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
@@ -9,7 +11,9 @@
                         <div class="card-tools">
                             <button type="" class="btn btn-fill" @click="newCourse"><i class="fa fa-book fa-fw"></i> Add New Course</button>
                         </div>
+
                     </div>
+
                     <!-- /.card-header -->
                     <div class="card-body table-responsive p-0">
                         <table class="table table-hover">
@@ -82,12 +86,14 @@
     import Form from 'vform'
     import { Button, HasError, AlertError } from 'vform/src/components/bootstrap5'
     import Modal from '@/components/Modal';
+    import SearchFilter from '@/components/SearchFilter';
     export default {
         name:'courses-list',
         components: {
             Multiselect,
             HasError,
-            Modal
+            Modal,
+            SearchFilter
         },
         /*Filling the data into form*/
         data() {
@@ -105,7 +111,8 @@
                     is_approved:null
                 }),
 
-                api_url:null,
+                api_url: '/api/v1/courses',
+                search: '',
 
             }
         },
@@ -239,12 +246,12 @@
 
             /*==== Start of Show existing Course function ====*/
             async loadCourses() {
-                const {data}  = await  axios.get("/api/v1/courses")
-                this.courses = data.data,
-
-                this.api_url = 'api/courses'
-                /*==== End of existing Course ====*/
+                const {data}  = await  axios.get(this.api_url)
+                this.courses = data.data
             },
+            /*==== End of Show existing Course function ====*/
+
+
         },
         created() {
             // if(this.role.isNormalUser()){
@@ -255,6 +262,10 @@
               this.emitter.on("AfterCreate", () => {
                   this.loadCourses();
               })
+              this.emitter.on("AfterSearch", (data) => {
+                  this.courses = data.data
+              })
+
             // }
 
 

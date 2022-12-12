@@ -71,7 +71,7 @@ export default {
                   child: [
                     {
                       href: '/courses/',
-                      title: 'List Courses'
+                      title: 'Courses'
                     },
                     {
                       href: '/courses/create',
@@ -130,17 +130,18 @@ export default {
                   icon: 'fa fa-book',
                   child: [
                     {
+                      href: '/courses/create',
+                      title: 'Create Course'
+                    },
+                    {
                       href: '/enrolled/courses',
                       title: 'Enrolled Courses'
                     },
                     {
                       href: '/courses/',
-                      title: 'List Courses'
+                      title: 'Courses'
                     },
-                    {
-                      href: '/courses/create',
-                      title: 'Create Course'
-                    }
+
                   ]
                 },
                 {

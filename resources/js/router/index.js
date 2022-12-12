@@ -39,7 +39,7 @@ let routeChildrens;
             path: '/courses',
             component: Courses,
             meta:{
-                title:`List Courses`
+                title:`Courses`
             }
           },
           {

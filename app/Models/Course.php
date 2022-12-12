@@ -9,9 +9,12 @@ use App\Models\User;
 use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Course extends Model implements Auditable
 {
-    use HasFactory, AuditableTrait, SoftDeletes;
+    use HasFactory;
+    use AuditableTrait;
+    use SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -37,5 +40,17 @@ class Course extends Model implements Auditable
     public function courseAssignment()
     {
         return $this->hasOne(CourseAssignmentSetting::class, 'course_id', 'id');
+    }
+
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('url', 'like', '%' . $search . '%')
+                    ->orWhere('source', 'like', '%' . $search . '%');
+            });
+        });
     }
 }

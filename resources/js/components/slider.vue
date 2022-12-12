@@ -1,10 +1,11 @@
 <template>
-
-<h3>
+<div>
+<h3 v-if="data.length != 0">
 {{title}}
 </h3>
-    <div class="card-body shadow-0  ">
-            <carousel :items-to-show="2">
+</div>
+    <div class="card-body shadow-0 ">
+            <carousel v-if="data.length != 0" :items-to-show="2">
                 <slide v-for="item in data" :key="item.id" >
                     <div class="who-card shadow-0"  >
                         <h4 class="text-center">{{item.name}}</h4>
@@ -24,12 +25,15 @@
                             </table>
                         </div>
                     </div>
-              </slide>
+                </slide>
                 <template #addons>
                 <navigation />
                 <pagination />
                 </template>
             </carousel>
+
+
+
           </div>
 </template>
 <script>
@@ -46,7 +50,7 @@ export default {
     },
     data(){
         return{
-
+            records:'',
         }
     },
     methods:{
@@ -81,6 +85,7 @@ export default {
 
 
     },
+
 
 }
 </script>

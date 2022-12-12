@@ -194,7 +194,6 @@ export default {
         ...response.data
       ];
       this.fetchSuggestedCourse();
-
     },
 
 

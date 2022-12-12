@@ -38,19 +38,9 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-import { mapActions, mapState } from 'vuex';
-import { useToast } from "vue-toastification";
-import store from '@/store';
-
+import { mapActions } from 'vuex';
 export default {
     name:"login",
-    // setup() {
-    //   const formData = ref({});
-    //   return {
-    //     formData
-    //   }
-    // },
     data(){
         return {
             formData:{

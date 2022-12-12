@@ -9,7 +9,6 @@ import { createApp } from 'vue'
 import router from '@/router';
 import store from '@/store';
 import VueSidebarMenu from 'vue-sidebar-menu';
-import Toast, { POSITION } from "vue-toastification";
 import 'bootstrap';
 import {apiRepositories} from '@/services/api';
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
@@ -42,11 +41,7 @@ const app = createApp({});
 app.use(router);
 app.use(store);
 app.use(VueSidebarMenu);
-const toastOptions = {
-  position: POSITION.TOP_CENTER,
-  timeout: 2500,
-  shareAppContext: true
-};
+
 //vform
 import {
   Button,
@@ -63,13 +58,10 @@ app.component(AlertError.name, AlertError);
 app.component(AlertErrors.name, AlertErrors);
 app.component(AlertSuccess.name, AlertSuccess);
 
-app.use(Toast, toastOptions);
 
 //vcalendar
 app.use(VCalendar, {})
 
-//Vue toastification
-app.use(Toast, toastOptions);
 //fontawsome
 app.component("font-awesome-icon", FontAwesomeIcon);
 app.config.globalProperties.$api = apiRepositories;

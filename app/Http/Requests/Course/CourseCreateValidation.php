@@ -26,7 +26,7 @@ class CourseCreateValidation extends FormRequest
         return [
             'name' => 'required',
             'credit_hours' => 'required|numeric',
-            'url' => 'required|url',
+            'url' => '',
             'source' => 'required',
             'due_date' => '',
             'completed_date'  => 'required_with:certificate_path',

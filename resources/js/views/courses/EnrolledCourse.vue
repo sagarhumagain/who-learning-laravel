@@ -1,6 +1,7 @@
 <template>
     <div class="container">
         <div class="row pt-5" >
+            <search-filter :api_url="this.api_url" />
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
@@ -113,6 +114,7 @@
     import { Button, HasError, AlertError } from 'vform/src/components/bootstrap5'
     import Modal from '@/components/Modal';
     import ErrorMsg from '@/components/error-msg';
+    import SearchFilter from '@/components/SearchFilter';
 
     export default {
         name:'assigned-course',
@@ -120,7 +122,8 @@
             Multiselect,
             HasError,
             Modal,
-            ErrorMsg
+            ErrorMsg,
+            SearchFilter
         },
         /*Filling the data into form*/
         data() {
@@ -136,6 +139,7 @@
                     is_approved: null,
                     certificate_path: null,
                 }),
+                api_url: '/api/v1/course_user',
             }
         },
         methods: {
@@ -201,7 +205,7 @@
             /*==== Start of Show existing User function ====*/
             async loadCourse() {
                 const {data}  = await this.$api.courses.listUserEnrolledCourses();
-                this.courses = data.data;
+                this.courses = data;
             },
         },
         created() {
@@ -210,6 +214,11 @@
             this.emitter.on("AfterCreate", () => {
                 this.loadCourse();
             })
+            this.emitter.on("AfterSearch", (data) => {
+                  this.courses = data
+              })
+
+
         }
 
     }

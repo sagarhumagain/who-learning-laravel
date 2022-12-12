@@ -42,7 +42,7 @@ class CourseController extends BaseController
         $auth_user = auth()->user();
         if ($auth_user->hasRole('normal-user') && !$request->id) {
             $enrolled_courses = $auth_user->courses()->pluck('course_id');
-            $courses['data'] = Course::whereNotIn('id', $enrolled_courses)->where('is_approved', 1)->with('courseCategories')->paginate(20);
+            $courses['data'] = Course::whereNotIn('id', $enrolled_courses)->filter($request->all())->where('is_approved', 1)->with('courseCategories')->paginate(20);
         } elseif ($request->id) {
             if ($auth_user->hasRole('super-admin')) {
                 $courses =  Course::where('id', $request->id)->with('courseAssignment', 'courseCategories')->firstOrFail();
@@ -359,10 +359,12 @@ class CourseController extends BaseController
      */
     public function listEnrolledCourse(Request $request)
     {
-        #TODO Refactor code to check permission, separate single course view to different method, remove data key.
         $auth_user = auth()->user();
-        $user = User::where('id', $auth_user->id)->firstOrFail();
-        $course_user = $user->courses()->paginate(20);
+        if (!$request->search) {
+            $course_user = DB::select(DB::raw("SELECT * from `courses` inner join `course_user` on `courses`.`id` = `course_user`.`course_id` where `course_user`.`user_id` = $auth_user->id and `courses`.`deleted_at` is null"));
+        } else {
+            $course_user = DB::select(DB::raw("SELECT * from `courses` inner join `course_user` on `courses`.`id` = `course_user`.`course_id` where `course_user`.`user_id` = $auth_user->id and `courses`.`deleted_at` is null and (`courses`.`name` like '%$request->search%' or `courses`.`url` like '%$request->search%' or `courses`.`source` like '%$request->search%')"));
+        }
         return $course_user;
     }
 
