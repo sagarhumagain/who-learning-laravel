@@ -191,7 +191,7 @@ class StatisticsController extends Controller
         return response()->json($data);
     }
 
-    public function fetchUserYearlyProgress()
+    public function fetchUserYearlyProgress(Request $request)
     {
         // //get last three years
         // $years = [];
@@ -209,6 +209,9 @@ class StatisticsController extends Controller
         //   ->pluck('count', 'year')->toArray();
 
         $year = Carbon::now()->format('Y');
+        if ($request->year) {
+            $year = $request->year;
+        }
         $user = auth()->user();
         $data = CourseUser::selectRaw('count(id) as count, month(completed_date) as month')
           ->whereYear('completed_date', $year)

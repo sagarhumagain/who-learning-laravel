@@ -48,9 +48,13 @@ Route::group(
         Route::post('/enroll/course', [CourseController::class, 'enrollToCourse']);
         Route::get('/course_user', [CourseController::class, 'listEnrolledCourse']);
 
-        Route::group(['middleware' => ['role:super-admin']], function () {
+        Route::group(['middleware' => ['role:super-admin|supervisor']], function () {
             Route::apiResources(['user'=>UserController::class]);
+
+            Route::post('/assign-course-to-new-users', [CourseController::class, 'assignCourseToNewUsers']);
         });
+        Route::get('/get-choices', [BaseController::class, 'getChoices']);
+
         Route::apiResources(['contract'=>ContractController::class]);
 
         Route::post('updatePassword', 'ProfileController@updatePassword');
@@ -74,6 +78,8 @@ Route::group(
         Route::resource('/contract-types', ContractTypeController::class);
 
         Route::resource('/courses', CourseController::class);
+        Route::get('/approve/courses', [CourseController::class, 'getApprovalCourseList']);
+
         Route::put('/update-assigned-course', [CourseController::class, 'updateEnrolledCourse']);
 
         Route::resource('/designations', DesignationController::class);

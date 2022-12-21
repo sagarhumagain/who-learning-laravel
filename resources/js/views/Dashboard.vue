@@ -1,9 +1,10 @@
 <template>
     <div class="container">
+
       <div v-role:any="'super-admin|course-admin'">
         <admin-dashboard/>
       </div>
-      <div v-role="'normal-user'">
+      <div v-role:any="'normal-user|supervisor'">
         <user-dashboard/>
       </div>
     </div>

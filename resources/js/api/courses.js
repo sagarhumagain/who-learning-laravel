@@ -29,5 +29,8 @@ export default (baseUrl, apiVersion) => ({
   },
   async getExceededDeadlines() {
     return await axios.get(`${baseUrl}${apiVersion}/deadlines-exceed`);
+  },
+  async assignCourseToNewUsers(){
+    return await axios.post(`${baseUrl}${apiVersion}/assign-course-to-new-users`);
   }
 });

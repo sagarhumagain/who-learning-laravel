@@ -24,8 +24,8 @@ export default (baseUrl, apiVersion) => ({
   async fetchUserUpcomingDeadlines() {
     return await axios.get(`${baseUrl}${apiVersion}/statistics/user-course-deadline`);
   },
-  async fetchUserYearlyProgress() {
-    return await axios.get(`${baseUrl}${apiVersion}/statistics/user-yearly-progress`);
+  async fetchUserYearlyProgress(year) {
+    return await axios.get(`${baseUrl}${apiVersion}/statistics/user-yearly-progress?year=${year}`);
   },
   async fetchPendingApprovals() {
     return await axios.get(`${baseUrl}${apiVersion}/courses/users/pending-approval`);

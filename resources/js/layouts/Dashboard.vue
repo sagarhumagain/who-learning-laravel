@@ -70,13 +70,13 @@ export default {
                   icon: 'fa fa-book',
                   child: [
                     {
+                      href: '/courses/create',
+                      title: 'Create a New Course'
+                    },
+                    {
                       href: '/courses/',
                       title: 'Courses'
                     },
-                    {
-                      href: '/courses/create',
-                      title: 'Create a New Course'
-                    }
                   ]
                 },
                 {
@@ -112,6 +112,54 @@ export default {
                     }
                   ]
                 },
+              ];
+        }else if (roles?.includes('supervisor')) {
+         menuItems = [
+                {
+                  header: 'Main Navigation',
+                  hiddenOnCollapse: true
+                },
+                {
+                  href: '/dashboard',
+                  title: 'Dashboard',
+                  icon: 'fa fa-gauge'
+                },
+                {
+                  title: 'Courses',
+                  icon: 'fa fa-book',
+                  child: [
+                    {
+                      href: '/courses/create',
+                      title: 'Create Course'
+                    },
+                    {
+                      href: '/enrolled/courses',
+                      title: 'Enrolled Courses'
+                    },
+                    {
+                      href: '/courses/',
+                      title: 'Courses'
+                    },
+
+                  ]
+                },
+                {
+                  title: 'Users',
+                  icon: 'fa fa-user',
+                  child: [
+                    {
+                      href: '/users/',
+                      title: 'Manage Users'
+                    }
+
+                  ]
+                },
+                {
+                href: '/user/profile',
+                title: 'View profile',
+                icon: 'fa fa-user'
+                },
+
               ];
         } else {
           menuItems = [

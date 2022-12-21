@@ -27,7 +27,6 @@ class SendWelcomeNotification
      */
     public function handle(Registered $event)
     {
-        $event->user->assignRole('normal-user');
         $event->user->notify(new WelcomeMessage());
     }
 }

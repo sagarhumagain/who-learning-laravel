@@ -7,9 +7,15 @@
                 <div class="card">
                     <div class="card-header">
                         <h3>Courses</h3>
+                        <div class="d-flex justify-contents-between">
 
-                        <div class="card-tools">
-                            <button type="" class="btn btn-fill" @click="newCourse"><i class="fa fa-book fa-fw"></i> Add New Course</button>
+                            <div class="card-tools">
+                                <button type="" class="btn btn-fill" @click="newCourse"><i class="fa fa-book fa-fw"></i> Add New Course</button>
+                            </div>
+                            <div class="card-tools" v-role:any="'super-admin|course-admin'" >
+                                <button type="" class="btn btn-fill" @click="assignCourseToNewUsers"><i class="fa fa-book
+                                 fa-fw"></i> Assign Courses to New Users</button>
+                            </div>
                         </div>
 
                     </div>
@@ -46,7 +52,7 @@
                                     <!-- <a href="#" @click="editCourse(course,course.id)" class="btn btn-sm btn-success mr-2">Edit
                                         <i class="fa fa-edit"></i>
                                     </a> -->
-                                    <div v-role="'normal-user'">
+                                    <div v-role:any="'normal-user|supervisor'">
                                        <a href="#" class="m-2 color-primary" @click="enrollCourse(course.id)" >
                                         <i class="fa fa-circle-arrow-right"  title="Enroll Course"></i>
                                       </a>
@@ -73,6 +79,10 @@
                             </tbody></table>
                     </div>
 
+                    <div class="card-footer">
+                        <pagination-wrapper class="mt-3" :data="this.courses" :has_param="false" :api_url="api_url" pagination_title="Courses"></pagination-wrapper>
+                    </div>
+
                 </div>
                 <!-- /.card -->
             </div>
@@ -87,13 +97,16 @@
     import { Button, HasError, AlertError } from 'vform/src/components/bootstrap5'
     import Modal from '@/components/Modal';
     import SearchFilter from '@/components/SearchFilter';
+    import PaginationWrapper from '@/components/Pagination/PaginationWrapper.vue';
+
     export default {
         name:'courses-list',
         components: {
             Multiselect,
             HasError,
             Modal,
-            SearchFilter
+            SearchFilter,
+            PaginationWrapper,
         },
         /*Filling the data into form*/
         data() {
@@ -242,31 +255,92 @@
 
                 })
             },
+            async assignCourseToNewUsers(){
 
+                const result  = await  this.$swal({
+                    title: 'Are you sure?',
+                    text: "You want to perform this task?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes'
+                })
+                if (result.value) {
+                try{
+                    const response = await this.$api.courses.assignCourseToNewUsers();
+                    if(response.data.error == true){
+                        this.$swal({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            icon: 'warning',
+                            title: response.data.message,
+                        })
+                        this.$Progress.fail();
+                        this.disabled=false;
+                    }
+                    else{
+                        this.$swal({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            icon: 'success',
+                            title: response.data.message,
+                        })
+                        this.disabled=false
+                        this.$Progress.finish();
+
+                    }
+                }
+                catch(e){
+                    this.disabled = false
+                    if(e.response.status == 500) {
+                    this.$swal(
+                        'Error!',
+                        "Something Went Wrong.",
+                        'warning'
+                    );
+                    } else {
+                        this.errors = e.response.data.errors;
+                        this.$swal(
+                            'Error!',
+                            e.response.data.message,
+                            'warning'
+                        )
+                    }
+
+
+                }
+                }
+
+            },
 
             /*==== Start of Show existing Course function ====*/
             async loadCourses() {
                 const {data}  = await  axios.get(this.api_url)
-                this.courses = data.data
+                this.courses = data
             },
             /*==== End of Show existing Course function ====*/
 
 
         },
         created() {
-            // if(this.role.isNormalUser()){
 
-            // } else {
               this.loadCourses(); //load the course in the table
               //Load the courselist if add or created a new course
               this.emitter.on("AfterCreate", () => {
                   this.loadCourses();
               })
               this.emitter.on("AfterSearch", (data) => {
-                  this.courses = data.data
+                  this.courses = data
               })
 
-            // }
+              this.emitter.on('paginating',(item)=>{
+                this.courses = item
+                })
+
+
 
 
         }

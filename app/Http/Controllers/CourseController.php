@@ -38,22 +38,32 @@ class CourseController extends BaseController
      */
     public function index(Request $request)
     {
-        #TODO Refactor code to check permission, separate single course view to different method, remove data key.
         $auth_user = auth()->user();
-        if ($auth_user->hasRole('normal-user') && !$request->id) {
-            $enrolled_courses = $auth_user->courses()->pluck('course_id');
-            $courses['data'] = Course::whereNotIn('id', $enrolled_courses)->filter($request->all())->where('is_approved', 1)->with('courseCategories')->paginate(20);
-        } elseif ($request->id) {
+
+        if ($request->id) {
             if ($auth_user->hasRole('super-admin')) {
                 $courses =  Course::where('id', $request->id)->with('courseAssignment', 'courseCategories')->firstOrFail();
-            } elseif ($auth_user->hasRole('normal-user')) {
+            } elseif ($auth_user->hasRole('normal-user') || $auth_user->hasRole('supervisor')) {
                 $courses =  Course::where('id', $request->id)->with('courseCategories')->with('users', function ($q) {
                     $q->where('users.id', auth()->user()->id);
                 })->firstOrFail();
             }
         } else {
-            $courses['data'] = Course::with('courseCategories')->paginate(200);
+            if (auth()->user()->hasRole('normal-user') || auth()->user()->hasRole('supervisor')) {
+                $enrolled_courses = $auth_user->courses()->pluck('course_id');
+                $courses = Course::whereNotIn('id', $enrolled_courses)->filter($request->all())->where('is_approved', 1)->with('courseCategories')->paginate(20);
+            } else {
+                $courses = Course::where('is_approved', 1)->with('courseCategories')->paginate(10);
+            }
         }
+        return $courses;
+    }
+    public function getApprovalCourseList()
+    {
+        $courses = Course::where(function ($q) {
+            $q->where('is_approved', 0);
+            $q->orWhereNull('is_approved');
+        })->orderBy('is_approved')->with('courseCategories')->paginate(200);
         return $courses;
     }
 
@@ -268,7 +278,7 @@ class CourseController extends BaseController
                         ->orWhereIn('designation_id', $assignmentFields['staff_designation_ids']);
                     })->select('users.id as id')
                     ->get();
-                    $course->users()->sync($users);
+                    $course->users()->syncWithoutDetaching($users);
 
                     CourseAssignmentSetting::where('course_id', $course->id)->update($assignmentFields);
                 } catch (Exception $e) {
@@ -397,5 +407,35 @@ class CourseController extends BaseController
             $data['message'] = $e->getMessage();
         }
         return response()->json($data);
+    }
+    public function assignCourseToNewUsers()
+    {
+        try {
+            $course_assignment_settings = CourseAssignmentSetting::get();
+
+            foreach ($course_assignment_settings as $assignment) {
+                $users = User::leftJoin(DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
+                    $join->on('users.id', '=', 't2.user_id');
+                })
+                ->where(function ($q) use ($assignment) {
+                    $q->whereHas('pillars', function ($q) use ($assignment) {
+                        $q->whereIn('pillar_id', $assignment['pillar_ids']);
+                    })
+                    ->orWhereIn('staff_type_id', $assignment['staff_type_ids'])
+                    ->orWhereIn('contract_type_id', $assignment['contract_type_ids'])
+                    ->orWhereIn('staff_category_id', $assignment['staff_category_ids'])
+                    ->orWhereIn('designation_id', $assignment['staff_designation_ids']);
+                })->select('users.id as id')->get();
+                $course = Course::findOrFail($assignment->course_id);
+                $course->users()->syncWithoutDetaching($users);
+            }
+            $response['error'] = false;
+            $response['message'] = 'Course assigned to users successfully';
+            return $response;
+        } catch(\Exception $e) {
+            $response['error'] = true;
+            $response['message'] = $e->getMessage();
+            return $response;
+        }
     }
 }

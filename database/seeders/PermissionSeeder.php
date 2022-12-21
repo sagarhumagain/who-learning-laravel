@@ -26,22 +26,17 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'update_supervisee','guard_name'=>'api']);
         Permission::create(['name' => 'create_supervisee','guard_name'=>'api']);
 
-
-        // Permission::create(['name' => 'create_mandatory_course','guard_name'=>'api']);
-        // Permission::create(['name' => 'update_mandatory_course','guard_name'=>'api']);
-        // Permission::create(['name' => 'delete_mandatory_course','guard_name'=>'api']);
-
-
         Permission::create(['name' => 'create_course','guard_name'=>'api']);
         Permission::create(['name' => 'update_course','guard_name'=>'api']);
         Permission::create(['name' => 'delete_course','guard_name'=>'api']);
+        Permission::create(['name' => 'view_course','guard_name'=>'api']);
+
         //TODO supervisor permission?
         $course_permission = Permission::create(['name' => 'course_assignment','guard_name'=>'api']);
         $course_approve_permission = Permission::create(['name' => 'course_approve','guard_name'=>'api']);
         $courseuser_approve_permission = Permission::create(['name' => 'courseuser_approve','guard_name'=>'api']);
+
         $admin = Role::where('name', 'super-admin')->first();
-
-
         $course_permission->assignRole($admin);
         $course_approve_permission->assignRole($admin);
         $courseuser_approve_permission->assignRole($admin);

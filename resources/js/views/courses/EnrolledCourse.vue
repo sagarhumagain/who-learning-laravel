@@ -38,7 +38,7 @@
                                     <p class="color-red" v-else-if="course.pivot && course.pivot.is_approved == '0' && course.pivot.completed_date">Disapproved</p>
                                 </td>
                                 <td>
-                                    <router-link class="project-link mr-3" :to="{ name: 'courses-edit', params: { course: course.pivot , id: course.id} }">
+                                    <router-link class="project-link mr-3" :to="{ name: 'courses-edit', params: { course: course.pivot , id: course.course_id} }">
                                         <i class="fa fa-edit"></i>
                                     </router-link>
 

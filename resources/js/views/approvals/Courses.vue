@@ -61,6 +61,9 @@
                             </tr>
                             </tbody></table>
                     </div>
+                    <div class="card-footer">
+                        <pagination-wrapper class="mt-3" :data="this.courses" :has_param="false" :api_url="api_url" pagination_title="Courses"></pagination-wrapper>
+                    </div>
 
                 </div>
                 <!-- /.card -->
@@ -75,12 +78,15 @@
     import Form from 'vform'
     import { Button, HasError, AlertError } from 'vform/src/components/bootstrap5'
     import Modal from '@/components/Modal';
+    import PaginationWrapper from '@/components/Pagination/PaginationWrapper.vue';
+
     export default {
         name:'courses-list',
         components: {
             Multiselect,
             HasError,
-            Modal
+            Modal,
+            PaginationWrapper,
         },
         /*Filling the data into form*/
         data() {
@@ -99,7 +105,7 @@
                     is_approved:null
                 }),
 
-                api_url:null,
+                api_url: '/api/v1/approve/courses',
 
             }
         },
@@ -205,10 +211,8 @@
 
             /*==== Start of Show existing Course function ====*/
             async loadCourses() {
-                const {data}  = await  axios.get("/api/v1/courses")
-                this.courses = data.data,
-
-                this.api_url = 'api/courses'
+                const {data}  = await  axios.get(this.api_url)
+                this.courses = data
                 /*==== End of existing Course ====*/
             },
         },
@@ -217,6 +221,9 @@
             //Load the courselist if add or created a new course
             this.emitter.on("AfterCreate", () => {
                 this.loadCourses();
+            })
+            this.emitter.on('paginating',(item)=>{
+                this.courses = item
             })
 
         }

@@ -3,10 +3,20 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\ContractType;
+use App\Models\Course;
+use App\Models\CourseAssignmentSetting;
+use App\Models\Designation;
+use App\Models\Pillar;
+use App\Models\Role;
+use App\Models\StaffCategory;
+use App\Models\StaffType;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -104,5 +114,25 @@ class BaseController extends Controller
             array_push($val, $data[$key]);
         }
         return $val;
+    }
+    public function getChoices()
+    {
+        $roles = Role::select('name', 'id')->get();
+        $pillars = Pillar::select('name', 'id')->get();
+        $supervisors = User::role('supervisor')->pluck('name', 'id');
+        $contract_types = ContractType::pluck('name', 'id');
+        $designation_types = Designation::pluck('name', 'id');
+        $staff_categories = StaffCategory::pluck('name', 'id');
+        $staff_types = StaffType::pluck('name', 'id');
+        $data = [
+            'roles' => $roles,
+            'pillars' => $pillars,
+            'supervisors' => $supervisors,
+            'contract_types' => $contract_types,
+            'designation_types' => $designation_types,
+            'staff_categories' => $staff_categories,
+            'staff_types' => $staff_types,
+        ];
+        return $data; ;
     }
 }

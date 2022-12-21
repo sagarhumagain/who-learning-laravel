@@ -1,5 +1,5 @@
 <template>
-    <div class="container" v-role="'super-admin'">
+    <div class="container" v-role:any="'super-admin|supervisor'">
         <div class="row pt-5" >
             <div class="col-md-12">
                 <div class="card">
@@ -120,6 +120,10 @@
                             </tbody></table>
                     </div>
 
+                    <div class="card-footer">
+                        <pagination-wrapper class="mt-3" :data="this.users" :has_param="false" :api_url="api_url" pagination_title="Users"></pagination-wrapper>
+                    </div>
+
                 </div>
                 <!-- /.card -->
             </div>
@@ -202,16 +206,48 @@
         <modal :form="form" :modal_data="c_modal_data" :editmode="editmode" :api_url="'v1/contract'">
             <h4 class="modal-header">Contract Information : {{this.form.name}}</h4>
 
-            <div class="form-group col-md-6">
-                <label for="first_name" >Contract Start Date*</label>
-                    <input type="text" v-model="form.contract_start" class="form-control"  placeholder="Contract Start Date" :class="{ 'is-invalid': form.errors.has('contract_start') }">
-                    <has-error :form="form" field="contract_start"></has-error>
+             <div class="form-group col-md-6">
+                <label for="contract_start" >Contract Start Date*</label>
+                <v-date-picker v-model="form.contract_start"  name="contract_start" placeholder="Contract Start Date" class="form-control" :class="{ 'is-invalid': form.errors.has('contract_start')}"
+                :model-config="{
+                    type: 'string',
+                    mask: 'YYYY-MM-DD',
+                }"
+                :masks="masks"
+                mode="date"
+                >
+                <template v-slot="{ inputValue, inputEvents }">
+                    <input
+                    class="custom-datepicker"
+                    :value="inputValue"
+                    v-on="inputEvents"
+                    />
+                </template>
+                </v-date-picker>
+                <error-msg :errors="errors" field="contract_start"></error-msg>
             </div>
+
             <div class="form-group col-md-6">
-                <label for="first_name" >Contract End Date*</label>
-                    <input type="text" v-model="form.contract_end" class="form-control"  placeholder="Contract End Date" :class="{ 'is-invalid': form.errors.has('contract_end') }">
-                    <has-error :form="form" field="contract_end"></has-error>
+                <label for="contract_end" >Contract End Date*</label>
+                <v-date-picker v-model="form.contract_end"  name="contract_end" placeholder="Contract End Date" class="form-control" :class="{ 'is-invalid': form.errors.has('contract_end')}"
+                :model-config="{
+                    type: 'string',
+                    mask: 'YYYY-MM-DD',
+                }"
+                :masks="masks"
+                mode="date"
+                >
+                <template v-slot="{ inputValue, inputEvents }">
+                    <input
+                    class="custom-datepicker"
+                    :value="inputValue"
+                    v-on="inputEvents"
+                    />
+                </template>
+                </v-date-picker>
+                <error-msg :errors="errors" field="contract_end"></error-msg>
             </div>
+
             <div class="form-group col-md-6">
                 <h6>Staff Type</h6>
                 <multiselect v-model="form.staff_type_id"
@@ -277,15 +313,13 @@
 
     </div>
 
-    <div v-role:unless="'super-admin'" class="container ">
-        <page-not-found/>
-    </div>
+
 </template>
 <script>
   import Multiselect from 'vue-multiselect'
     import Form from 'vform'
     import PageNotFound from "./../../components/PageNotFound.vue"
-
+    import PaginationWrapper from '@/components/Pagination/PaginationWrapper.vue';
     import { Button, HasError, AlertError } from 'vform/src/components/bootstrap5'
     import Modal from '@/components/Modal';
     export default {
@@ -293,11 +327,15 @@
             HasError,
             Multiselect,
             Modal,
-            PageNotFound
+            PageNotFound,
+            PaginationWrapper,
         },
         data() {
 
             return {
+                masks: {
+                input: 'YYYY-MM-DD'
+                },
                 editmode: false,
                 totaluser: 0,
                 users: {},
@@ -350,7 +388,7 @@
                     supervisor_user_id:null,
                 }),
 
-                api_url:null,
+                api_url: '/api/v1/user',
 
             }
         },
@@ -464,24 +502,53 @@
             },
 
             async loadUsers() {
-                const {data}  = await  axios.get("/api/v1/user")
-                this.users = data.data,
-                this.roles = data.roles
-                this.pillars = data.pillars
-                this.supervisors = data.supervisors
-                this.designations = data.designation_types
-                this.staff_categories = data.staff_categories
-                this.contract_types = data.contract_types
-                this.staff_types = data.staff_types
-                this.api_url = 'api/user'
+                try{
+
+                    const {data}  = await  axios.get("/api/v1/user")
+                    this.users = data
+
+                }catch (e) {
+
+                    this.$swal(
+                        'Warning!',
+                        'Unauthorized Access to load users.',
+                        'warning'
+                    )
+
+
+                }
+            },
+             async loadChoices() {
+                try{
+                    const {data}  = await  axios.get("/api/v1/get-choices")
+                    this.roles = data.roles
+                    this.pillars = data.pillars
+                    this.supervisors = data.supervisors
+                    this.designations =data.designation_types
+                    this.staff_categories = data.staff_categories
+                    this.contract_types = data.contract_types
+                    this.staff_types = data.staff_types
+                }catch (e) {
+
+                    this.$swal(
+                        'Warning!',
+                        'Unauthorized Access to load details.',
+                        'warning'
+                    )
+
+
+                }
             },
         },
         created() {
             this.loadUsers();
+            this.loadChoices();
             this.emitter.on("AfterCreate", () => {
                 this.loadUsers();
             })
-
+            this.emitter.on('paginating',(item)=>{
+                this.users = item
+            })
         }
 
     }

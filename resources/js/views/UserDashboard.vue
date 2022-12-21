@@ -65,7 +65,23 @@
                 </Card>
               </div>
             </div>
+
             <div class="col-12">
+              <div class="row">
+                  <h2>Year Filter Calendar </h2>
+                  <div class="col-md-4">
+                  <label for="cars">Choose a year:</label>
+
+                  <select v-model="year" @change="getUserYearlyProgress">
+                    <option v-for="year in years" :value="year.value" :key="year.vlaue" :selected="year.selected">
+                      {{ year.label }}
+                    </option>
+                  </select>
+
+
+                  </div>
+
+              </div>
               <div class="row">
                 <Card :title="'Yearly Progress ('+ new Date().getFullYear() + ')'">
                     <div class="col-12">
@@ -91,11 +107,14 @@ import variables from '@/helpers/constants';
 import LineChart from '@/components/LineChart';
 import SuggestedCourse from '@/components/SuggestedCourse';
 import Slider from '@/components/slider';
-
 export default {
     name:"user-dashboard",
     data(){
         return {
+            year: new Date().getFullYear(),
+            years: [
+
+            ],
             suggestedCourses:[],
             user:this.$store.state.auth.user,
             isLoaded: false,
@@ -157,13 +176,23 @@ export default {
         Slider
     },
     methods:{
-        async fetchSuggestedCourse () {
+      async fetchSuggestedCourse () {
         let response = await this.$api.courses.listSuggestedCourse();
         this.suggestedCourses = response.data.filter(item=>{
             return item.courses.length >= 1
         })
 
       },
+      async fetchUserYearlyProgress(year){
+          let response;
+          response = await this.$api.statistics.fetchUserYearlyProgress(year);
+          this.yearlyProgress.datasets[0].data = [
+            ...response.data
+          ];
+      },
+      getUserYearlyProgress(){
+            this.fetchUserYearlyProgress(this.year);
+      }
 
 
     },
@@ -189,11 +218,23 @@ export default {
         ...this.completedCourse,
         rowData: response.data
       };
-      response = await this.$api.statistics.fetchUserYearlyProgress();
-      this.yearlyProgress.datasets[0].data = [
-        ...response.data
-      ];
+      this.fetchUserYearlyProgress(new Date().getFullYear());
       this.fetchSuggestedCourse();
+
+      let years = [
+
+      ];
+      let currentYear = new Date().getFullYear();
+      for(let i = 0; i < 4; i++){
+          let year = currentYear - i;
+          years.push({
+              value: year,
+              label: year,
+              selected: year == currentYear
+          })
+      }
+
+      this.years = years;
     },
 
 

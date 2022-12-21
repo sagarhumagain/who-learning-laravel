@@ -65,6 +65,8 @@ export default {
             this.processing = true
             await axios.post('/register',this.user).then(response=>{
                 this.signIn()
+                //reload window
+                window.location.reload()
             }).catch(({response:{data}})=>{
                 alert(data.message)
             }).finally(()=>{

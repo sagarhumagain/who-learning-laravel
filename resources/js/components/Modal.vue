@@ -143,6 +143,7 @@ export default {
     created(){
         this.emitter.on('editing',(item)=>{
             this.form.fill(item);
+            console.log(item)
         })
 
     }

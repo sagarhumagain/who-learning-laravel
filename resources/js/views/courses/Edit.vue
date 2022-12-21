@@ -24,7 +24,7 @@
                           </div>
                           <div class="form-group col-lg-12 col-md-12">
                               <label for="credit_hours" >Credit Hours *</label>
-                              <input v-model="form.credit_hours" :disabled="course_disabled" type="number" name="credit_hours" placeholder="Credit Hours" class="form-control" :class="{ 'is-invalid': form.errors.has('credit_hours')}">
+                              <input v-model="form.credit_hours" :disabled="course_disabled" type="text" name="credit_hours" placeholder="Credit Hours" class="form-control" :class="{ 'is-invalid': form.errors.has('credit_hours')}">
                               <div v-if="form.errors.has('credit_hours')" v-html="form.errors.get('credit_hours')" />
                           </div>
                           <div class="form-group col-lg-12 col-md-12">
@@ -67,7 +67,7 @@
                                   >
                               </multiselect>
                             </div>
-                          <div v-role="'course_assignment'">
+                          <div v-permission="'course_assignment'">
                             <h4>Assign To</h4>
                             <multiselect v-model="form.pillar_ids"
                                 tag-placeholder="Pillars"
@@ -116,7 +116,7 @@
                             </multiselect>
 
                           </div>
-                          <div v-role="'normal-user'">
+                          <div v-role:any="'normal-user|supervisor'">
                             <div class="form-group col-md-8">
                                 <label for="completed_date" >Completed Date</label>
                                 <v-date-picker v-model="form.completed_date"  name="completed_date" placeholder="Completed Date" class="form-control" :class="{ 'is-invalid': form.errors.has('completed_date')}"
@@ -338,7 +338,7 @@ export default {
           // if(this.role.isNormalUser() && !this.form.is_course_approved){
           //   this.course_disabled = false;
           // }
-          if(this.$gates.hasRole('normal-user') && this.form.course_user_approved !== 1){
+          if(this.$gates.hasRole('normal-user') || this.$gates.hasRole('supervisor') && this.form.course_user_approved !== 1){
             this.course_user_disabled = false;
           }
         }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Contract;
 use App\Models\ContractType;
+use App\Models\Course;
+use App\Models\CourseAssignmentSetting;
 use App\Models\Designation;
 use App\Models\Pillar;
 use App\Models\StaffCategory;
@@ -12,6 +14,7 @@ use App\Models\StaffType;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
@@ -32,18 +35,22 @@ class UserController extends Controller
 
     public function index()
     {
-        $data['data']= $this->user->with('roles', 'employee', 'pillars')->with('courses', function ($q) {
-            $q->where('courses.is_approved', 1)->orWhereNull('courses.is_approved');
-        })->with('contracts', function ($q) {
-            $q->latest()->get();
-        })->latest()->paginate(100);
-        $data['roles'] = Role::select('name', 'id')->get();
-        $data['pillars'] = Pillar::select('name', 'id')->get();
-        $data['supervisors'] = User::role('supervisor')->pluck('name', 'id');
-        $data['contract_types'] = ContractType::pluck('name', 'id');
-        $data['designation_types'] = Designation::pluck('name', 'id');
-        $data['staff_categories'] = StaffCategory::pluck('name', 'id');
-        $data['staff_types'] = StaffType::pluck('name', 'id');
+        if (auth()->user()->hasRole('supervisor')) {
+            $data= $this->user->with('roles', 'employee', 'pillars')->with('courses', function ($q) {
+                $q->where('courses.is_approved', 1)->orWhereNull('courses.is_approved');
+            })->with('contracts', function ($q) {
+                $q->latest()->get();
+            })->whereHas('employee', function ($q) {
+                $q->where('supervisor_user_id', auth()->user()->id);
+            })->latest()->paginate(50);
+        } else {
+            $data= $this->user->with('roles', 'employee', 'pillars')->with('courses', function ($q) {
+                $q->where('courses.is_approved', 1)->orWhereNull('courses.is_approved');
+            })->with('contracts', function ($q) {
+                $q->latest()->get();
+            })->latest()->paginate(50);
+        }
+
 
         return $data;
     }
@@ -92,13 +99,17 @@ class UserController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-            $pillars = [];
-            foreach ($request->pillar_id as $pillar) {
-                array_push($pillars, $pillar['id']);
+
+            if ($request->pillar) {
+                $pillars = [];
+                foreach ($request->pillar_id as $pillar) {
+                    array_push($pillars, $pillar['id']);
+                }
+                $user->pillars()->detach();
+                $user->pillars()->attach($pillars);
             }
-            $user->pillars()->detach();
-            $user->pillars()->attach($pillars);
             $roles = [];
+
             foreach ($request->roles as $role) {
                 array_push($roles, $role['name']);
             }
