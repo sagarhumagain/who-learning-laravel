@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 */
 Route::get('{any}', function () {
     return view('welcome');
-})->where('any', '.*');
+})->where('any', '^(?!pgadmin).*');
 Auth::routes();
 Route::group(['middleware' => ['auth','sanctum']], function () {
     // Route::resource('roles', RoleController::class);
