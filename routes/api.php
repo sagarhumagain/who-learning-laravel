@@ -57,7 +57,7 @@ Route::group(
 
         Route::apiResources(['contract'=>ContractController::class]);
 
-        Route::post('updatePassword', 'ProfileController@updatePassword');
+        Route::post('updatePassword', [ProfileController::class, 'updatePassword']);
 
         Route::apiResources(['profile' => ProfileController::class]);
 

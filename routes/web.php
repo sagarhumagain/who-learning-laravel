@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,9 +18,9 @@ Route::get('{any}', function () {
     return view('welcome');
 })->where('any', '^(?!pgadmin).*');
 Auth::routes();
-Route::group(['middleware' => ['auth','sanctum']], function () {
-    // Route::resource('roles', RoleController::class);
-    // Route::resource('users', UserController::class);
-    // Route::resource('products', ProductController::class);
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-});
+// Route::group(['middleware' => ['auth','sanctum']], function () {
+//     // Route::resource('roles', RoleController::class);
+//     // Route::resource('users', UserController::class);
+//     // Route::resource('products', ProductController::class);
+//     Route::get('/home', [HomeController::class, 'index'])->name('home');
+// });
