@@ -46,6 +46,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        var cookie;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -59,20 +60,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 return _this.$api.auth.getCsrfCookie();
 
               case 5:
-                _context.next = 7;
+                cookie = _context.sent;
+                _context.next = 8;
                 return _this.$api.auth.login(_this.formData);
 
-              case 7:
-                _this.signIn();
+              case 8:
+                _this.signIn(); // if (this.$route.path === '/login') {
+                //     this.$router.push({ name: 'dashboard' });
+                // }
+
 
                 _this.setEnums();
 
-                _context.next = 15;
+                _context.next = 17;
                 break;
 
-              case 11:
-                _context.prev = 11;
+              case 12:
+                _context.prev = 12;
                 _context.t0 = _context["catch"](1);
+                console.log(_context.t0);
 
                 _this.$swal({
                   toast: true,
@@ -85,15 +91,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
                 _this.$Progress.fail();
 
-              case 15:
+              case 17:
                 _this.processing = false;
 
-              case 16:
+              case 18:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[1, 11]]);
+        }, _callee, null, [[1, 12]]);
       }))();
     }
   })
