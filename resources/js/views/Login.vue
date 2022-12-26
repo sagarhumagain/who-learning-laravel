@@ -59,15 +59,11 @@ export default {
             this.processing = true;
             try {
               this.$Progress.start();
-                const cookie = await this.$api.auth.getCsrfCookie();
+                await this.$api.auth.getCsrfCookie();
                 await this.$api.auth.login(this.formData);
                 this.signIn();
-                // if (this.$route.path === '/login') {
-                //     this.$router.push({ name: 'dashboard' });
-                // }
                 this.setEnums();
             } catch (e) {
-                console.log(e);
               this.$swal({
                     toast: true,
                     position: 'top-end',
