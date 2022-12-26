@@ -1,41 +1,40 @@
 import store from '@/store';
+import axios from 'axios';
+const api = axios.create({
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
 export default (baseUrl, apiVersion ) => ({
   async getCsrfCookie() {
-    return await axios.get(`${baseUrl}/sanctum/csrf-cookie`);
+    return await api.get(`${baseUrl}/sanctum/csrf-cookie`);
   },
   async login({email, password}) {
-    return await axios.post(`${baseUrl}/login`, { email, password }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+    return await api.post(`${baseUrl}/login`, { email, password });
   },
+
   async logout() {
-    return await axios.get(`${baseUrl}/logout`);
+    return await api.get(`${baseUrl}/logout`);
   },
 
   async customLogout() {
-    return await axios.get(`${baseUrl}${apiVersion}/custom-logout/`);
+    return await api.get(`${baseUrl}${apiVersion}/custom-logout/`);
   },
 
   async register(payload) {
-    return await axios.post(`${baseUrl}/register`, payload, {
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
+    return await api.post(`${baseUrl}/register`, payload);
   },
 
   async getActiveUser() {
-    return await axios.get('/api/user');
+    return await api.get('/api/user');
   },
   async getProfile() {
-    return await axios.get(`${baseUrl}${apiVersion}/profile`);
+    return await api.get(`${baseUrl}${apiVersion}/profile`);
   },
   async getAuthRoles() {
-    return await axios.get(`${baseUrl}${apiVersion}/auth-permissions`);
+    return await api.get(`${baseUrl}${apiVersion}/auth-permissions`);
   },
   async getAuthPermissions() {
-    return await axios.get(`${baseUrl}${apiVersion}/auth-roles`);
+    return await api.get(`${baseUrl}${apiVersion}/auth-roles`);
   },
 });
