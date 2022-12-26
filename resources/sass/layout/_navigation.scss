@@ -1,0 +1,18 @@
+@use '../abstracts/variables';
+
+.navbar-main {
+  background-color: $color-primary;
+  color: $color-white;
+  padding-left: 350px;
+
+  &.collapsed {
+    padding-left: 100px;
+  }
+  a {
+    color: $color-white;
+
+    &:hover {
+      font-weight: unset;
+    }
+  }
+}

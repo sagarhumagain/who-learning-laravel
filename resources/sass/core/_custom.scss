@@ -1,0 +1,55 @@
+@use "../abstracts/variables";
+.color-red {
+  color: $color-red;
+  &:hover {
+    color: darken($color-red, 5)
+  }
+}
+
+.color-yellow {
+  color: $color-sec-yellow;
+  &:hover {
+    color: darken($color-sec-yellow, 5)
+  }
+}
+
+.color-green {
+  color: $color-sec-green;
+  &:hover {
+    color: darken($color-sec-green, 5)
+  }
+}
+
+.color-sec-blue {
+  color: $color-sec-blue;
+  &:hover {
+    color: darken($color-sec-blue, 5)
+  }
+}
+
+.btn.btn-red {
+  color: $color-white;
+  background-color: $color-red;
+  &:hover {
+    color: $color-white;
+    background-color: darken($color-red, 5)
+  }
+}
+
+.btn.btn-green {
+  color: $color-white;
+  background-color: $color-sec-green;
+  &:hover {
+    color: $color-white;
+    background-color: darken($color-sec-green, 5)
+  }
+}
+
+.btn.btn-primary-blue {
+  color: $color-white;
+  background-color: $color-primary;
+  &:hover {
+    color: $color-white;
+    background-color: darken($color-primary, 5)
+  }
+}
