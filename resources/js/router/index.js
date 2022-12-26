@@ -164,6 +164,7 @@ router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title} - ${process.env.APP_NAME}`;
     if(to.meta.middleware=="auth"){
         if(store.state.auth.authenticated){
+            console.log(store.state.auth.authenticated, to.meta.middleware, 'auth')
             next()
         }else{
             next({name:"login"})
@@ -171,10 +172,10 @@ router.beforeEach((to, from, next) => {
     }
     else if(to.meta.middleware=="guest"){
         if(store.state.auth.authenticated){
-            next()
-        }else{
-            next({name:"login"})
+            console.log(store.state.auth.authenticated, to.meta.middleware, 'guest')
+            next({name:"dashboard"})
         }
+        next()
     }
     else{
         next({name:"login"})
