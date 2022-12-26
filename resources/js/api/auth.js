@@ -1,11 +1,18 @@
 import store from '@/store';
+const api = axios.create({
+    headers: {
+        'Content-Type': 'application/json'
+    }
+});
 export default (baseUrl, apiVersion ) => ({
+
+
   async getCsrfCookie() {
     return await axios.get(`${baseUrl}/sanctum/csrf-cookie`);
   },
   async login({email, password}) {
     console.log(`${baseUrl}/login`, apiVersion);
-    return await axios.post(`${baseUrl}/login`, { email, password });
+    return await api.post(`${baseUrl}/login`, { email, password });
   },
 
   async logout() {
@@ -17,7 +24,7 @@ export default (baseUrl, apiVersion ) => ({
   },
 
   async register(payload) {
-    return await axios.post(`${baseUrl}/register`, payload);
+    return await api.post(`${baseUrl}/register`, payload);
   },
 
   async getActiveUser() {

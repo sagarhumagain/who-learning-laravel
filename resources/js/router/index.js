@@ -139,6 +139,7 @@ const Routes = [
             title:`Register`
         }
     },
+
     {
         path:"/",
         component:DahboardLayout,
@@ -147,6 +148,8 @@ const Routes = [
         },
         children: routeChildrens
        },
+
+
 ]
 
 
@@ -170,7 +173,7 @@ router.beforeEach((to, from, next) => {
     else if(to.meta.middleware=="guest"){
         if(store.state.auth.authenticated){
             console.log(store.state.auth.authenticated, to.meta.middleware, 'guest')
-            next()
+            next({name:"dashboard"})
         }
         next()
     }
