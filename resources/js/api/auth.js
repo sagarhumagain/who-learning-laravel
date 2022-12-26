@@ -4,6 +4,7 @@ export default (baseUrl, apiVersion ) => ({
     return await axios.get(`${baseUrl}/sanctum/csrf-cookie`);
   },
   async login({email, password}) {
+    console.log(`${baseUrl}/login`, apiVersion);
     return await axios.post(`${baseUrl}/login`, { email, password });
   },
 
