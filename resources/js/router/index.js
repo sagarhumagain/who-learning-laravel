@@ -171,9 +171,10 @@ router.beforeEach((to, from, next) => {
     }
     else if(to.meta.middleware=="guest"){
         if(store.state.auth.authenticated){
-            next({name:"dashboard"})
+            next()
+        }else{
+            next({name:"login"})
         }
-        next()
     }
     else{
         next({name:"login"})
