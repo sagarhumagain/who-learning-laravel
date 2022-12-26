@@ -12,5 +12,5 @@ yarn-error.log
 /.idea
 /.vscode
 .env
-/public/js/resouces/*
+/public/js/resouce/*
 /public/css/*
