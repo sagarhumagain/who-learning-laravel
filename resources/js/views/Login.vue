@@ -59,7 +59,8 @@ export default {
             this.processing = true;
             try {
               this.$Progress.start();
-                await this.$api.auth.getCsrfCookie();
+                const cookie = await this.$api.auth.getCsrfCookie();
+                console.log(cookie);
                 await this.$api.auth.login(this.formData);
                 this.signIn();
                 this.setEnums();
