@@ -12,6 +12,7 @@ const Register = () => import('@/views/Register.vue' /* webpackChunkName: "resou
 
 /* Layouts */
 const DahboardLayout = () => import('@/layouts/Dashboard.vue' /* webpackChunkName: "resource/js/components/layouts/dashboard" */)
+const DataSync = () => import('@/layouts/DataSync.vue' /* webpackChunkName: "resource/js/components/layouts/DataSync" */)
 /* Layouts */
 
 /* Authenticated Component */
@@ -121,15 +122,15 @@ let routeChildrens;
           ];
 
 const Routes = [
-    {
-        name:"login",
-        path:"/login",
-        component:Login,
-        meta:{
-            middleware:"guest",
-            title:`Login`
-        }
-    },
+    // {
+    //     name:"login",
+    //     path:"/login",
+    //     component:Login,
+    //     meta:{
+    //         middleware:"guest",
+    //         title:`Login`
+    //     }
+    // },
     {
         name:"register",
         path:"/register",
@@ -139,6 +140,12 @@ const Routes = [
             title:`Register`
         }
     },
+    {
+        path: '/data-sync',
+        name: "sync",
+        component: DataSync,
+    },
+
 
     {
         path:"/",
@@ -160,26 +167,26 @@ const router = VueRouter.createRouter({
 
 })
 
-router.beforeEach((to, from, next) => {
-    document.title = `${to.meta.title} - ${process.env.APP_NAME}`;
-    if(to.meta.middleware=="auth"){
-        if(store.state.auth.authenticated){
-            console.log(store.state.auth.authenticated, to.meta.middleware, 'auth')
-            next()
-        }else{
-            next({name:"login"})
-        }
-    }
-    else if(to.meta.middleware=="guest"){
-        if(store.state.auth.authenticated){
-            console.log(store.state.auth.authenticated, to.meta.middleware, 'guest')
-            next({name:"dashboard"})
-        }
-        next()
-    }
-    else{
-        next({name:"login"})
-    }
-})
+// router.beforeEach((to, from, next) => {
+//     document.title = `${to.meta.title} - ${process.env.APP_NAME}`;
+//     if(to.meta.middleware=="auth"){
+//         if(store.state.auth.authenticated){
+//             console.log(store.state.auth.authenticated, to.meta.middleware, 'auth')
+//             next()
+//         }else{
+//             next({name:"login"})
+//         }
+//     }
+//     else if(to.meta.middleware=="guest"){
+//         if(store.state.auth.authenticated){
+//             console.log(store.state.auth.authenticated, to.meta.middleware, 'guest')
+//             next({name:"dashboard"})
+//         }
+//         next()
+//     }
+//     else{
+//         next({name:"login"})
+//     }
+// })
 
 export default router

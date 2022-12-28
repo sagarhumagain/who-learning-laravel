@@ -2,14 +2,14 @@ import store from '@/store';
 import axios from 'axios';
 const api = axios.create({
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      '_token': document.querySelector('meta[name="csrf-token"]').content,
     }
   });
+
 export default (baseUrl, apiVersion ) => ({
-  async getCsrfCookie() {
-    return await api.get(`${baseUrl}/sanctum/csrf-cookie`);
-  },
   async login({email, password}) {
+    console.log(document.querySelector('meta[name="csrf-token"]').content);
     return await api.post(`${baseUrl}/login`, { email, password });
   },
 
@@ -29,6 +29,7 @@ export default (baseUrl, apiVersion ) => ({
     return await api.get('/api/user');
   },
   async getProfile() {
+    console.log(`${baseUrl}${apiVersion}/profile`);
     return await api.get(`${baseUrl}${apiVersion}/profile`);
   },
   async getAuthRoles() {

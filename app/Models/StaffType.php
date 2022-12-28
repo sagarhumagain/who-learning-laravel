@@ -11,9 +11,12 @@ use App\Models\StaffCategory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
+
 class StaffType extends Model implements Auditable
 {
-    use HasFactory, SoftDeletes, AuditableTrait;
+    use HasFactory;
+    use SoftDeletes;
+    use AuditableTrait;
 
     protected $fillable = [
         'name',
@@ -21,19 +24,23 @@ class StaffType extends Model implements Auditable
         'slug'
     ];
 
-    public function contracts() {
-      return $this->hasMany(Contract::class, 'staff_type_id');
+    public function contracts()
+    {
+        return $this->hasMany(Contract::class, 'staff_type_id');
     }
 
-    public function designations() {
-      return $this->belongsToMany(Designation::class, 'designation_staff_type');
+    public function designations()
+    {
+        return $this->belongsToMany(Designation::class, 'designation_staff_type');
     }
 
-    public function contractTypes() {
-      return $this->belongsToMany(ContractType::class, 'designation_staff_type');
+    public function contractTypes()
+    {
+        return $this->belongsToMany(ContractType::class, 'designation_staff_type');
     }
 
-    public function staffCategories() {
-      return $this->belongsToMany(StaffCategory::class, 'staff_category_staff_type');
+    public function staffCategories()
+    {
+        return $this->belongsToMany(StaffCategory::class, 'staff_category_staff_type');
     }
 }

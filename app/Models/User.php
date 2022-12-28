@@ -6,17 +6,21 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use App\Models\Employee;
 use App\Models\Course;
 use App\Models\Pillar;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable implements Auditable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, AuditableTrait;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use HasRoles;
+    use AuditableTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -68,8 +72,8 @@ class User extends Authenticatable implements Auditable
     {
         return $this->belongsToMany(Course::class)->withPivot('completed_date', 'certificate_path', 'is_approved');
     }
-    
-    
+
+
     public function contracts()
     {
         return $this->hasMany(Contract::class);

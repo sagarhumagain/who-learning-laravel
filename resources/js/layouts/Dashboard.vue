@@ -216,18 +216,13 @@ export default {
       onItemClick (event, item) {
         // console.log('onItemClick');
       },
-        setACL(){
-            this.$gates.setPermissions(store.state.auth.user.permissions);
-            this.$gates.setRoles(store.state.auth.user.roles);
-
-        },
-      ...mapActions({
+        ...mapActions({
             signOut:"auth/logout",
         }),
         async logout(){
             await axios.post('/logout').then(({data})=>{
                 this.signOut()
-                this.$router.push({name:"login"})
+                window.location.href = '/login'
             });
         },
         onResize () {
@@ -243,7 +238,6 @@ export default {
 
     },
     created(){
-        this.setACL();
     }
 
 
