@@ -104,8 +104,7 @@ const options = {
   };
 app.config.globalProperties.$function = new Functions(app);
 
-app.use(VueGates,{
+app.use(VueGates,{persistent:true});
 
-});
 app.use(VueSweetalert2, options);
 app.mount('#app');

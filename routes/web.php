@@ -14,10 +14,16 @@ use App\Http\Controllers\HomeController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/', function () {
+    return redirect('login');
+});
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+
 Route::get('{any}', function () {
     return view('welcome');
-})->where('any', '^(?!pgadmin).*');
+})->where('any', '^(?!pgadmin).*')->middleware('web');
 Auth::routes();
+
 // Route::group(['middleware' => ['auth','sanctum']], function () {
 //     // Route::resource('roles', RoleController::class);
 //     // Route::resource('users', UserController::class);

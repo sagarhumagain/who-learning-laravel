@@ -26,6 +26,7 @@ export default {
         },
         SET_USER (state, value) {
             state.user = value
+            console.log(state.user)
         },
 
     },
@@ -40,6 +41,7 @@ export default {
             }
         }
           catch (e) {
+            console.log('catched')
             commit('SET_USER',{})
             commit('SET_AUTHENTICATED',false)
           }

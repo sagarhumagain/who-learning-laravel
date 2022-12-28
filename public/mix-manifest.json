@@ -1,8 +1,8 @@
 {
-    "/js/app.js": "/js/app.js?id=f31be94d9adb461af36287ef88405fa0",
-    "/js/resource/js/components/login.js": "/js/resource/js/components/login.js?id=bdec4ea6b3aa03fbdf411741a9c4a9e6",
+    "/js/app.js": "/js/app.js?id=fd7f8810a161e4c91cf7a4f2fa5ca8fe",
+    "/js/resource/js/components/login.js": "/js/resource/js/components/login.js?id=a0d4f5f0a7700e65b356c885a4278220",
     "/js/resource/js/components/register.js": "/js/resource/js/components/register.js?id=dce7ff80f4504575ebe31ef5ad9e76a7",
-    "/js/resource/js/components/layouts/dashboard.js": "/js/resource/js/components/layouts/dashboard.js?id=c69016495e93ec02c933d55d809e10f2",
+    "/js/resource/js/components/layouts/dashboard.js": "/js/resource/js/components/layouts/dashboard.js?id=f4633fe0281f74281058f0633a98eda9",
     "/js/resource/js/components/dashboard.js": "/js/resource/js/components/dashboard.js?id=e9c253408b00061226717f0d0e70ef78",
     "/js/resource/js/components/coursecreate.js": "/js/resource/js/components/coursecreate.js?id=a95523617b0758f93e4ceb8ae9bcb357",
     "/js/resource/js/components/courseedit.js": "/js/resource/js/components/courseedit.js?id=468df520572e3c3d692330f548db9ad7",
@@ -12,5 +12,6 @@
     "/js/resource/js/components/approvalcourses.js": "/js/resource/js/components/approvalcourses.js?id=9c45e4ffedd365416fd0d2d40d41539a",
     "/js/resource/js/components/certificates.js": "/js/resource/js/components/certificates.js?id=992ab8429e36868e2a3964da69913296",
     "/js/resource/js/components/assignedcourse.js": "/js/resource/js/components/assignedcourse.js?id=0b9acebdffd0fa6b3ab181f4021c7148",
-    "/css/app.css": "/css/app.css?id=5180d922861b3de370517d17a2e21160"
+    "/css/app.css": "/css/app.css?id=5180d922861b3de370517d17a2e21160",
+    "/js/resource/js/components/layouts/DataSync.js": "/js/resource/js/components/layouts/DataSync.js?id=99666ceb48bbffe53241508a43628787"
 }

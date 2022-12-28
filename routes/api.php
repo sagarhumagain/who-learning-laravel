@@ -38,12 +38,12 @@ use App\Http\Controllers\Auth\LoginController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::group(
-    ['prefix' => 'v1', 'middleware' => ['auth:sanctum']],
+    ['prefix' => 'v1', 'middleware' => ['auth:api']],
     function () {
         Route::post('/enroll/course', [CourseController::class, 'enrollToCourse']);
         Route::get('/course_user', [CourseController::class, 'listEnrolledCourse']);

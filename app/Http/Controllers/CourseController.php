@@ -41,21 +41,26 @@ class CourseController extends BaseController
         $auth_user = auth()->user();
 
         if ($request->id) {
+            $query = Course::where('id', $request->id)->with('courseCategories');
             if ($auth_user->hasRole('super-admin')) {
-                $courses =  Course::where('id', $request->id)->with('courseAssignment', 'courseCategories')->firstOrFail();
+                $query->with('courseAssignment');
             } elseif ($auth_user->hasRole('normal-user') || $auth_user->hasRole('supervisor')) {
-                $courses =  Course::where('id', $request->id)->with('courseCategories')->with('users', function ($q) {
+                $query->with('users', function ($q) {
                     $q->where('users.id', auth()->user()->id);
-                })->firstOrFail();
+                });
             }
+            $courses = $query->firstOrFail();
         } else {
+            $query = Course::where('is_approved', 1)->with('courseCategories');
             if (auth()->user()->hasRole('normal-user') || auth()->user()->hasRole('supervisor')) {
                 $enrolled_courses = $auth_user->courses()->pluck('course_id');
-                $courses = Course::whereNotIn('id', $enrolled_courses)->filter($request->all())->where('is_approved', 1)->with('courseCategories')->paginate(20);
-            } else {
-                $courses = Course::where('is_approved', 1)->with('courseCategories')->paginate(10);
+                $query->whereNotIn('id', $enrolled_courses);
             }
+            $courses = $query->paginate(20);
         }
+
+
+
         return $courses;
     }
     public function getApprovalCourseList()
