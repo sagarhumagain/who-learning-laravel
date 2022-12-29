@@ -22,18 +22,16 @@
                         <ul class="list-group list-group-unbordered mb-3 mt-3">
                             <li class="list-group-item">
                                 <a href="" traget="blank" class="float-right"><i class="fa fa-user"></i> </a>
-                                <b>{{form.name}}</b>
+                                <span class="m-2"> <b>{{ form.name}}</b></span>
                             </li>
                             <li class="list-group-item">
                                 <a href="" traget="blank" class="float-right"><i class="fa fa-envelope"></i> </a>
-                                <b>{{form.secondary_contact}}</b>
+                                <span class="m-2"> <b>{{ form.secondary_contact}}</b></span>
                             </li>
                             <li class="list-group-item">
                                 <a href="" traget="blank" class="float-right"><i class="fa fa-phone"></i> </a>
-                                <b>{{form.primary_contact}}</b>
+                                <span class="m-2"> <b>{{ form.primary_contact}}</b></span>
                             </li>
-
-
                         </ul>
                     </div>
                     <!-- /.card-body -->

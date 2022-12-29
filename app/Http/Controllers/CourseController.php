@@ -40,6 +40,9 @@ class CourseController extends BaseController
     {
         $auth_user = auth()->user();
 
+
+
+
         if ($request->id) {
             $query = Course::where('id', $request->id)->with('courseCategories');
             if ($auth_user->hasRole('super-admin')) {
@@ -51,15 +54,13 @@ class CourseController extends BaseController
             }
             $courses = $query->firstOrFail();
         } else {
-            $query = Course::where('is_approved', 1)->with('courseCategories');
+            $query = Course::where('is_approved', 1)->filter($request->all())->with('courseCategories');
             if (auth()->user()->hasRole('normal-user') || auth()->user()->hasRole('supervisor')) {
                 $enrolled_courses = $auth_user->courses()->pluck('course_id');
                 $query->whereNotIn('id', $enrolled_courses);
             }
             $courses = $query->paginate(20);
         }
-
-
 
         return $courses;
     }

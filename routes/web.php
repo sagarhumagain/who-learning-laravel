@@ -18,6 +18,8 @@ Route::get('/', function () {
     return redirect('login');
 });
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+
 
 Route::get('{any}', function () {
     return view('welcome');

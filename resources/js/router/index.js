@@ -131,15 +131,15 @@ const Routes = [
     //         title:`Login`
     //     }
     // },
-    {
-        name:"register",
-        path:"/register",
-        component:Register,
-        meta:{
-            middleware:"guest",
-            title:`Register`
-        }
-    },
+    // {
+    //     name:"register",
+    //     path:"/register",
+    //     component:Register,
+    //     meta:{
+    //         middleware:"guest",
+    //         title:`Register`
+    //     }
+    // },
     {
         path: '/data-sync',
         name: "sync",

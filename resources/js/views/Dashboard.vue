@@ -1,6 +1,5 @@
 <template>
     <div class="container">
-
       <div v-role:any="'super-admin|course-admin'">
         <admin-dashboard/>
       </div>
@@ -13,6 +12,7 @@
 
 import AdminDashboard from '@/views/AdminDashboard'
 import UserDashboard from '@/views/UserDashboard'
+import store from '@/store'
 
 export default {
     name:"dashboard",
