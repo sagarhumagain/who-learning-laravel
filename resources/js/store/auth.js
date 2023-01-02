@@ -35,8 +35,9 @@ export default {
             const response = await $api.auth.getProfile();
             commit('SET_USER',response.data);
             commit('SET_AUTHENTICATED',true);
-            if(router.currentRoute._value.path == '/login'){
-                router.push({name:'dashboard'})
+            const currentPath = window.location.pathname;
+            if(currentPath == '/login'){
+                window.location.href = '/dashboard';
             }
         }
           catch (e) {

@@ -29,7 +29,6 @@ export default (baseUrl, apiVersion ) => ({
     return await api.get('/api/user');
   },
   async getProfile() {
-    console.log(`${baseUrl}${apiVersion}/profile`);
     return await api.get(`${baseUrl}${apiVersion}/profile`);
   },
   async getAuthRoles() {
