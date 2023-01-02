@@ -12,7 +12,6 @@ const Register = () => import('@/views/Register.vue' /* webpackChunkName: "resou
 
 /* Layouts */
 const DahboardLayout = () => import('@/layouts/Dashboard.vue' /* webpackChunkName: "resource/js/components/layouts/dashboard" */)
-const DataSync = () => import('@/layouts/DataSync.vue' /* webpackChunkName: "resource/js/components/layouts/DataSync" */)
 /* Layouts */
 
 /* Authenticated Component */
@@ -25,6 +24,8 @@ const Employee = () => import('@/views/users/Employee.vue' /* webpackChunkName: 
 const ApproveCourses = () => import('@/views/approvals/Courses.vue' /* webpackChunkName: "resource/js/components/approvalcourses" */)
 const ApproveCertificates = () => import('@/views/approvals/Certificates.vue' /* webpackChunkName: "resource/js/components/certificates" */)
 const EnrolledCourse = () => import('@/views/courses/EnrolledCourse.vue' /* webpackChunkName: "resource/js/components/assignedcourse" */)
+const Sync = () => import('@/views/Sync.vue' /* webpackChunkName: "resource/js/components/sync" */)
+
 /* Authenticated Component */
 
 // const roles = store.getters['auth/user'].roles || []
@@ -143,7 +144,7 @@ const Routes = [
     {
         path: '/data-sync',
         name: "sync",
-        component: DataSync,
+        component: Sync,
     },
 
 
