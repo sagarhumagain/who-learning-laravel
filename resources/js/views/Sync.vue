@@ -23,7 +23,7 @@ export default {
         await this.signIn();
         console.log(store.state.auth.user);
         console.log(store.state.auth.user.roles);
-        // await this.setACL();
+        await this.setACL();
         this.setEnums();
         this.$router.push({name:'dashboard'});
     },
