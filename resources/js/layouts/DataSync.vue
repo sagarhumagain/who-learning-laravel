@@ -9,11 +9,6 @@ import store from '@/store';
 
 export default {
     name: 'dashboard',
-    data(){
-        return{
-        user:null,
-        }
-    },
     methods: {
         ...mapActions({
             signIn:'auth/login',
@@ -26,6 +21,8 @@ export default {
     },
     async created() {
         await this.signIn();
+        console.log(store.state.auth.user);
+        console.log(store.state.auth.user.roles);
         await this.setACL();
         this.setEnums();
         this.$router.push({name:'dashboard'});
