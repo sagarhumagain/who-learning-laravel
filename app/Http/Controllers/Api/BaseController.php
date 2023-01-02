@@ -117,7 +117,12 @@ class BaseController extends Controller
     }
     public function getChoices()
     {
-        $roles = Role::select('name', 'id')->get();
+        if (auth()->user()->hasRole('super-admin')) {
+            $query = Role::select('name', 'id');
+        } else {
+            $query = Role::select('name', 'id')->where('name', '=', 'normal-user');
+        }
+        $roles = $query->get();
         $pillars = Pillar::select('name', 'id')->get();
         $supervisors = User::role('supervisor')->pluck('name', 'id');
         $contract_types = ContractType::pluck('name', 'id');
@@ -133,6 +138,7 @@ class BaseController extends Controller
             'staff_categories' => $staff_categories,
             'staff_types' => $staff_types,
         ];
-        return $data; ;
+        return $data;
+        ;
     }
 }

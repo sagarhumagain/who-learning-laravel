@@ -67,6 +67,7 @@
                             </div>
                           <div v-permission="'course_assignment'">
                             <h4>Assign To</h4>
+                            <label for="pillars" >Pillars</label>
                             <multiselect v-model="form.pillar_ids"
                                 tag-placeholder="Pillars"
                                 placeholder="Select Pillars"
@@ -76,6 +77,7 @@
                                 :taggable="true"
                                 >
                             </multiselect>
+                            <label for="staff_types" >Staff Types</label>
                             <multiselect v-model="form.staff_type_ids"
                                 tag-placeholder="Staff Types"
                                 placeholder="Select Staff Types"
@@ -85,6 +87,7 @@
                                 :taggable="true"
                               >
                             </multiselect>
+                            <label for="contract_types" >Contract Types</label>
                             <multiselect v-model="form.contract_type_ids"
                                 tag-placeholder="Contract Types"
                                 placeholder="Select Contract Types"
@@ -94,6 +97,7 @@
                                 :taggable="true"
                                 >
                             </multiselect>
+                            <label for="staff_categories" >Staff Categories</label>
                             <multiselect v-model="form.staff_category_ids"
                                 tag-placeholder="Staff Category"
                                 placeholder="Select Staff Category"
@@ -103,6 +107,7 @@
                                 :taggable="true"
                                 >
                             </multiselect>
+                            <label for="staff_designations" >Staff Designations</label>
                             <multiselect v-model="form.staff_designation_ids"
                                 tag-placeholder="Designations"
                                 placeholder="Select Designations"
@@ -145,11 +150,13 @@
                                 <error-msg :errors="errors" field="certificate_path"></error-msg>
                             </div>
                           </div>
+                            <div class="col-12 mb-2 text-center mt-3 ">
 
 
-                          <button type="submit" :disabled="form.busy" class="btn-fill">
+                          <button type="submit" :disabled="form.busy" class="btn-fill text-center">
                             Create
                           </button>
+                            </div>
                         </form>
                     </div>
                 </div>

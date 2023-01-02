@@ -13,60 +13,51 @@
                     </div>
                 </div>
             </div> -->
-            <div class="col-3">
+            <div class="col-md-3 col-sm-6 col-12">
                 <Card title="Total Enrolled Courses">
                   {{counts.total_enrolled_courses}}
                 </Card>
             </div>
-            <div class="col-3">
+            <div class="col-md-3 col-sm-6 col-12">
                 <Card title="Total Completed Courses">
                   {{counts.total_completed_courses}}
                 </Card>
             </div>
-            <div class="col-3">
+            <div class="col-md-3 col-sm-6 col-12 ">
                 <Card title="Required Learning Hours">
                   {{counts.course_duration_required}}
                 </Card>
             </div>
-            <div class="col-3">
+            <div class="col-md-3 col-sm-6 col-12">
                 <Card title="Completed Learning Hours">
                   {{counts.course_duration_completed}}
                 </Card>
             </div>
-            <div class="col-8">
-              <div class="row">
-                <div class="col-4">
-                  <Card title="Course Completion">
+                <div class="col-md-4 col-12">
+                    <Card title="Course Completion">
                     <div class="row">
-                      <div class="col-12" v-for="(chartData, index) in courseProgressChart.chartDatas" :key="index">
+                        <div class="col-12" v-for="(chartData, index) in courseProgressChart.chartDatas" :key="index">
                         <DoughnutChart :chartData="chartData" :width="courseProgressChart.width" :height="courseProgressChart.height" :chartOptions="courseProgressChart.chartOptions" />
                         <!-- <p class="text-center">{{chartData.name}}</p> -->
-                      </div>
+                        </div>
                     </div>
-                  </Card>
+                    </Card>
                 </div>
-                <div class="col-8">
-                  <Card title="Upcoming Deadlines">
+                <div class="col-md-8 col-12">
+                    <Card title="Upcoming Deadlines">
                     <div class="row">
-                      <div class="col-12">
+                        <div class="col-12">
                         <Table :columnDefs="deadlines.columnDefs" :rowData="deadlines.rowData" />
-                      </div>
+                        </div>
                     </div>
-                  </Card>
+                    </Card>
                 </div>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="row">
-                <Card title="Completed Course">
-                  <div class="col-12">
-                    <Table :columnDefs="completedCourse.columnDefs" :rowData="completedCourse.rowData" />
-                  </div>
-                </Card>
-              </div>
-            </div>
+            <Card title="Completed Course">
+                <div class="col-12">
+                <Table :columnDefs="completedCourse.columnDefs" :rowData="completedCourse.rowData" />
+                </div>
+            </Card>
 
-            <div class="col-12">
               <div class="row">
                   <h2>Year Filter Calendar </h2>
                   <div class="col-md-4">
@@ -89,7 +80,6 @@
                     </div>
                 </Card>
               </div>
-            </div>
             <Slider :data="suggestedCourses" :title="'Suggested Courses'" />
 
         </div>

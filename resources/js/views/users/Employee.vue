@@ -2,7 +2,7 @@
 <template>
     <div class="container">
         <div class="row pt-5 justify-content-center">
-            <div class="col-md-5">
+            <div class="col-md-5 col-12">
                 <!-- Profile Image -->
                 <div class="card card-primary card-outline">
                     <div class="card-body box-profile">
@@ -75,7 +75,7 @@
                                                 <has-error :form="form" field="confirmpassword"></has-error>
                                             </div>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group mt-3">
                                             <div class="col-sm-offset-2 col-sm-10">
                                                 <button @click.prevent="updatePassword" type="submit" class="btn btn-success">Update</button>
                                             </div>
@@ -89,7 +89,7 @@
 
                                     <div class="row">
 
-                                        <div class="form-group col-md-4">
+                                        <div class="form-group col-md-4 col-12">
                                             <label for="inputName" >Name *</label>
 
                                                 <input type="text" v-model="form.name" class="form-control"  placeholder="First Name" :class="{ 'is-invalid': form.errors.has('name') }">
@@ -97,12 +97,12 @@
 
 
                                         </div>
-                                        <div class="form-group col-md-4">
+                                        <div class="form-group col-md-4 col-12">
                                             <label for="" >Primary Contact *</label>
                                                 <input type="number" v-model="form.primary_contact" class="form-control"  placeholder="Primary Contact No." :class="{ 'is-invalid': form.errors.has('primary_contact') }">
                                                 <has-error :form="form" field="primary_contact"></has-error>
                                         </div>
-                                        <div class="form-group col-md-4">
+                                        <div class="form-group col-md-4 col-12">
                                             <label for="" >Secondary Contact *</label>
                                                 <input type="email" v-model="form.secondary_contact" class="form-control"  placeholder="Secondary Contact" :class="{ 'is-invalid': form.errors.has('secondary_contact') }">
                                                 <has-error :form="form" field="secondary_contact"></has-error>
@@ -110,7 +110,7 @@
                                         </div>
 
 
-                                        <div class="form-group col-md-4">
+                                        <div class="form-group col-md-4 col-12">
                                             <label for="" >Address *</label>
 
                                                 <input type="text" v-model="form.address" class="form-control" placeholder="Address" :class="{ 'is-invalid': form.errors.has('address') }">
@@ -118,13 +118,13 @@
 
                                         </div>
 
-                                        <div class="form-group col-md-4">
+                                        <div class="form-group col-md-4 col-12">
                                             <label for="photo" class="control-label">Signature Image *</label>
                                                 <input type="file" accept="image/png" id="signature" @change="$function.imageUpload($event, form ,'signature')"  class="form-control">
                                                 <img class="img-lg mb-3 elevation-3 float-right"  :src="form.signature"/>
                                             <has-error :form="form" field="signature"></has-error>
                                         </div>
-                                        <div class="form-group col-md-4">
+                                        <div class="form-group col-md-4 col-12">
                                             <label for="supervisor" class="control-label">Supervisor*</label>
                                             <multiselect v-model="form.supervisor_user_id" disabled
                                                 tag-placeholder="Select Supervisor"
@@ -142,7 +142,7 @@
 
                                         <div class="col-md-12">
 
-                                        <div class="form-group ">
+                                        <div class="form-group mt-3">
                                                 <button @click.prevent="updateInfo" type="submit" class="btn btn-success">Update</button>
                                         </div>
                                         </div>
@@ -256,7 +256,7 @@ import Multiselect from 'vue-multiselect'
                                 'success'
                             )
                             await this.$store.dispatch("auth/login");
-                        this.emitter.emit('AfterCreate'); //Fire an reload event
+                        this.emitter.emit('AfterProfileUpdate'); //Fire an reload event
                         this.updated = true
                     }else{
                         this.$swal(
@@ -276,9 +276,11 @@ import Multiselect from 'vue-multiselect'
                 }
             },
             async loadProfile(){
+                //check if user is logged in
                 if(!this.user){
                     await this.signIn();
                 }
+                //get user profile
                 if(this.$store.state.auth.user.employee){
                         this.form.fill(this.$store.state.auth.user.employee);
                 }else{
@@ -293,7 +295,7 @@ import Multiselect from 'vue-multiselect'
         }),
         created() {
             this.loadProfile();
-            this.emitter.on("AfterCreate",()=>{
+            this.emitter.on("AfterProfileUpdate",()=>{
                 this.loadProfile();
             })
         }

@@ -40,9 +40,6 @@ class CourseController extends BaseController
     {
         $auth_user = auth()->user();
 
-
-
-
         if ($request->id) {
             $query = Course::where('id', $request->id)->with('courseCategories');
             if ($auth_user->hasRole('super-admin')) {

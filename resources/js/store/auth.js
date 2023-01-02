@@ -12,21 +12,20 @@ export default {
         permissions:[]
 
     },
-    // getters:{
-    //     authenticated(state){
-    //         return state.authenticated
-    //     },
-    //     user(state){
-    //         return state.user
-    //     }
-    // },
+    getters:{
+        authenticated(state){
+            return state.authenticated
+        },
+        user(state){
+            return state.user
+        }
+    },
     mutations:{
         SET_AUTHENTICATED (state, value) {
             state.authenticated = value
         },
         SET_USER (state, value) {
             state.user = value
-            console.log(state.user)
         },
 
     },
@@ -41,7 +40,6 @@ export default {
             }
         }
           catch (e) {
-            console.log('catched')
             commit('SET_USER',{})
             commit('SET_AUTHENTICATED',false)
           }

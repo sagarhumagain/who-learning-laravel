@@ -11,27 +11,27 @@
                     </div>
                 </div>
             </div> -->
-            <div class="col-3">
+            <div class="col-md-3 col-sm-6 col-12">
                 <Card title="Total Staffs">
                   {{counts.total_staffs}}
                 </Card>
             </div>
-            <div class="col-3">
+            <div class="col-md-3 col-sm-6 col-12">
                 <Card title="Total Courses">
                   {{counts.total_courses}}
                 </Card>
             </div>
-            <div class="col-3">
+            <div class="col-md-3 col-sm-6 col-12">
                 <Card title="Total Courses Duration (in hrs)">
                   {{counts.total_course_duration}}
                 </Card>
             </div>
-            <div class="col-3">
+            <div class="col-md-3 col-sm-6 col-12">
                 <Card title="Total Courses Completed(in hrs)">
                   {{counts.total_duration_completed}}
                 </Card>
             </div>
-            <div class="col-8">
+            <div class="col-md-8 col-sm-12 col-12">
                 <!-- <Card title="Mandatory Courses Overview">
                   <div class="row">
                     <div class="col-4" v-for="(chartData, index) in mandatoryCourseChart.chartDatas" :key="index">
@@ -62,7 +62,7 @@
                   </div>
                 </Card>
             </div>
-            <div class="col-4">
+            <div class="col-md-4 col-sm-12 col-12">
               <div class="row">
                 <Card :title="chartData.name" v-for="(chartData, index) in barChart.chartDatas" :key="index">
                   <div class="col-12">

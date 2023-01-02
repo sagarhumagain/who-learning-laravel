@@ -66,6 +66,7 @@ class ProfileController extends BaseController
     {
         $path =  $this->folder_path.DIRECTORY_SEPARATOR.$request->user_id;
         parent::checkFolderExist($path);
+
         try {
             if (strlen($request->profile) > 50) {
                 $request->merge(['profile' => parent::makeImageWithThumb($request->user_id, $request->profile, $path)]);

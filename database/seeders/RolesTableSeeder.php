@@ -29,7 +29,10 @@ class RolesTableSeeder extends Seeder
         $sa_user->assignRole([$superAdmin]);
 
         $ca_user = User::where('email', 'courseadmin@who.int')->first();
-        $ca_user->assignRole([$courseAdmin,$supervisor]);
+        $ca_user->assignRole([$courseAdmin]);
+
+        $sup_user = User::where('email', 'supervisor@who.int')->first();
+        $sup_user->assignRole([$supervisor]);
 
         $nu_user = User::where('email', 'normaluser@who.int')->first();
         $nu_user->assignRole($normalUser);
