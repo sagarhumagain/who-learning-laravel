@@ -13,4 +13,5 @@ yarn-error.log
 /.vscode
 .env
 /public/js/*
+public/images/*
 /public/css/*
