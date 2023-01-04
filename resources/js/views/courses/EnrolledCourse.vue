@@ -32,10 +32,10 @@
                                 <td>{{course.due_date}}</td>
                                 <td>{{course.description}}</td>
                                 <td>
-                                    <p class="color-red" v-if="course.pivot && course.pivot.completed_date == null">Incomplete</p>
-                                    <p class="color-yellow" v-else-if="course.pivot && course.pivot.is_approved == null && course.pivot.completed_date">Approval Pending</p>
-                                    <p class="color-green" v-else-if="course.pivot && course.pivot.is_approved == '1' && course.pivot.completed_date">Approved</p>
-                                    <p class="color-red" v-else-if="course.pivot && course.pivot.is_approved == '0' && course.pivot.completed_date">Disapproved</p>
+                                    <p class="color-red" v-if=" course.completed_date == null">Incomplete</p>
+                                    <p class="color-yellow" v-else-if="course.is_approved == null && course.completed_date">Approval Pending</p>
+                                    <p class="color-green" v-else-if="course.is_approved == '1' && course.completed_date">Approved</p>
+                                    <p class="color-red" v-else-if="course.is_approved == '0' && course.completed_date">Disapproved</p>
                                 </td>
                                 <td>
                                     <router-link class="project-link mr-3" :to="{ name: 'courses-edit', params: { course: course.pivot , id: course.course_id} }">
@@ -138,6 +138,7 @@
                     completed_date: null,
                     is_approved: null,
                     certificate_path: null,
+                    due_date: null,
                 }),
                 api_url: '/api/v1/course_user',
             }
@@ -191,7 +192,7 @@
                             this.$Progress.finish();
                         }
                     }).catch(({response}) => {
-                            this.errors = response.data.errors
+                            this.errors = response.data.errors || {};
                             this.$swal(
                                 'Error!',
                                 "Something Went Wrong.",

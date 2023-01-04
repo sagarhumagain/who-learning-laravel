@@ -86,14 +86,23 @@ export default {
                     this.$Progress.finish();
                 }
             })
-            .catch(() => {
+            .catch(({response}) => {
+                this.disabled = false
+                this.$Progress.fail();
+                if(response.status == 500) {
                 this.$swal(
                     'Error!',
-                    'Something Went Wrong.',
+                    "Something Went Wrong.",
                     'warning'
-                )
-                this.disabled=false
-                this.$Progress.fail(); //End the progress bar
+                );
+                } else {
+                    this.emitter.emit('SetError',response.data.errors || {});
+                    this.$swal(
+                        'Error!',
+                        response.data.message,
+                        'warning'
+                    )
+                }
             })
 
         },
@@ -127,14 +136,24 @@ export default {
                     this.emitter.emit('AfterCreate'); //Fire an reload event
                     this.$Progress.finish();
                 }
-            }).catch((response) => {
+            })
+            .catch(({response}) => {
+                this.disabled = false
+                this.$Progress.fail();
+                if(response.status == 500) {
+                this.$swal(
+                    'Error!',
+                    "Something Went Wrong.",
+                    'warning'
+                );
+                } else {
+                    this.emitter.emit('SetError',response.data.errors || {});
                     this.$swal(
                         'Error!',
-                        "Something Went Wrong.",
+                        response.data.message,
                         'warning'
                     )
-                    this.disabled=false;
-                    this.$Progress.fail();
+                }
             })
 
 
@@ -143,8 +162,8 @@ export default {
     created(){
         this.emitter.on('editing',(item)=>{
             this.form.fill(item);
-            console.log(item)
         })
+
 
     }
 

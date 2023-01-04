@@ -8,7 +8,6 @@ export default {
       hasfield:false
     }
   },
-  
   props: {
     errors: {
       type: Object,

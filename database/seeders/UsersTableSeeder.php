@@ -21,7 +21,7 @@ class UsersTableSeeder extends Seeder
           'name' => 'Super Admin',
           'email' => 'superadmin@who.int',
           'password' => FacadesHash::make('superadmin123'),
-          'is_first_time_login' => 1
+          'is_first_time_login' => 0
         ]
         );
         $course_admin = User::factory()->create(
@@ -29,7 +29,7 @@ class UsersTableSeeder extends Seeder
           'name' => 'Course Admin',
           'email' => 'courseadmin@who.int',
           'password' => FacadesHash::make('courseadmin123'),
-          'is_first_time_login' => 1
+          'is_first_time_login' => 0
         ]
         );
         User::factory()->create(
@@ -42,10 +42,10 @@ class UsersTableSeeder extends Seeder
         );
         User::factory()->create(
             [
-              'name' => 'Supervisor',
-              'email' => 'supervisor@who.int',
+              'name' => 'Deepesh Sthapit',
+              'email' => 'sthapitd@who.int',
               'password' => FacadesHash::make('supervisor123'),
-              'is_first_time_login' => 1
+              'is_first_time_login' => 0
             ]
         );
     }

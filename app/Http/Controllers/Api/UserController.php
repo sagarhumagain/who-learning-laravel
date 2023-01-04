@@ -100,29 +100,21 @@ class UserController extends Controller
         try {
             $user = User::findOrFail($id);
 
-            if ($request->pillar) {
-                $pillars = [];
-                foreach ($request->pillar_id as $pillar) {
-                    array_push($pillars, $pillar['id']);
+            if ($request->roles) {
+                $roles = [];
+                foreach ($request->roles as $role) {
+                    array_push($roles, $role['name']);
                 }
-                $user->pillars()->detach();
-                $user->pillars()->attach($pillars);
-            }
-            $roles = [];
-
-            foreach ($request->roles as $role) {
-                array_push($roles, $role['name']);
+                $user->syncRoles($roles);
             }
             if (!empty($request->password)) {
                 $request->merge(['password' => Hash::make($request['password'])]);
             }
             $user->update($request->all());
-            $user->syncRoles($roles);
-
-            $data['error']='false';
+            $data['error']= false ;
             $data['message']='User Info! Has Been Updated';
         } catch (\Exception $exception) {
-            $data['error']='true';
+            $data['error']= true;
             $data['message']=$exception->getMessage();
         }
 

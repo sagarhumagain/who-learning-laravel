@@ -40,6 +40,9 @@
                                     <a href="#" @click="deleteUser(user.id)" class="m-2 color-red">
                                         <i class="fa fa-trash" title="Delete User"></i>
                                     </a>
+                                    <a v-if="user.is_first_time_login" href="#" @click="approveUser(user)" class="m-2 color-green">
+                                        <i class="fa fa-thumbs-up" title="Approve User"></i>
+                                    </a>
 
                                 </td>
                                 <td>
@@ -62,7 +65,7 @@
                                                         <td>{{contract.contract_start}}</td>
                                                         <td>{{contract.contract_end}}</td>
                                                         <td>
-                                                            <a href="#" @click="editContractModal(contract)" class="m-2">
+                                                            <a href="#" @click="editContractModal(contract, user.pillars)" class="m-2">
                                                                 <i class="fa fa-edit"></i>
                                                             </a>
 
@@ -157,19 +160,6 @@
                     >
                 </multiselect>
             </div>
-            <div class="form-group col-md-6">
-                <h6>Pillars</h6>
-                <multiselect v-model="form.pillar_id"
-                    tag-placeholder="Pillars"
-                    placeholder="Select Pillars"
-                    label="name" track-by="id"
-                    :options="pillars"
-                    :multiple="true"
-                    :taggable="true"
-                    >
-                </multiselect>
-            </div>
-
 
             <div class="form-group col-md-6">
                 <label for="password" >Password *</label>
@@ -185,7 +175,7 @@
         </modal>
 
 <!-- supervisor -->
-        <modal :form="pform" :modal_data="p_modal_data" :editmode="true" :api_url="'v1/profile'  ">
+        <modal :form="pform" :modal_data="p_modal_data" :editmode="true" :api_url="'v1/profile'">
             <div class="form-group col-md-12">
                 <h6>Supervisor</h6>
                 <multiselect v-model="pform.supervisor_user_id"
@@ -301,12 +291,26 @@
                     >
                 </multiselect>
             </div>
-            <div class="col-md-6 mt-3">
-                <div class="form-group  form-control">
-                    <input v-model="form.is_active" true-value="1" false-value="0" type="checkbox" name="is_active"  class="form-check-input" :class="{ 'is-invalid': form.errors.has('is_active') }">
+            <div class="form-group col-md-6">
+                <h6>Pillars</h6>
+                <multiselect v-model="form.pillar_id"
+                    tag-placeholder="Pillars"
+                    placeholder="Select Pillars"
+                    label="name" track-by="id"
+                    :options="pillars"
+                    :multiple="true"
+                    :taggable="true"
+                    >
+                </multiselect>
+            </div>
+            <div class="form-group col-md-6 ">
+                <h6> Contract Status</h6>
+                <div class="form-control">
+                    <input v-model="form.is_active" true-value="1" false-value="0" type="checkbox" name="is_active"  class="form-check-input mr-2" :class="{ 'is-invalid': form.errors.has('is_active') }">
                     <label class="form-check-label" for="1">
                         Is Active
                     </label>
+                    <error-msg :errors="errors" field="is_active"></error-msg>
                 </div>
             </div>
         </modal>
@@ -321,6 +325,7 @@
     import PageNotFound from "./../../components/PageNotFound.vue"
     import PaginationWrapper from '@/components/Pagination/PaginationWrapper.vue';
     import { Button, HasError, AlertError } from 'vform/src/components/bootstrap5'
+    import ErrorMsg from '@/components/error-msg';
     import Modal from '@/components/Modal';
     export default {
         components: {
@@ -329,6 +334,7 @@
             Modal,
             PageNotFound,
             PaginationWrapper,
+            ErrorMsg
         },
         data() {
 
@@ -369,7 +375,7 @@
                     password: null,
                     confirmpassword: null,
                     roles: null,
-                    is_first_time_login:1,
+                    is_first_time_login: null,
                     pillar_id: null,
                     supervisor_user_id:null,
                     user_id:null,
@@ -387,7 +393,7 @@
                     user_id:null,
                     supervisor_user_id:null,
                 }),
-
+                errors:{},
                 api_url: '/api/v1/user',
 
             }
@@ -409,14 +415,16 @@
                 $('#addNewContract').modal('show');
             },
             editUserModal(user){
+                this.form.reset();
                 this.editmode = true;
                 const user_data = user
-                user_data.pillar_id = user.pillars.length ? user.pillars : null;
                 user_data.supervisor_user_id = user.employee ? user.employee.supervisor_user_id : null;
+                console.log(user_data)
                 $('#addNewUser').modal('show');
                 this.emitter.emit('editing', user_data);
             },
             editUserProfile(user){
+                this.form.reset();
                 const user_data = user
                 user_data.user_id = user.id
                 if(user_data.employee){
@@ -429,10 +437,12 @@
                 $('#addProfile').modal('show');
                 this.emitter.emit('editing', user_data);
             },
-            editContractModal(contract){
+            editContractModal(contract,pillar_id){
                 this.editmode = true;
+                const updatedContract = {...contract,pillar_id};
+                console.log(updatedContract)
                 $('#addNewContract').modal('show');
-                this.emitter.emit('editing', contract);
+                this.emitter.emit('editing', updatedContract);
             },
 
             deleteUser(id) {
@@ -462,7 +472,16 @@
 
                 })
             },
-            verify(user,val) {
+            approveUser(user) {
+
+                if(!user.contracts.length || !user.employee){
+                    this.$swal(
+                        'Warning!',
+                        'Please assign supervisor and update the contract details.',
+                        'warning'
+                    )
+                    return;
+                }
                 this.$swal({
                     title: 'Are you sure?',
                     text: "You won't be able to revert this!",
@@ -471,12 +490,13 @@
                     confirmButtonText: 'Yes, verify it!'
                 }).then((result) => {
                     if (result.value) {
-                        this.form.fill(user);
-                        this.form.is_verified = val;
-                        this.form.put('/api/v1/user/'+this.form.id).then(() => {
+                        this.form.reset();
+                        this.form.fill(user)
+                        this.form.is_first_time_login = 0;
+                        this.form.put('/api/v1/user/'+user.id).then(() => {
                             this.$swal(
                                 'Updated!',
-                                'User info. has been updated.',
+                                'User has been verified.',
                                 'success'
                             )
                             this.emitter.emit('AfterCreate');
@@ -500,22 +520,16 @@
                     this.fc = false;
                 }
             },
-
             async loadUsers() {
                 try{
-
                     const {data}  = await  axios.get("/api/v1/user")
                     this.users = data
-
                 }catch (e) {
-
                     this.$swal(
                         'Warning!',
                         'Unauthorized Access to load users.',
                         'warning'
                     )
-
-
                 }
             },
              async loadChoices() {
@@ -529,14 +543,11 @@
                     this.contract_types = data.contract_types
                     this.staff_types = data.staff_types
                 }catch (e) {
-
                     this.$swal(
                         'Warning!',
                         'Unauthorized Access to load details.',
                         'warning'
                     )
-
-
                 }
             },
         },

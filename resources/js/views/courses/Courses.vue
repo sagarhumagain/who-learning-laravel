@@ -184,7 +184,7 @@
                             'warning'
                         );
                         } else {
-                            this.errors = response.data.errors;
+                            this.errors = response.data.errors || {};
                             this.$swal(
                                 'Error!',
                                 response.data.message,
@@ -302,7 +302,7 @@
                         'warning'
                     );
                     } else {
-                        this.errors = e.response.data.errors;
+                        this.errors = e.response.data.errors || {};
                         this.$swal(
                             'Error!',
                             e.response.data.message,

@@ -292,7 +292,7 @@ export default {
                         'warning'
                     );
                 } else {
-                    this.errors = response.data.errors;
+                    this.errors = response.data.errors || {};
                     this.$swal(
                         'Error!',
                         response.data.message,

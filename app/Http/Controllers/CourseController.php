@@ -15,13 +15,9 @@ use App\Models\CourseAssignmentSetting;
 use App\Models\CourseCategory;
 use App\Models\CourseUser;
 use App\Models\User;
-use App\Notifications\CourseEnrolledNotification;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\DB;
-
-use function PHPUnit\Framework\isEmpty;
 
 class CourseController extends BaseController
 {
@@ -99,11 +95,9 @@ class CourseController extends BaseController
             'source' => $request->source,
             'due_date' => $request->due_date,
         ];
-        if ($user->hasRole(['super-admin'])) {
-            $courseFields['is_approved'] = true;
-        } else {
-            $courseFields['is_approved'] = 0;
-        }
+
+        $courseFields['is_approved'] = $this->setApprovalStatusForUser($user);
+
         try {
             //course create
             $course = Course::create($courseFields);
@@ -116,6 +110,7 @@ class CourseController extends BaseController
                 $courseCategoryIds = parent::filterArrayByKey($request->course_category_ids, 'id');
                 $course->courseCategories()->attach($courseCategoryIds);
             }
+
             $assignmentFields = [
                 'pillar_ids' => parent::filterArrayByKey($request->pillar_ids, 'id'),
                 'staff_type_ids' => parent::filterArrayByKey($request->staff_type_ids, 'id'),
@@ -145,6 +140,8 @@ class CourseController extends BaseController
 
             //course assignement setting create
             CourseAssignmentSetting::create($assignmentFields);
+
+            //course assigned event
             event(new CourseAssignedEvent($request));
             //update certificate for normal users
             try {
@@ -248,6 +245,7 @@ class CourseController extends BaseController
     {
         $user = auth()->user();
         try {
+            $request['due_date'] = $request->due_date == "null" ? null : $request->due_date;
             $course = Course::findOrFail($request->id);
             $course->update($request->all());
             if ($user->hasRole(['super-admin','course-admin'])) {
@@ -288,7 +286,7 @@ class CourseController extends BaseController
                     $data['error'] = true;
                     $data['message'] = $e->getMessage();
                 }
-            } elseif ($user->hasRole('normal-user') && $request->certificate_path != 'null') {
+            } elseif (($user->hasRole('normal-user') || $user->hasRole('supervisor')) && $request->certificate_path != 'null') {
                 try {
                     $course_user = CourseUser::where('course_id', $course->id)->where('user_id', $user->id)->firstOrFail();
                     if ($request->certificate_path != $course_user->certificate_path) {
@@ -440,5 +438,10 @@ class CourseController extends BaseController
             $response['message'] = $e->getMessage();
             return $response;
         }
+    }
+
+    public function setApprovalStatusForUser($user)
+    {
+        return $user->hasRole(['super-admin', 'course-admin', 'supervisor']) ? true : null;
     }
 }

@@ -26,9 +26,8 @@ Route::get('{any}', function () {
 })->where('any', '^(?!pgadmin).*')->middleware('web');
 Auth::routes();
 
-// Route::group(['middleware' => ['auth','sanctum']], function () {
+// Route::group(['middleware' => ['auth']], function () {
 //     // Route::resource('roles', RoleController::class);
 //     // Route::resource('users', UserController::class);
-//     // Route::resource('products', ProductController::class);
 //     Route::get('/home', [HomeController::class, 'index'])->name('home');
 // });

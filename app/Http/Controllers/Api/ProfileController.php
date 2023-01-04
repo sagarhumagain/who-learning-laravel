@@ -27,7 +27,7 @@ class ProfileController extends BaseController
     {
         $user = auth()->user();
         $data = auth()->user();
-        $data = User::where('id', auth()->user()->id)->with('employee')->first();
+        $data = User::where('id', auth()->user()->id)->with('employee', 'contracts', 'pillars')->first();
         $data['permissions'] = $user->getAllPermissions()->pluck('name');
         $data['roles'] = $user->getRoleNames();
         return $data;

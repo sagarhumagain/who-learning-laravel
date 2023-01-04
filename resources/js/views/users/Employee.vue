@@ -22,29 +22,31 @@
                         <ul class="list-group list-group-unbordered mb-3 mt-3">
                             <li class="list-group-item">
                                 <a href="" traget="blank" class="float-right"><i class="fa fa-user"></i> </a>
-                                <span class="m-2"> <b>{{ form.name}}</b></span>
+                                <b>{{form.name}}</b>
                             </li>
                             <li class="list-group-item">
                                 <a href="" traget="blank" class="float-right"><i class="fa fa-envelope"></i> </a>
-                                <span class="m-2"> <b>{{ form.secondary_contact}}</b></span>
+                                <b>{{form.secondary_contact}}</b>
                             </li>
                             <li class="list-group-item">
                                 <a href="" traget="blank" class="float-right"><i class="fa fa-phone"></i> </a>
-                                <span class="m-2"> <b>{{ form.primary_contact}}</b></span>
+                                <b>{{form.primary_contact}}</b>
                             </li>
+
+
                         </ul>
                     </div>
                     <!-- /.card-body -->
                 </div>
                 <!-- /.card -->
             </div>
-
             <!-- /.col -->
             <div class="col-md-12 mt-5">
                 <div class="card">
                     <div class="card-header p-2">
                         <ul class="nav nav-pills">
                             <li class="nav-item"><a class="nav-link active show" href="#settings" data-bs-toggle="tab">Profile Details</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#contract" data-bs-toggle="tab">Update Contract</a></li>
                             <li class="nav-item"><a class="nav-link" href="#activity" data-bs-toggle="tab">Update Password</a></li>
                         </ul>
                     </div><!-- /.card-header -->
@@ -95,7 +97,6 @@
                                                 <input type="text" v-model="form.name" class="form-control"  placeholder="First Name" :class="{ 'is-invalid': form.errors.has('name') }">
                                                 <has-error :form="form" field="name"></has-error>
 
-
                                         </div>
                                         <div class="form-group col-md-4 col-12">
                                             <label for="" >Primary Contact *</label>
@@ -126,7 +127,7 @@
                                         </div>
                                         <div class="form-group col-md-4 col-12">
                                             <label for="supervisor" class="control-label">Supervisor*</label>
-                                            <multiselect v-model="form.supervisor_user_id" disabled
+                                            <multiselect v-model="form.supervisor_user_id"
                                                 tag-placeholder="Select Supervisor"
                                                 placeholder="Select Supervisor"
                                                 label = "name"
@@ -149,16 +150,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- /.tab-pane -->
+                            <div class="tab-pane" id="contract">
+                                <Contract></Contract>
+                            </div>
                         </div>
-                        <!-- /.tab-content -->
                     </div><!-- /.card-body -->
                 </div>
-                <!-- /.nav-tabs-custom -->
             </div>
+
             <!-- /.col -->
         </div>
     </div>
+
 </template>
 
 <script>
@@ -167,10 +170,12 @@ import Multiselect from 'vue-multiselect'
     import Form from 'vform'
     import {mapActions} from 'vuex'
     import { Button, HasError, AlertError } from 'vform/src/components/bootstrap5'
+    import Contract from '@/views/users/Contract.vue';
     export default {
         components: {
             Multiselect,
-            HasError
+            HasError,
+            Contract,
         },
         data() {
             return {
@@ -196,7 +201,8 @@ import Multiselect from 'vue-multiselect'
                     newpassword: null,
                     oldpassword: null,
                     confirmpassword: null,
-                })
+                }),
+
             }
         },
 
@@ -298,70 +304,8 @@ import Multiselect from 'vue-multiselect'
             this.emitter.on("AfterProfileUpdate",()=>{
                 this.loadProfile();
             })
+
         }
 
     }
 </script>
-<style  scoped>
-[type="date"]::-webkit-calendar-picker-indicator {
-  display: none;
-}
-[type="file"]::-webkit-file-upload-button {
-    line-height: 20px;
-}
-.invalid-feedback{
-    display: block;
-}
-.is-equal{
-        border-color: green;
-        box-shadow: 0 0 0 0.2rem rgba(73, 231, 25, 0.25) !important;
-    }
-.card-primary.card-outline {
-    border-top: 3px solid #ff2300;
-}
-.profile-pic {
-  color: transparent;
-  transition: all 0.3s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  transition: all 0.3s ease;
-}
-.profile-pic input {
-  display: none;
-}
-.profile-pic img {
-  position: absolute;
-  object-fit: cover;
-  width: 100px;
-  height: 100px;
-  box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.663);
-  border-radius: 100px;
-  z-index: 0;
-}
-.profile-pic .-label {
-  cursor: pointer;
-  height: 100px;
-  width: 100px;
-  margin-bottom: 0;
-}
-.profile-pic:hover .-label {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.173);
-  z-index: 10000;
-  color: #fafafa;
-  border-radius: 100px;
-  margin-bottom: 0;
-}
-.profile-pic span {
-  display: inline-flex;
-  padding: 0.2em;
-  height: 2em;
-}
-.img-lg {
-  width: 200px;
-}
-</style>

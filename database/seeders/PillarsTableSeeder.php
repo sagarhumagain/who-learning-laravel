@@ -43,17 +43,17 @@ class PillarsTableSeeder extends Seeder
             ],
 
         ];
-        $user1 = User::where('email','normaluser@who.int')->first();
-        $user2 = User::where('email','supervisor@who.int')->first();
+        // $user1 = User::where('email', 'normaluser@who.int')->first();
+        // $user2 = User::where('email', 'sthapitd@who.int')->first();
         $pillarConditions = [true, false];
         foreach ($pillars as $pillar) {
-            shuffle($pillarConditions);
+            // shuffle($pillarConditions);
             $createdPillar = Pillar::create($pillar);
-            if($pillarConditions[0] == true) {
-              $user1->pillars()->attach($createdPillar->id);
-            } else {
-              $user2->pillars()->attach($createdPillar->id);
-            }
+            // if($pillarConditions[0] == true) {
+            //   $user1->pillars()->attach($createdPillar->id);
+            // } else {
+            //   $user2->pillars()->attach($createdPillar->id);
+            // }
         }
     }
 }

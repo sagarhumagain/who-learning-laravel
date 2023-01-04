@@ -25,11 +25,10 @@ class UpdateCourseValidation extends FormRequest
     {
         return [
             'name' => 'required',
-            'description' => 'required',
+            'description' => '',
             'credit_hours' => 'required|numeric',
             'url' => 'required|url',
             'source' => 'required',
-            'due_date' => '',
             'completed_date'  => 'required_with:certificate_path',
             'certificate_path'  => 'required_with:completed_date'
         ];

@@ -76,8 +76,9 @@ Route::group(
 
         Route::resource('/contracts', ContractController::class);
         Route::resource('/contract-types', ContractTypeController::class);
-
-        Route::resource('/courses', CourseController::class);
+        Route::group(['middleware' => ['has_profile']], function () {
+            Route::resource('/courses', CourseController::class);
+        });
         Route::get('/approve/courses', [CourseController::class, 'getApprovalCourseList']);
 
         Route::put('/update-assigned-course', [CourseController::class, 'updateEnrolledCourse']);
