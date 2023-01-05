@@ -6,7 +6,6 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\CourseCategory;
 
-
 class CourseCategorySeeder extends Seeder
 {
     /**
@@ -16,87 +15,87 @@ class CourseCategorySeeder extends Seeder
      */
     public function run()
     {
-      $categories =  array(
-          array(
-              "name" => "Antimicrobial Resistance Channel",
+        $categories =  array(
+            array(
+                "name" => "Antimicrobial Resistance Channel",
+                "description" => ""
+            ),
+            array(
+                "name" => "Clinical Management Channel - OPTIONAL",
+                "description" => ""
+            ),
+            array(
+                "name" => "Risk Communication",
+                "description" => ""
+            ),
+            array(
+              "name" => "Lab-related",
               "description" => ""
-          ),
-          array(
-              "name" => "Clinical Management Channel - OPTIONAL",
+            ),
+            array(
+              "name" => "Infection Prevention and Control Channel",
               "description" => ""
-          ),
-          array(
-              "name" => "Risk Communication",
+            ),
+            array(
+              "name" => "One Health Channel",
               "description" => ""
-          ),
-          array(
-            "name" => "Lab-related",
-            "description" => ""
-          ),
-          array(
-            "name" => "Infection Prevention and Control channel",
-            "description" => ""
-          ),
-          array(
-            "name" => "One Health channel",
-            "description" => ""
-          ),
-          array(
-            "name" => "Outbreak channel",
-            "description" => ""
-          ),
-          array(
-            "name" => "COVID-19 related",
-            "description" => ""
-          ),
-          array(
-            "name" => "OSL",
-            "description" => ""
-          ),
-          array(
-            "name" => "Preparing for Pandemics channel",
-            "description" => ""
-          ),
-          array(
-            "name" => "Ready for Response channel",
-            "description" => ""
-          ),
-          array(
-            "name" => "Risk Management",
-            "description" => ""
-          ),
-          array(
-            "name" => "COVID-19",
-            "description" => ""
-          ),
-          array(
-            "name" => "Data Analysis and Data Vizualization",
-            "description" => ""
-          ),
-          array(
-            "name" => "Data Skills",
-            "description" => ""
-          ),
-          array(
-            "name" => "Information Management",
-            "description" => ""
-          ),
-          array(
-            "name" => "WHO Mandatory Trainings",
-            "description" => ""
-          ),
-          array(
-            "name" => "Other",
-            "description" => ""
-          ),
-      );
-      foreach ($categories as $category) {
-        CourseCategory::create(
-          [
-            'name' => $category['name'],
-            'description' => $category['description']
-          ]
+            ),
+            array(
+              "name" => "Outbreak Channel",
+              "description" => ""
+            ),
+            array(
+              "name" => "COVID-19 related",
+              "description" => ""
+            ),
+            array(
+              "name" => "OSL",
+              "description" => ""
+            ),
+            array(
+              "name" => "Preparing for Pandemics Channel",
+              "description" => ""
+            ),
+            array(
+              "name" => "Ready for Response Channel",
+              "description" => ""
+            ),
+            array(
+              "name" => "Risk Management",
+              "description" => ""
+            ),
+            array(
+              "name" => "COVID-19",
+              "description" => ""
+            ),
+            array(
+              "name" => "Data Analysis and Data Vizualization",
+              "description" => ""
+            ),
+            array(
+              "name" => "Data Skills",
+              "description" => ""
+            ),
+            array(
+              "name" => "Information Management",
+              "description" => ""
+            ),
+            array(
+              "name" => "WHO Mandatory Trainings",
+              "description" => ""
+            ),
+            array(
+              "name" => "Other",
+              "description" => ""
+            ),
         );
-      }
+        foreach ($categories as $category) {
+            CourseCategory::create(
+                [
+                  'name' => $category['name'],
+                  'description' => $category['description']
+                ]
+            );
+        }
     }
 }
