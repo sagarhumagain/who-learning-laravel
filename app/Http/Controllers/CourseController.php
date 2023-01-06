@@ -373,9 +373,9 @@ class CourseController extends BaseController
         try {
             $auth_user = auth()->user();
             if (!$request->search) {
-                $course_user = DB::select(DB::raw("SELECT * from `courses` inner join `course_user` on `courses`.`id` = `course_user`.`course_id` where `course_user`.`user_id` = $auth_user->id and `courses`.`deleted_at` is null"));
+                $course_user = DB::select(DB::raw("SELECT * FROM courses INNER JOIN course_user ON courses.id = course_user.course_id WHERE course_user.user_id = $auth_user->id AND courses.deleted_at IS NULL"));
             } else {
-                $course_user = DB::select(DB::raw("SELECT * from `courses` inner join `course_user` on `courses`.`id` = `course_user`.`course_id` where `course_user`.`user_id` = $auth_user->id and `courses`.`deleted_at` is null and (`courses`.`name` like '%$request->search%' or `courses`.`url` like '%$request->search%' or `courses`.`source` like '%$request->search%')"));
+                $course_user = DB::select(DB::raw("SELECT * FROM courses INNER JOIN course_user ON courses.id = course_user.course_id WHERE course_user.user_id = $auth_user->id AND courses.deleted_at IS NULL AND (courses.name LIKE '%$request->search%' OR courses.url LIKE '%$request->search%' OR courses.source LIKE '%$request->search%')"));
             }
             return $course_user;
         } catch(\Exception $e) {
