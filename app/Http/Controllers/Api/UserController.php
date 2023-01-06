@@ -63,18 +63,25 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $input = $request->all();
-        $input['password'] = Hash::make($input['password']);
-        $user = User::create($input);
-        $user->assignRole($request['roles']);
-        //#TODO assign course assignment settings during registration
-        // try {
-        //     $contract = Contract::create($input);
-        // } catch (Exception $e) {
-        //     return response()->json(['error' => $e->getMessage()], 500);
-        // }
+        try {
+            $input = $request->all();
+            $input['password'] = Hash::make($input['password']);
+            $input['is_first_time_login'] = 1;
+            $user = User::create($input);
+            $user->assignRole($request['roles']);
+            //#TODO assign course assignment settings during registration
+            // try {
+            //     $contract = Contract::create($input);
+            // } catch (Exception $e) {
+            //     return response()->json(['error' => $e->getMessage()], 500);
+            // }
+            $data['error']= false ;
+            $data['message']='User Info! Has Been Created';
 
-        return response()->json($user);
+            return response()->json($data);
+        } catch(Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
