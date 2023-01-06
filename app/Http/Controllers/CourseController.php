@@ -370,13 +370,17 @@ class CourseController extends BaseController
      */
     public function listEnrolledCourse(Request $request)
     {
-        $auth_user = auth()->user();
-        if (!$request->search) {
-            $course_user = DB::select(DB::raw("SELECT * from `courses` inner join `course_user` on `courses`.`id` = `course_user`.`course_id` where `course_user`.`user_id` = $auth_user->id and `courses`.`deleted_at` is null"));
-        } else {
-            $course_user = DB::select(DB::raw("SELECT * from `courses` inner join `course_user` on `courses`.`id` = `course_user`.`course_id` where `course_user`.`user_id` = $auth_user->id and `courses`.`deleted_at` is null and (`courses`.`name` like '%$request->search%' or `courses`.`url` like '%$request->search%' or `courses`.`source` like '%$request->search%')"));
+        try {
+            $auth_user = auth()->user();
+            if (!$request->search) {
+                $course_user = DB::select(DB::raw("SELECT * from `courses` inner join `course_user` on `courses`.`id` = `course_user`.`course_id` where `course_user`.`user_id` = $auth_user->id and `courses`.`deleted_at` is null"));
+            } else {
+                $course_user = DB::select(DB::raw("SELECT * from `courses` inner join `course_user` on `courses`.`id` = `course_user`.`course_id` where `course_user`.`user_id` = $auth_user->id and `courses`.`deleted_at` is null and (`courses`.`name` like '%$request->search%' or `courses`.`url` like '%$request->search%' or `courses`.`source` like '%$request->search%')"));
+            }
+            return $course_user;
+        } catch(\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-        return $course_user;
     }
 
     public function getExceededDeadlines()
