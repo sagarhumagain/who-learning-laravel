@@ -214,12 +214,14 @@ class StatisticsController extends Controller
                 $year = $request->year;
             }
             $user = auth()->user();
-            $data = CourseUser::select(DB::raw('count(id) as count'), DB::raw('MONTH(completed_date) month'))
-              ->whereYear('completed_date', $year)
-              ->where('is_approved', 1)
-              ->where('user_id', $user->id)
-              ->groupBy('month')
-              ->pluck('count', 'month')->toArray();
+
+            $data = CourseUser::selectRaw('count(id) as count, date_part(\'month\', completed_date) as month')
+                ->whereYear('completed_date', $year)
+                ->where('is_approved', 1)
+                ->where('user_id', $user->id)
+                ->groupBy('month')
+                ->pluck('count', 'month')
+                ->toArray();
             $totalMonths = [1,2,3,4,5,6,7,8,9,10,11,12];
             $monthDataKeys = array_keys($data);
             $missingMonths = array_diff($totalMonths, $monthDataKeys);
