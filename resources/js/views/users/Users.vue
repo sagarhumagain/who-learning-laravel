@@ -306,8 +306,8 @@
             <div class="form-group col-md-6 ">
                 <h6> Contract Status</h6>
                 <div class="form-control">
-                    <input v-model="form.is_active" true-value="1" false-value="0" type="checkbox" name="is_active"  class="form-check-input mr-2" :class="{ 'is-invalid': form.errors.has('is_active') }">
-                    <label class="form-check-label" for="1">
+                    <input v-model="form.is_active"  type="checkbox" name="is_active"  class="form-check-input mr-2" :class="{ 'is-invalid': form.errors.has('is_active') }">
+                    <label class="form-check-label">
                         Is Active
                     </label>
                     <error-msg :errors="errors" field="is_active"></error-msg>
@@ -439,6 +439,7 @@
             },
             editContractModal(contract,pillar_id){
                 this.editmode = true;
+                contract.is_active = contract.is_active == true ? 1 : 0;
                 const updatedContract = {...contract,pillar_id};
                 console.log(updatedContract)
                 $('#addNewContract').modal('show');

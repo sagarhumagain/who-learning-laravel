@@ -12,10 +12,10 @@
                             <div class="card-tools">
                                 <button type="" class="btn btn-fill" @click="newCourse"><i class="fa fa-book fa-fw"></i> Add New Course</button>
                             </div>
-                            <div class="card-tools" v-role:any="'super-admin|course-admin'" >
+                            <!-- <div class="card-tools" v-role:any="'super-admin|course-admin'" >
                                 <button type="" class="btn btn-fill" @click="assignCourseToNewUsers"><i class="fa fa-book
                                  fa-fw"></i> Assign Courses to New Users</button>
-                            </div>
+                            </div> -->
                         </div>
 
                     </div>
@@ -255,66 +255,66 @@
 
                 })
             },
-            async assignCourseToNewUsers(){
+            // async assignCourseToNewUsers(){
 
-                const result  = await  this.$swal({
-                    title: 'Are you sure?',
-                    text: "You want to perform this task?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes'
-                })
-                if (result.value) {
-                try{
-                    const response = await this.$api.courses.assignCourseToNewUsers();
-                    if(response.data.error == true){
-                        this.$swal({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000,
-                            icon: 'warning',
-                            title: response.data.message,
-                        })
-                        this.$Progress.fail();
-                        this.disabled=false;
-                    }
-                    else{
-                        this.$swal({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000,
-                            icon: 'success',
-                            title: response.data.message,
-                        })
-                        this.disabled=false
-                        this.$Progress.finish();
+            //     const result  = await  this.$swal({
+            //         title: 'Are you sure?',
+            //         text: "You want to perform this task?",
+            //         icon: 'warning',
+            //         showCancelButton: true,
+            //         confirmButtonText: 'Yes'
+            //     })
+            //     if (result.value) {
+            //     try{
+            //         const response = await this.$api.courses.assignCourseToNewUsers();
+            //         if(response.data.error == true){
+            //             this.$swal({
+            //                 toast: true,
+            //                 position: 'top-end',
+            //                 showConfirmButton: false,
+            //                 timer: 3000,
+            //                 icon: 'warning',
+            //                 title: response.data.message,
+            //             })
+            //             this.$Progress.fail();
+            //             this.disabled=false;
+            //         }
+            //         else{
+            //             this.$swal({
+            //                 toast: true,
+            //                 position: 'top-end',
+            //                 showConfirmButton: false,
+            //                 timer: 3000,
+            //                 icon: 'success',
+            //                 title: response.data.message,
+            //             })
+            //             this.disabled=false
+            //             this.$Progress.finish();
 
-                    }
-                }
-                catch(e){
-                    this.disabled = false
-                    if(e.response.status == 500) {
-                    this.$swal(
-                        'Error!',
-                        "Something Went Wrong.",
-                        'warning'
-                    );
-                    } else {
-                        this.errors = e.response.data.errors || {};
-                        this.$swal(
-                            'Error!',
-                            e.response.data.message,
-                            'warning'
-                        )
-                    }
+            //         }
+            //     }
+            //     catch(e){
+            //         this.disabled = false
+            //         if(e.response.status == 500) {
+            //         this.$swal(
+            //             'Error!',
+            //             "Something Went Wrong.",
+            //             'warning'
+            //         );
+            //         } else {
+            //             this.errors = e.response.data.errors || {};
+            //             this.$swal(
+            //                 'Error!',
+            //                 e.response.data.message,
+            //                 'warning'
+            //             )
+            //         }
 
 
-                }
-                }
+            //     }
+            //     }
 
-            },
+            // },
 
             /*==== Start of Show existing Course function ====*/
             async loadCourses() {

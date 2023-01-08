@@ -38,7 +38,7 @@ class CourseController extends BaseController
 
         try {
             if ($request->id) {
-                $query = Course::where('id', $request->id)->with('courseCategories');
+                $query = Course::where('id', $request->id)->with('courseCategories', 'courseAssignment');
                 if ($auth_user->hasRole('super-admin')) {
                     $query->with('courseAssignment');
                 } elseif ($auth_user->hasRole('normal-user') || $auth_user->hasRole('supervisor')) {
@@ -252,6 +252,7 @@ class CourseController extends BaseController
         $user = auth()->user();
         try {
             $request['due_date'] = $request->due_date == "null" ? null : $request->due_date;
+            $request['description'] = $request->description == "null" ? null : $request->description;
             $course = Course::findOrFail($request->id);
             $course->update($request->all());
             if ($user->hasRole(['super-admin','course-admin'])) {
@@ -287,7 +288,10 @@ class CourseController extends BaseController
                     ->get();
                     $course->users()->syncWithoutDetaching($users);
 
-                    CourseAssignmentSetting::where('course_id', $course->id)->update($assignmentFields);
+                    CourseAssignmentSetting::updateOrCreate(
+                        ['course_id' => $course->id],
+                        $assignmentFields
+                    );
                 } catch (Exception $e) {
                     $data['error'] = true;
                     $data['message'] = $e->getMessage();

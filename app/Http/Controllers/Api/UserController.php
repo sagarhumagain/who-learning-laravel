@@ -117,6 +117,10 @@ class UserController extends Controller
             if (!empty($request->password)) {
                 $request->merge(['password' => Hash::make($request['password'])]);
             }
+            //assign courses after approving user
+            if ($user->is_first_time_login == 1 && $request->is_first_time_login == 0) {
+                $this->assignCourse($id);
+            }
             $user->update($request->all());
             $data['error']= false ;
             $data['message']='User Info! Has Been Updated';
@@ -139,5 +143,47 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
         return ['message' =>'User Deleted'];
+    }
+
+    public function assignCourse($id)
+    {
+        try {
+            $course_assignment_settings = CourseAssignmentSetting::get();
+
+            foreach ($course_assignment_settings as $assignment) {
+                $this->assignIndividualCourse($id, $assignment);
+            }
+            $response['error'] = false;
+            $response['message'] = 'Course assigned to users successfully';
+            return $response;
+        } catch(\Exception $e) {
+            $response['error'] = true;
+            $response['message'] = $e->getMessage();
+            return $response;
+        }
+    }
+    public function assignIndividualCourse($id, $assignment)
+    {
+        //check if contract has assignment settings
+
+        $users = User::leftJoin(DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
+            $join->on('users.id', '=', 't2.user_id');
+        })
+        ->where('users.id', $id)
+        ->where(function ($q) use ($assignment) {
+            $q->whereHas('pillars', function ($q) use ($assignment) {
+                $q->whereIn('pillar_id', $assignment['pillar_ids']);
+            })
+            ->orWhereIn('staff_type_id', $assignment['staff_type_ids'])
+            ->orWhereIn('contract_type_id', $assignment['contract_type_ids'])
+            ->orWhereIn('staff_category_id', $assignment['staff_category_ids'])
+            ->orWhereIn('designation_id', $assignment['staff_designation_ids']);
+        })->select('users.id as id')->get();
+
+        if ($users->count() == 0) {
+            return;
+        }
+        $course = Course::findOrFail($assignment->course_id);
+        $course->users()->syncWithoutDetaching($users);
     }
 }
