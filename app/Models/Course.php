@@ -49,7 +49,10 @@ class Course extends Model implements Auditable
             $query->where(function ($query) use ($search) {
                 $query->where('name', 'like', '%' . $search . '%')
                     ->orWhere('url', 'like', '%' . $search . '%')
-                    ->orWhere('source', 'like', '%' . $search . '%');
+                    ->orWhere('source', 'like', '%' . $search . '%')
+                    ->orWhereHas('courseCategories', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    });
             });
         });
     }

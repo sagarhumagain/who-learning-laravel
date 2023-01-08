@@ -36,23 +36,29 @@ class CourseController extends BaseController
     {
         $auth_user = auth()->user();
 
-        if ($request->id) {
-            $query = Course::where('id', $request->id)->with('courseCategories');
-            if ($auth_user->hasRole('super-admin')) {
-                $query->with('courseAssignment');
-            } elseif ($auth_user->hasRole('normal-user') || $auth_user->hasRole('supervisor')) {
-                $query->with('users', function ($q) {
-                    $q->where('users.id', auth()->user()->id);
-                });
+        try {
+            if ($request->id) {
+                $query = Course::where('id', $request->id)->with('courseCategories');
+                if ($auth_user->hasRole('super-admin')) {
+                    $query->with('courseAssignment');
+                } elseif ($auth_user->hasRole('normal-user') || $auth_user->hasRole('supervisor')) {
+                    $query->with('users', function ($q) {
+                        $q->where('users.id', auth()->user()->id);
+                    });
+                }
+                $courses = $query->firstOrFail();
+            } else {
+                $query = Course::where('is_approved', 1)->filter($request->all())->with('courseCategories');
+                if (auth()->user()->hasRole('normal-user') || auth()->user()->hasRole('supervisor')) {
+                    $enrolled_courses = $auth_user->courses()->pluck('course_id');
+                    $query->whereNotIn('id', $enrolled_courses);
+                }
+                $courses = $query->paginate(20);
             }
-            $courses = $query->firstOrFail();
-        } else {
-            $query = Course::where('is_approved', 1)->filter($request->all())->with('courseCategories');
-            if (auth()->user()->hasRole('normal-user') || auth()->user()->hasRole('supervisor')) {
-                $enrolled_courses = $auth_user->courses()->pluck('course_id');
-                $query->whereNotIn('id', $enrolled_courses);
-            }
-            $courses = $query->paginate(20);
+        } catch(Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
         }
 
         return $courses;
