@@ -214,7 +214,7 @@ class StatisticsController extends Controller
                 $year = $request->year;
             }
             $user = auth()->user();
-            $data = CourseUser::selectRaw('count(id) as count, month(completed_date) as month')
+            $data = CourseUser::select(DB::raw('count(id) as count'), DB::raw('MONTH(completed_date) month'))
               ->whereYear('completed_date', $year)
               ->where('is_approved', 1)
               ->where('user_id', $user->id)
