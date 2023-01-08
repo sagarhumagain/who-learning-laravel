@@ -74,7 +74,7 @@
 
               </div>
               <div class="row">
-                <Card :title="'Yearly Progress ('+ new Date().getFullYear() + ')'">
+                <Card :title="'Yearly Progress ('+ this.year + ')'">
                     <div class="col-12">
                       <LineChart :chartData="yearlyProgress" />
                     </div>
