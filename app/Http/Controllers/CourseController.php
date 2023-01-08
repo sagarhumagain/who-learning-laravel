@@ -338,13 +338,16 @@ class CourseController extends BaseController
     public function listSuggestedCourses()
     {
         $user = auth()->user();
-
-        $course = $user->courses()->pluck('course_id');
-        $suggestedCourses = CourseCategory::whereHas('courses', function ($q) use ($course) {
-            $q->whereIn('courses.id', $course);
-        })->with('courses', function ($q) use ($course) {
-            $q->whereNotIn('courses.id', $course);
-        })->inRandomOrder()->get()->take(10);
+        try {
+            $course = $user->courses()->pluck('course_id');
+            $suggestedCourses = CourseCategory::whereHas('courses', function ($q) use ($course) {
+                $q->where('courses.is_approved', 1)->whereIn('courses.id', $course);
+            })->with('courses', function ($q) use ($course) {
+                $q->where('courses.is_approved', 1)->whereNotIn('courses.id', $course);
+            })->inRandomOrder()->get()->take(10);
+        } catch(\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
 
         return $suggestedCourses;
     }
