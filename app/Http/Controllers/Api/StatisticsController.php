@@ -208,26 +208,30 @@ class StatisticsController extends Controller
         //   ->groupBy('year')
         //   ->pluck('count', 'year')->toArray();
 
-        $year = Carbon::now()->format('Y');
-        if ($request->year) {
-            $year = $request->year;
-        }
-        $user = auth()->user();
-        $data = CourseUser::selectRaw('count(id) as count, month(completed_date) as month')
-          ->whereYear('completed_date', $year)
-          ->where('is_approved', 1)
-          ->where('user_id', $user->id)
-          ->groupBy('month')
-          ->pluck('count', 'month')->toArray();
-        $totalMonths = [1,2,3,4,5,6,7,8,9,10,11,12];
-        $monthDataKeys = array_keys($data);
-        $missingMonths = array_diff($totalMonths, $monthDataKeys);
-        foreach ($missingMonths as $month) {
-            $data[$month] = 0;
-        }
-        ksort($data);
-        $finalData = array_values($data);
+        try {
+            $year = Carbon::now()->format('Y');
+            if ($request->year) {
+                $year = $request->year;
+            }
+            $user = auth()->user();
+            $data = CourseUser::selectRaw('count(id) as count, month(completed_date) as month')
+              ->whereYear('completed_date', $year)
+              ->where('is_approved', 1)
+              ->where('user_id', $user->id)
+              ->groupBy('month')
+              ->pluck('count', 'month')->toArray();
+            $totalMonths = [1,2,3,4,5,6,7,8,9,10,11,12];
+            $monthDataKeys = array_keys($data);
+            $missingMonths = array_diff($totalMonths, $monthDataKeys);
+            foreach ($missingMonths as $month) {
+                $data[$month] = 0;
+            }
+            ksort($data);
+            $finalData = array_values($data);
 
-        return response()->json($finalData);
+            return response()->json($finalData);
+        } catch(\Exception $e) {
+            return response()->json($e->getMessage());
+        }
     }
 }

@@ -30,7 +30,7 @@
             </div>
             <div class="col-md-3 col-sm-6 col-12">
                 <Card title="Completed Learning Hours">
-                  {{counts.course_duration_completed}}
+                  {{ Number(counts.course_duration_completed).toFixed(2)}}
                 </Card>
             </div>
                 <div class="col-md-4 col-12">
