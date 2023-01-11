@@ -104,6 +104,15 @@ class CourseController extends BaseController
     public function store(CourseCreateValidation $request)
     {
         $user = auth()->user();
+
+        //check duplicate courses
+        $duplicateCourse = Course::where('url', $request->url)->orWhere(DB::raw('UPPER(name)'), 'LIKE', DB::raw("UPPER('%{$request->name}%')"))->first();
+        if ($duplicateCourse) {
+            return response()->json([
+                'message' => 'Course already exists, please check course list to enroll the course.'
+            ], 409);
+        }
+
         $courseFields = [
             'name' => $request->name,
             'description' => $request->description,
