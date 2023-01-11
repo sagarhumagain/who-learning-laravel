@@ -200,7 +200,7 @@
                             this.$Progress.finish();
                         }
                     }).catch(({response}) => {
-                            this.errors = response.data.errors
+                            this.errors = response.data.errors || {};
                             this.$swal(
                                 'Error!',
                                 "Something Went Wrong.",

@@ -17,6 +17,7 @@
                             <tr class="bg-light">
                                 <th>S.N.</th>
                                 <th style="width:25%">Course Name</th>
+                                <th>Created By</th>
                                 <th>Credit Hours</th>
                                 <th>Due Date</th>
                                 <th>Description</th>
@@ -26,8 +27,8 @@
                             </tr>
                             <tr v-for="(course, index) in courses.data" :key="course.id">
                                 <td>{{index + 1}}</td>
-                                <td>{{course.name}}
-                                </td>
+                                <td>{{course.name}}</td>
+                                <td v>{{course.course_assignment.created_by.name}}</td>
                                 <td>{{course.credit_hours}}</td>
                                 <td>{{course.due_date}}</td>
                                 <td>{{course.description}}</td>
@@ -104,7 +105,6 @@
                     url:null,
                     is_approved:null
                 }),
-
                 api_url: '/api/v1/approve/courses',
 
             }
@@ -164,7 +164,7 @@
                             'warning'
                         );
                         } else {
-                            this.errors = response.data.errors;
+                            this.errors = response.data.errors || {};
                             this.$swal(
                                 'Error!',
                                 response.data.message,
@@ -174,9 +174,6 @@
                     }
 
                 }
-
-
-
 
             },
             deleteCourse(id) {
@@ -189,7 +186,7 @@
                 }).then((result) => {
 
                     if (result.value) {
-                        this.form.delete('/api/v1/courses' + id).then(() => {
+                        this.form.delete('/api/v1/courses/' + id).then(() => {
                             this.$swal(
                                 'Deleted!',
                                 'Your file has been deleted.',

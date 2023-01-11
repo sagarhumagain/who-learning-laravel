@@ -79,8 +79,8 @@ Route::group(
         Route::group(['middleware' => ['has_profile']], function () {
             Route::resource('/courses', CourseController::class);
         });
+        Route::post('/withdraw-course/{id}', [CourseController::class, 'withdrawCourse']);
         Route::get('/approve/courses', [CourseController::class, 'getApprovalCourseList']);
-
         Route::put('/update-assigned-course', [CourseController::class, 'updateEnrolledCourse']);
 
         Route::resource('/designations', DesignationController::class);

@@ -9,6 +9,7 @@ use App\Models\User;
 use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Course extends Model implements Auditable
 {
@@ -42,16 +43,15 @@ class Course extends Model implements Auditable
         return $this->hasOne(CourseAssignmentSetting::class, 'course_id', 'id');
     }
 
-
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
-                $query->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('url', 'like', '%' . $search . '%')
-                    ->orWhere('source', 'like', '%' . $search . '%')
+                $query->where(DB::raw('UPPER(name)'), 'LIKE', DB::raw("UPPER('%{$search}%')"))
+                    ->orWhere(DB::raw('UPPER(url)'), 'LIKE', DB::raw("UPPER('%{$search}%')"))
+                    ->orWhere(DB::raw('UPPER(source)'), 'LIKE', DB::raw("UPPER('%{$search}%')"))
                     ->orWhereHas('courseCategories', function ($q) use ($search) {
-                        $q->where('name', 'like', '%' . $search . '%');
+                        $q->where(DB::raw('UPPER(name)'), 'LIKE', DB::raw("UPPER('%{$search}%')"));
                     });
             });
         });

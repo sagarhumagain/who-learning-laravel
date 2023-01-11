@@ -58,7 +58,7 @@
                                       </a>
                                     </div>
                                     <div v-role:any="'super-admin|course-admin'">
-                                        <router-link class="project-link m-2 color-sec-blue" :to="{ name: 'courses-edit', params: { course: course , id: course.id} }">
+                                        <router-link class="project-link m-2 color-sec-blue" :to="{ name: 'courses-edit', params: { id: course.id} }">
                                           <i class="fa fa-edit"  title="Edit Course"></i>
                                         </router-link>
 
@@ -194,10 +194,6 @@
                     }
 
                 }
-
-
-
-
             },
             deleteCourse(id) {
                 this.$swal({
@@ -209,19 +205,29 @@
                 }).then((result) => {
 
                     if (result.value) {
-                        this.form.delete('/api/v1/courses' + id).then(() => {
+                        this.form.delete('/api/v1/courses/' + id).then(() => {
                             this.$swal(
                                 'Deleted!',
-                                'Your file has been deleted.',
+                                'Course has been deleted.',
                                 'success'
                             )
                             this.emitter.emit('AfterCreate'); //Fire an reload event
-                        }).catch(() => {
+                        }).catch(({response}) => {
+                            this.disabled = false
+                            if(response.status == 500) {
                             this.$swal(
-                                'Warning!',
-                                'Unauthorized Access to delete.',
+                                'Error!',
+                                "Something Went Wrong.",
                                 'warning'
-                            )
+                            );
+                            } else {
+                                this.$swal(
+                                    'Error!',
+                                    response.data.message,
+                                    'warning'
+                                )
+                            }
+
                         })
                     }
 

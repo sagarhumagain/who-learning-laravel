@@ -5,7 +5,7 @@
                 <div class="row">
                     <div class="col-md-8 offset-md-2">
                         <div class="input-group">
-                            <input type="search" @input="searchContent"  v-model="search" class="form-control form-control-lg" placeholder="Type your keywords here">
+                            <input type="search" @input="searchContent"  v-model="search" class="form-control form-control-lg" placeholder="Type course name, source, url, or course category name">
                         </div>
                 </div>
             </div>

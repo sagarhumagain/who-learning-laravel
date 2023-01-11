@@ -38,9 +38,12 @@
                                     <p class="color-red" v-else-if="course.is_approved == '0' && course.completed_date">Disapproved</p>
                                 </td>
                                 <td>
-                                    <router-link class="project-link mr-3" :to="{ name: 'courses-edit', params: { course: course.pivot , id: course.course_id} }">
+                                    <router-link class="project-link mr-3" :to="{ name: 'courses-edit', params: { id: course.course_id} }">
                                         <i class="fa fa-edit"></i>
                                     </router-link>
+                                    <a href="#" class="m-2 color-red" @click="withdrawCourse(course.id)" >
+                                        <i class="fa fa-times" title="Withdraw Course"></i>
+                                    </a>
 
                                 </td>
                             </tr>
@@ -52,60 +55,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="addNewCourse" tabindex="-1" role="dialog" aria-labelledby="addNewCourseLabel'" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" v-show="!editmode" >Add New </h5>
-                    <h5 class="modal-title" v-show="editmode" >Update </h5>
 
-                </div>
-                <form  @submit.prevent="editmode ? updateInfo() : createInfo()">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label for="completed_date" >Completed Date*</label>
-                                <!-- <input type="text" v-model="form.completed_date" class="form-control"  placeholder="Completed Date" :class="{ 'is-invalid': form.errors.has('completed_date') }"> -->
-                                <v-date-picker v-model="form.completed_date"  name="completed_date" placeholder="Completed Date" class="form-control" :class="{ 'is-invalid': form.errors.has('completed_date')}"
-                                  :model-config="{
-                                    type: 'string',
-                                    mask: 'YYYY-MM-DD',
-                                  }"
-                                  :masks="masks"
-                                  mode="date"
-                                >
-                                  <template v-slot="{ inputValue, inputEvents }">
-                                    <input
-                                      class="custom-datepicker"
-                                      :value="inputValue"
-                                      v-on="inputEvents"
-                                    />
-                                  </template>
-                                </v-date-picker>
-                                <error-msg :errors="errors" field="completed_date"></error-msg>
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label for="file" class="control-label">Certificate Image *</label>
-                                <input type="file" name="certificate_path"  @change="onFileChange"
-                                        placeholder="File"
-                                        class="btn btn-sm btn-info btn-file-upload">
-                                <error-msg :errors="errors" field="certificate_path"></error-msg>
-                            </div>
-                        </div>
-                        <div class="modal-body">
-                            <iframe :src="'/'+form.certificate_path" v-if="form.certificate_path && form.certificate_path.length > 8" width="100%" height="500px"></iframe>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-red" data-bs-dismiss="modal"><i class="fas fa-times fa-fw"></i>Close</button>
-                        <button v-show="editmode" :disabled="disabled" type="submit" class="btn btn-green"><i class="fas fa-plus fa-fw"></i>Update</button>
-                        <button v-show="!editmode" :disabled="disabled" type="submit" class="btn btn-primary-blue"><i class="fas fa-plus fa-fw"></i>Create</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
     </div>
 </template>
 <script>
@@ -152,6 +102,59 @@
                 this.editmode = true;
                 $('#addNewCourse').modal('show');
                 this.form.fill(course);
+            },
+            withdrawCourse(id){
+                this.$Progress.start();
+                this.$swal({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, withdraw it!'
+                }).then((result) => {
+                    if (result.value) {
+                    axios.post('/api/v1/withdraw-course/'+id)
+                        .then((response) => {
+                            if(response.data.error == true){
+                                this.$swal({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    icon: 'warning',
+                                    title: response.data.message
+                                })
+                            }else{
+                                this.$swal({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    icon: 'success',
+                                    title: response.data.message
+                                })
+                                this.getCourses();
+                            }
+                            this.$Progress.finish();
+                        }).catch(({response}) => {
+                            this.disabled = false
+                            if(response.status == 500) {
+                            this.$swal(
+                                'Error!',
+                                "Something Went Wrong.",
+                                'warning'
+                            );
+                            } else {
+                                this.$swal(
+                                    'Error!',
+                                    response.data.message,
+                                    'warning'
+                                )
+                            }
+
+                        })
+                    }
+                })
             },
             updateInfo() {
                 this.$Progress.start();

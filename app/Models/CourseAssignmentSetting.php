@@ -9,7 +9,8 @@ use OwenIt\Auditing\Auditable as AuditableTrait;
 
 class CourseAssignmentSetting extends Model implements Auditable
 {
-    use HasFactory, AuditableTrait;
+    use HasFactory;
+    use AuditableTrait;
     protected $guarded = [];
     protected $fillable= [
       'course_id',
@@ -22,6 +23,11 @@ class CourseAssignmentSetting extends Model implements Auditable
       'assignment_type',
       'assigned_by_user_id'
     ];
+    public function createdBy()
+    {
+        return $this->hasOne(User::class, 'id', 'assigned_by_user_id');
+    }
+
     protected $casts = [
       'staff_category_ids' => 'array',
       'pillar_ids' => 'array',

@@ -214,6 +214,9 @@ export default {
               completed_date: null,
               certificate_path:null,
             }),
+            masks: {
+                    input: 'YYYY-MM-DD',
+                },
             course : this.$route.params.course
 
         }

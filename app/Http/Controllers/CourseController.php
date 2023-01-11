@@ -38,9 +38,11 @@ class CourseController extends BaseController
 
         try {
             if ($request->id) {
-                $query = Course::where('id', $request->id)->with('courseCategories', 'courseAssignment');
+                $query = Course::where('id', $request->id)->with('courseCategories');
                 if ($auth_user->hasRole('super-admin')) {
-                    $query->with('courseAssignment');
+                    $query->with('courseAssignment', function ($q) {
+                        $q->with('createdBy');
+                    });
                 } elseif ($auth_user->hasRole('normal-user') || $auth_user->hasRole('supervisor')) {
                     $query->with('users', function ($q) {
                         $q->where('users.id', auth()->user()->id);
@@ -50,10 +52,10 @@ class CourseController extends BaseController
             } else {
                 $query = Course::where('is_approved', 1)->filter($request->all())->with('courseCategories');
                 if (auth()->user()->hasRole('normal-user') || auth()->user()->hasRole('supervisor')) {
-                    $enrolled_courses = $auth_user->courses()->pluck('course_id');
+                    $enrolled_courses = CourseUser::where('user_id', auth()->user()->id)->pluck('course_id')->toArray();
                     $query->whereNotIn('id', $enrolled_courses);
                 }
-                $courses = $query->paginate(20);
+                $courses = $query->orderBy('name')->paginate(20);
             }
         } catch(Exception $e) {
             return response()->json([
@@ -65,11 +67,20 @@ class CourseController extends BaseController
     }
     public function getApprovalCourseList()
     {
-        $courses = Course::where(function ($q) {
-            $q->where('is_approved', 0);
-            $q->orWhereNull('is_approved');
-        })->orderBy('is_approved')->with('courseCategories')->paginate(200);
-        return $courses;
+        try {
+            $courses = Course::where(function ($q) {
+                $q->where('is_approved', 0);
+                $q->orWhereNull('is_approved');
+            })
+            ->with('courseAssignment', function ($q) {
+                $q->with('createdBy');
+            })->orderBy('is_approved')->with('courseCategories')->paginate(200);
+            return $courses;
+        } catch(Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -236,6 +247,28 @@ class CourseController extends BaseController
     }
 
     /**
+     * Remove the specified course from enrolled course.
+     *
+     * @param  \App\Models\Course  $course
+     * @return \Illuminate\Http\Response
+     */
+    public function withdrawCourse($id)
+    {
+        try {
+            $enrolled_course = CourseUser::findOrFail($id);
+            if ($enrolled_course->user_id != auth()->user()->id) {
+                throw new \Exception('You are not authorized to withdraw this course.');
+            }
+            $enrolled_course->delete();
+            $data['error'] = false;
+            $data['message'] = "Course Withdrawn Successfully";
+        } catch(Exception $e) {
+            $data['error'] = true;
+            $data['message'] = $e->getMessage();
+        }
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Course  $course
@@ -243,8 +276,15 @@ class CourseController extends BaseController
      */
     public function destroy(Course $course)
     {
-        $course->delete();
-        return response()->json(true);
+        try {
+            $course->users()->detach();
+            $course->courseCategories()->detach();
+            $course->courseAssignment()->delete();
+            $course->delete();
+            return response()->json(true);
+        } catch(Exception $e) {
+            return response()->json(['message', $e->getMessage()], 500);
+        }
     }
 
     public function updateEnrolledCourse(UpdateCourseValidation $request)
@@ -320,7 +360,7 @@ class CourseController extends BaseController
                 }
             }
             $data['error'] = false;
-            $data['message']='Course Info! Has Been Updated';
+            $data['message'] = 'Course updated successfully';
         } catch (\Exception $e) {
             $data['error'] = true;
             $data['message']=$e->getMessage();
@@ -335,7 +375,7 @@ class CourseController extends BaseController
         if ($user->hasRole('super-admin')) {
             $user_course = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
             ->join('users', 'course_user.user_id', '=', 'users.id')
-            ->select(DB::raw('course_user.user_id as user_id,courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date,course_user.certificate_path as certificate'))
+            ->select(DB::raw('course_user.user_id as user_id,courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.name as createdBy, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date,course_user.certificate_path as certificate'))
             ->where('course_user.is_approved', null)
             ->whereNotNull('course_user.completed_date')
             ->paginate(20);
@@ -386,8 +426,7 @@ class CourseController extends BaseController
         try {
             $auth_user = auth()->user();
             $course_user = Course::join('course_user', 'courses.id', '=', 'course_user.course_id')
-            ->where('course_user.user_id', $auth_user->id)->filter($request->all())->get();
-
+            ->where('course_user.user_id', $auth_user->id)->whereNull('course_user.deleted_at')->filter($request->all())->get();
             return $course_user;
         } catch(\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
