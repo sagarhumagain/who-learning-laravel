@@ -40,9 +40,7 @@ class CourseController extends BaseController
             if ($request->id) {
                 $query = Course::where('id', $request->id)->with('courseCategories');
                 if ($auth_user->hasRole('super-admin')) {
-                    $query->with('courseAssignment', function ($q) {
-                        $q->with('createdBy');
-                    });
+                    $query->with('courseAssignment');
                 } elseif ($auth_user->hasRole('normal-user') || $auth_user->hasRole('supervisor')) {
                     $query->with('users', function ($q) {
                         $q->where('users.id', auth()->user()->id);
@@ -50,7 +48,9 @@ class CourseController extends BaseController
                 }
                 $courses = $query->firstOrFail();
             } else {
-                $query = Course::where('is_approved', 1)->filter($request->all())->with('courseCategories');
+                $query = Course::where('is_approved', 1)->filter($request->all())->with('courseCategories')->with('courseAssignment', function ($q) {
+                    $q->with('createdBy');
+                });
                 if (auth()->user()->hasRole('normal-user') || auth()->user()->hasRole('supervisor')) {
                     $enrolled_courses = CourseUser::where('user_id', auth()->user()->id)->pluck('course_id')->toArray();
                     $query->whereNotIn('id', $enrolled_courses);
