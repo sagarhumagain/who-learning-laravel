@@ -70,7 +70,7 @@ class CourseController extends BaseController
             $query = Course::where(function ($q) {
                 $q->where('is_approved', 0)
                 ->orWhereNull('is_approved')
-                ->orWhere('is_approved', 2);
+                ->orWhere('is_approved', '2');
 
             })->with('courseCategories')->with('courseAssignment', function ($q) {
                 $q->with('createdBy');
