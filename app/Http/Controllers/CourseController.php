@@ -289,6 +289,7 @@ class CourseController extends BaseController
             $data['error'] = true;
             $data['message'] = $e->getMessage();
         }
+        return response()->json($data);
     }
 
     /**

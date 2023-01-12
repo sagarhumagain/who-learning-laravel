@@ -27,7 +27,7 @@
                             <tr class="bg-light">
                                 <th>S.N.</th>
                                 <th style="width:25%">Course Name</th>
-                                <th v-role:any="'super-admin|course-admin'">
+                                <th>
                                     Created By
                                 </th>
                                 <th>Credit Hours</th>
@@ -40,7 +40,7 @@
                             <tr v-for="(course, index) in courses.data" :key="course.id">
                                 <td>{{index + 1}}</td>
                                 <td>{{course.name}}</td>
-                                <td v-role:any="'super-admin|course-admin'">
+                                <td>
                                     <span v-if="course.course_assignment == null">Course Admin</span>
                                     <span v-else>{{course.course_assignment.created_by.name}}</span>
                                 </td>

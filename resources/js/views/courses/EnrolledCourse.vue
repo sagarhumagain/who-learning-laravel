@@ -43,7 +43,7 @@
                                     <router-link class="project-link mr-3" :to="{ name: 'courses-edit', params: { id: course.course_id} }">
                                         <i class="fa fa-edit"></i>
                                     </router-link>
-                                    <a href="#" class="m-2 color-red" @click="withdrawCourse(course.id)" >
+                                    <a href="#" class="m-2 color-red" v-if="course.is_approved != 1" @click="withdrawCourse(course.id)" >
                                         <i class="fa fa-times" title="Withdraw Course"></i>
                                     </a>
 
@@ -105,58 +105,63 @@
                 $('#addNewCourse').modal('show');
                 this.form.fill(course);
             },
-            withdrawCourse(id){
+            async withdrawCourse(id){
                 this.$Progress.start();
-                this.$swal({
+
+                const result  = await  this.$swal({
                     title: 'Are you sure?',
                     text: "You won't be able to revert this!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Yes, withdraw it!'
-                }).then((result) => {
-                    if (result.value) {
-                    axios.post('/api/v1/withdraw-course/'+id)
-                        .then((response) => {
-                            if(response.data.error == true){
-                                this.$swal({
-                                    toast: true,
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    icon: 'warning',
-                                    title: response.data.message
-                                })
-                            }else{
-                                this.$swal({
-                                    toast: true,
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    icon: 'success',
-                                    title: response.data.message
-                                })
-                                this.getCourses();
-                            }
+                })
+                if (result.value) {
+                    try{
+                        const response  =  await axios.post('/api/v1/withdraw-course/'+id)
+                        if(response.data.error == true){
+                            this.$swal({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                icon: 'warning',
+                                title: response.data.message,
+                            })
+                            this.$Progress.fail();
+                            this.disabled=false;
+                        }
+                        else{
+                            this.$swal({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                icon: 'success',
+                                title: response.data.message,
+                            })
+                            this.emitter.emit('AfterCreate')
+                            this.disabled=false
                             this.$Progress.finish();
-                        }).catch(({response}) => {
-                            this.disabled = false
-                            if(response.status == 500) {
+
+                        }
+                    }catch({response}){
+                        this.disabled = false
+                        if(response.status == 500) {
+                        this.$swal(
+                            'Error!',
+                            "Something Went Wrong.",
+                            'warning'
+                        );
+                        } else {
                             this.$swal(
                                 'Error!',
-                                "Something Went Wrong.",
+                                response.data.message,
                                 'warning'
-                            );
-                            } else {
-                                this.$swal(
-                                    'Error!',
-                                    response.data.message,
-                                    'warning'
-                                )
-                            }
-
-                        })
+                            )
+                        }
                     }
-                })
+                    this.$Progress.finish();
+                }
             },
             updateInfo() {
                 this.$Progress.start();
