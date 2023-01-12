@@ -255,6 +255,9 @@ class CourseController extends BaseController
             if ($course->is_approved == 1 && !$user->hasRole(['super-admin', 'course-admin'])) {
                 throw new \Exception('Please contact the admin to edit courses which are already approved in the system.');
             }
+            if($user->hasRole('normal-user') && $course->is_approved == 0){
+                $request['is_approved']= null;
+            }
             $course->update($request->all());
             if ($user->hasRole(['super-admin','course-admin'])) {
                 event(new CourseUpdateEvent($course));

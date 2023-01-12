@@ -348,6 +348,7 @@ export default {
         setFormDisabled(){
             if(this.$gates.hasAnyRole('super-admin|course-admin')){
                 this.course_disabled = false;
+                this.course_user_disabled = false;
             }
             else if(this.$gates.hasAnyRole('normal-user|supervisor' ) && this.form.assigned_by_user_id == this.user.id){
                 this.course_disabled = false;
