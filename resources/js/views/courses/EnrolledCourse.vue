@@ -36,6 +36,8 @@
                                     <p class="color-yellow" v-else-if="course.is_approved == null && course.completed_date">Approval Pending</p>
                                     <p class="color-green" v-else-if="course.is_approved == '1' && course.completed_date">Approved</p>
                                     <p class="color-red" v-else-if="course.is_approved == '0' && course.completed_date">Disapproved</p>
+                                    <p class="color-red" v-else-if="course.is_approved == '2' && course.completed_date">Reverification</p>
+
                                 </td>
                                 <td>
                                     <router-link class="project-link mr-3" :to="{ name: 'courses-edit', params: { id: course.course_id} }">

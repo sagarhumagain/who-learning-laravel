@@ -55,7 +55,7 @@ class WelcomeMessage extends Notification
     public function toArray($notifiable)
     {
         return [
-            'title' => 'Wellcome',
+            'title' => 'Welcome',
             'excerpt' => 'You have successfully registered to WHO learning Tracker. Please update your profile to get started.',
         ];
     }

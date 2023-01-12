@@ -24,7 +24,8 @@ class Course extends Model implements Auditable
         'url',
         'source',
         'due_date',
-        'is_approved'
+        'is_approved',
+        'remarks',
     ];
 
     // protected $dates = ['due_date'];

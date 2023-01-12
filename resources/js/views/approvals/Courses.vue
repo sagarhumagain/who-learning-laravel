@@ -23,12 +23,16 @@
                                 <th>Description</th>
                                 <th>Course Category</th>
                                 <th>Status</th>
+                                <th>Remarks</th>
                                 <th>Actions</th>
                             </tr>
                             <tr v-for="(course, index) in courses.data" :key="course.id">
                                 <td>{{index + 1}}</td>
                                 <td>{{course.name}}</td>
-                                <td v>{{course.course_assignment.created_by.name}}</td>
+                                <td>
+                                    <span v-if="course.course_assignment == null">Course Admin</span>
+                                    <span v-else>{{course.course_assignment.created_by.name}}</span>
+                                </td>
                                 <td>{{course.credit_hours}}</td>
                                 <td>{{course.due_date}}</td>
                                 <td>{{course.description}}</td>
@@ -39,22 +43,24 @@
                                     <span v-if="course.is_approved == null" class="color-yellow">Approval Pending</span>
                                     <span v-else-if="course.is_approved == 1" class="color-green">Approved</span>
                                     <span v-else-if="course.is_approved == 0" class="color-red">Disapproved</span>
+                                    <span v-else-if="course.is_approved == 2" class="color-red">Reverification</span>
                                 </td>
-                                <td class="w-15">
+                                <td>{{course.remarks}}</td>
+                                <td class="w-15" >
                                     <!-- <a href="#" @click="editCourse(course,course.id)" class="btn btn-sm btn-success mr-2">Edit
                                         <i class="fa fa-edit"></i>
                                     </a> -->
-                                    <router-link class="project-link m-2 color-sec-blue" :to="{ name: 'courses-edit', params: { course: course , id: course.id} }">
+                                    <router-link class="project-link m-2 color-sec-blue" :to="{ name: 'courses-edit', params: { id: course.id} }">
                                         <i class="fa fa-edit"  title="Edit Course"></i>
                                     </router-link>
 
-                                    <a href="#" class="m-2 color-red" @click="deleteCourse(course.id)" >
+                                    <a href="#" v-role:any="'super-admin|course-admin|supervisor'" class="m-2 color-red" @click="deleteCourse(course.id)" >
                                         <i class="fa fa-trash"  title="Delete Course"></i>
                                     </a>
-                                    <a href="#" class="m-2 color-green" @click="approveCourse(course,true)" >
+                                    <a href="#" v-role:any="'super-admin|course-admin|supervisor'" class="m-2 color-green" @click="approveCourse(course,true)" >
                                         <i class="fa fa-check" title="Approve Course"></i>
                                     </a>
-                                    <a href="#" class="m-2 color-red" @click="approveCourse(course,false)" >
+                                    <a href="#" v-role:any="'super-admin|course-admin|supervisor'" class="m-2 color-red" @click="approveCourse(course,false)" >
                                         <i class="fa fa-times" title="Disapprove Course"></i>
                                     </a>
 
@@ -103,7 +109,8 @@
                     description: null,
                     credit_hours: null,
                     url:null,
-                    is_approved:null
+                    is_approved:null,
+                    remarks:null,
                 }),
                 api_url: '/api/v1/approve/courses',
 
@@ -115,18 +122,34 @@
             },
             async approveCourse(course,val){
                 const status = !val ? 'disapprove' : 'approve';
+                this.form.fill(course)
 
-                const result  = await  this.$swal({
+                const result = status == 'disapprove' ? await this.$swal({
+                    title: 'Please write remarks',
+                    input: 'text',
+                    inputPlaceholder: 'Remarks',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "You want to " + status +  " this course?",
+                    inputValidator: (value) => {
+                        if (!value) {
+                        return 'You need to write something!'
+                        }
+                    }
+                }) :  await  this.$swal({
                     title: 'Are you sure?',
                     text: "You want to " + status +  " this course?",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Yes, ' + status +  ' it!'
                 })
+
                 if (result.value) {
                     try{
-                        this.form.fill(course)
+
                         this.form.is_approved = val;
+                        this.form.remarks = result.value;
                         const response  = await this.form.put('/api/v1/courses/'+this.form.id)
 
                         if(response.data.error == true){

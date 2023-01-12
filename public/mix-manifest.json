@@ -2,16 +2,16 @@
     "/js/app.js": "/js/app.js?id=1becdf4816e7ab22f2e0db576d9b861b",
     "/js/resource/js/components/login.js": "/js/resource/js/components/login.js?id=a0d4f5f0a7700e65b356c885a4278220",
     "/js/resource/js/components/register.js": "/js/resource/js/components/register.js?id=dce7ff80f4504575ebe31ef5ad9e76a7",
-    "/js/resource/js/components/layouts/dashboard.js": "/js/resource/js/components/layouts/dashboard.js?id=5c816d55ffba4b6e22bf45863b2c9b01",
+    "/js/resource/js/components/layouts/dashboard.js": "/js/resource/js/components/layouts/dashboard.js?id=68e073b7ab9335f0f90fd3afa099f03d",
     "/js/resource/js/components/dashboard.js": "/js/resource/js/components/dashboard.js?id=9f25060e690e6c87ab9710ba83dc6ac3",
     "/js/resource/js/components/coursecreate.js": "/js/resource/js/components/coursecreate.js?id=0ea758d6f9817a11c210cfc6c90070e5",
-    "/js/resource/js/components/courseedit.js": "/js/resource/js/components/courseedit.js?id=cb10ac40ee1e1cf84533ea9c460f8994",
+    "/js/resource/js/components/courseedit.js": "/js/resource/js/components/courseedit.js?id=d7741e9c7c364e83023c797d3d0e19fc",
     "/js/resource/js/components/users.js": "/js/resource/js/components/users.js?id=48f7fd89e52c7f66f40870ebadcbd666",
-    "/js/resource/js/components/courses.js": "/js/resource/js/components/courses.js?id=3c9c8a57b84fddd3f40e4bdfdf43b189",
+    "/js/resource/js/components/courses.js": "/js/resource/js/components/courses.js?id=11bfde0ec5603c72bf32d62cc7728477",
     "/js/resource/js/components/employee.js": "/js/resource/js/components/employee.js?id=14140fba8cc017c5b487c80f573d5100",
-    "/js/resource/js/components/approvalcourses.js": "/js/resource/js/components/approvalcourses.js?id=96ed5fb19797063bb58db6977563c156",
+    "/js/resource/js/components/approvalcourses.js": "/js/resource/js/components/approvalcourses.js?id=3ccf87402e736bbd9ae54b66027a8dc3",
     "/js/resource/js/components/certificates.js": "/js/resource/js/components/certificates.js?id=6073b17b9bcc95a585e45cf284f3bc51",
-    "/js/resource/js/components/assignedcourse.js": "/js/resource/js/components/assignedcourse.js?id=2314f22b0d6792b21777abf16f02b722",
+    "/js/resource/js/components/assignedcourse.js": "/js/resource/js/components/assignedcourse.js?id=00d16c3c9d5eee2ec88a37024c5e575d",
     "/js/resource/js/components/sync.js": "/js/resource/js/components/sync.js?id=c19c26c5463b79c8c56844364b101eb2",
-    "/css/app.css": "/css/app.css?id=d5c61b296d3050c766cb17500cdb56ed"
+    "/css/app.css": "/css/app.css?id=08b1baafc66ffb0ad9e45c712f2a9073"
 }

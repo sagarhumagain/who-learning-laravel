@@ -143,6 +143,7 @@ export default {
 
                   ]
                 },
+
                 {
                   title: 'Users',
                   icon: 'fa fa-user',
@@ -152,6 +153,21 @@ export default {
                       title: 'Manage Users'
                     }
 
+                  ]
+                },
+                {
+                  // href: '/courses',
+                  title: 'Approvals',
+                  icon: 'fa fa-check',
+                  child: [
+                    {
+                      href: '/approve/courses',
+                      title: 'Approve Courses'
+                    },
+                    {
+                      href: '/approve/certificates',
+                      title: 'Approve Certifications'
+                    }
                   ]
                 },
                 {
@@ -189,9 +205,14 @@ export default {
                       href: '/courses/',
                       title: 'Courses'
                     },
+                    {
+                      href: '/approve/courses',
+                      title: 'Course Approval'
+                    }
 
                   ]
                 },
+
                 {
                 href: '/user/profile',
                 title: 'View profile',

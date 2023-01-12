@@ -14,6 +14,7 @@ use App\Models\Course;
 use App\Models\CourseAssignmentSetting;
 use App\Models\CourseCategory;
 use App\Models\CourseUser;
+use App\Models\Employee;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -38,10 +39,8 @@ class CourseController extends BaseController
 
         try {
             if ($request->id) {
-                $query = Course::where('id', $request->id)->with('courseCategories');
-                if ($auth_user->hasRole('super-admin')) {
-                    $query->with('courseAssignment');
-                } elseif ($auth_user->hasRole('normal-user') || $auth_user->hasRole('supervisor')) {
+                $query = Course::where('id', $request->id)->with('courseCategories')->with('courseAssignment');
+                if ($auth_user->hasRole('normal-user') || $auth_user->hasRole('supervisor')) {
                     $query->with('users', function ($q) {
                         $q->where('users.id', auth()->user()->id);
                     });
@@ -68,13 +67,30 @@ class CourseController extends BaseController
     public function getApprovalCourseList()
     {
         try {
-            $courses = Course::where(function ($q) {
-                $q->where('is_approved', 0);
-                $q->orWhereNull('is_approved');
-            })
-            ->with('courseAssignment', function ($q) {
+            $query = Course::where(function ($q) {
+                $q->where('is_approved', 0)
+                ->orWhereNull('is_approved')
+                ->orWhere('is_approved', 2);
+
+            })->with('courseCategories')->with('courseAssignment', function ($q) {
                 $q->with('createdBy');
-            })->orderBy('is_approved')->with('courseCategories')->paginate(200);
+            });
+
+            if(auth()->user()->hasRole('supervisor')){
+                $supervisee_ids = [];
+                $supervisee_ids = Employee::where('supervisor_user_id', auth()->user()->id)->pluck('user_id')->toArray();
+                $query->whereHas('courseAssignment', function ($q) use ($supervisee_ids) {
+                        $q->whereIn('assigned_by_user_id', $supervisee_ids);
+                });
+            }
+            else if(auth()->user()->hasRole('normal-user')){
+                $query->whereHas('courseAssignment', function ($q) {
+                    $q->where('assigned_by_user_id', auth()->user()->id)->with('createdBy');
+                });
+            }
+
+            $courses = $query->orderBy('updated_at')->paginate(20);
+
             return $courses;
         } catch(Exception $e) {
             return response()->json([
@@ -303,6 +319,9 @@ class CourseController extends BaseController
             $request['due_date'] = $request->due_date == "null" ? null : $request->due_date;
             $request['description'] = $request->description == "null" ? null : $request->description;
             $course = Course::findOrFail($request->id);
+            if($user->hasRole('normal-user') && $course->is_approved == 0){
+                $request['is_approved']= 2;
+            }
             $course->update($request->all());
             if ($user->hasRole(['super-admin','course-admin'])) {
                 event(new CourseUpdateEvent($course));
@@ -380,17 +399,20 @@ class CourseController extends BaseController
     public function listUnapprovedCourses()
     {
         $user = auth()->user();
-        //#TODO Check for permission
-        if ($user->hasRole('super-admin')) {
-            $user_course = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
+
+        $query = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
             ->join('users', 'course_user.user_id', '=', 'users.id')
-            ->select(DB::raw('course_user.user_id as user_id,courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.name as createdBy, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date,course_user.certificate_path as certificate'))
-            ->where('course_user.is_approved', null)
-            ->whereNotNull('course_user.completed_date')
-            ->paginate(20);
-        } else {
-            $user_course = [];
+            ->select(DB::raw('course_user.user_id as user_id,courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.name as createdBy, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date,course_user.certificate_path as certificate'));
+
+        if($user->hasRole('supervisor')) {
+            $supervisee_ids = [];
+            $supervisee_ids = Employee::where('supervisor_user_id', auth()->user()->id)->pluck('user_id')->toArray();
+            $query->where('course_user.user_id', $supervisee_ids);
         }
+        $user_course = $query->where('course_user.is_approved', null)
+        ->whereNotNull('course_user.completed_date')
+        ->paginate(20);
+
         return $user_course;
     }
 

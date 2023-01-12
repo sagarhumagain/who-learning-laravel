@@ -54,6 +54,8 @@
                                     <span v-if="course.is_approved == null" class="color-yellow">Approval Pending</span>
                                     <span v-else-if="course.is_approved == 1" class="color-green">Approved</span>
                                     <span v-else-if="course.is_approved == 0" class="color-red">Disapproved</span>
+                                    <span v-else-if="course.is_approved == 2" class="color-red">Reverification</span>
+
                                 </td>
                                 <td class="w-15">
                                     <!-- <a href="#" @click="editCourse(course,course.id)" class="btn btn-sm btn-success mr-2">Edit

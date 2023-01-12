@@ -5,6 +5,7 @@
                 <div class="card shadow sm">
                     <div class="card-body">
                         <h1 class="text-center">Update Course</h1>
+                        <h4 class="text-center" v-if="form.remarks">Remarks: {{form.remarks}}</h4>
                         <hr/>
                         <form @submit.prevent="updateCourse()" @keydown="form.onKeydown($event)">
                           <div class="form-group col-lg-12 col-md-12">
@@ -156,7 +157,7 @@
                           </div>
                         <div class="col-12 mb-2 text-center mt-3 ">
 
-                          <button type="submit" :disabled="disabled" class="btn-fill text-center">
+                          <button type="submit" :disabled="disabled || course_user_disabled" class="btn-fill text-center">
                             Update
                           </button>
                         </div>
@@ -203,6 +204,7 @@ export default {
               description: null,
               credit_hours: null,
               url: null,
+              remarks: null,
               source: null,
               due_date: null,
               pillar_ids: null,
@@ -213,6 +215,7 @@ export default {
               course_category_ids: null,
               completed_date: null,
               certificate_path:null,
+              assigned_by_user_id: null,
             }),
             masks: {
                     input: 'YYYY-MM-DD',
@@ -313,9 +316,11 @@ export default {
                 if(response.data.users){
                     this.form.completed_date = response.data.users[0].pivot.completed_date;
                     this.form.certificate_path = response.data.users[0].pivot.certificate_path;
-                    this.form.course_user_approved = response.data.users[0].pivot.is_approved;
+                    this.form.course_user_approved = response.data.users[0].pivot.is_approved || false;
                 }
                 if(response.data.course_assignment){
+                    //created_by
+                    this.form.assigned_by_user_id = response.data.course_assignment.assigned_by_user_id;
                     //filter out the pillar_ids
                     this.form.pillar_ids = this.pillars.filter(pillar => {
                         return response.data.course_assignment.pillar_ids ? response.data.course_assignment.pillar_ids.includes(pillar.id) : null
@@ -341,16 +346,22 @@ export default {
             }
         },
         setFormDisabled(){
-          if(this.$gates.hasAnyRole('super-admin|course-admin')){
-            this.course_disabled = false;
-          }
+            if(this.$gates.hasAnyRole('super-admin|course-admin')){
+                this.course_disabled = false;
+            }
+            else if(this.$gates.hasAnyRole('normal-user|supervisor' ) && this.form.assigned_by_user_id == this.user.id){
+                this.course_disabled = false;
+
+            }else{
+                this.course_disabled = true;
+            }
+            if(this.$gates.hasAnyRole('normal-user|supervisor' ) && this.form.course_user_approved !== 1){
+                this.course_user_disabled = false;
+            }
           // #TODO check if course created by normal user, & let edit if course is not approved
           // if(this.role.isNormalUser() && !this.form.is_course_approved){
           //   this.course_disabled = false;
           // }
-          if(this.$gates.hasRole('normal-user') || this.$gates.hasRole('supervisor') && this.form.course_user_approved !== 1){
-            this.course_user_disabled = false;
-          }
         }
     },
     async created() {

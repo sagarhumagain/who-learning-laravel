@@ -71,7 +71,11 @@ $font-weight-bold: 700;
 
 // Body
 $body-bg: $color-grey;
-
+.fancy-btn{
+    color: black;
+    background: blanchedalmond;
+    border: 1px solid #000;
+  }
 
 .invalid-feedback{
     display: block;
