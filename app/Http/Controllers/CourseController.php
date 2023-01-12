@@ -69,9 +69,7 @@ class CourseController extends BaseController
         try {
             $query = Course::where(function ($q) {
                 $q->where('is_approved', 0)
-                ->orWhereNull('is_approved')
-                ->orWhere('is_approved', '2');
-
+                ->orWhereNull('is_approved');
             })->with('courseCategories')->with('courseAssignment', function ($q) {
                 $q->with('createdBy');
             });
@@ -319,9 +317,7 @@ class CourseController extends BaseController
             $request['due_date'] = $request->due_date == "null" ? null : $request->due_date;
             $request['description'] = $request->description == "null" ? null : $request->description;
             $course = Course::findOrFail($request->id);
-            if($user->hasRole('normal-user') && $course->is_approved == 0){
-                $request['is_approved']= 2;
-            }
+
             $course->update($request->all());
             if ($user->hasRole(['super-admin','course-admin'])) {
                 event(new CourseUpdateEvent($course));
