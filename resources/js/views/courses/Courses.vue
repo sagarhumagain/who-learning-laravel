@@ -27,9 +27,7 @@
                             <tr class="bg-light">
                                 <th>S.N.</th>
                                 <th style="width:25%">Course Name</th>
-                                <th>
-                                    Created By
-                                </th>
+                                <th>Created By</th>
                                 <th>Credit Hours</th>
                                 <th>Due Date</th>
                                 <th>Description</th>
@@ -201,7 +199,6 @@
                             )
                         }
                     }
-
                 }
             },
             deleteCourse(id) {
