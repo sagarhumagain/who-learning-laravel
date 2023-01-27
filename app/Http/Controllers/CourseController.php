@@ -54,7 +54,7 @@ class CourseController extends BaseController
                     $enrolled_courses = CourseUser::where('user_id', auth()->user()->id)->pluck('course_id')->toArray();
                     $query->whereNotIn('id', $enrolled_courses);
                 }
-                $courses = $query->orderBy('name')->paginate(20);
+                $courses = $query->orderBy('name')->paginate(20, ['*'], 'page', $request->page);
             }
         } catch(Exception $e) {
             return response()->json([

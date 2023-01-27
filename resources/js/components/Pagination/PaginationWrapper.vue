@@ -35,7 +35,7 @@ export default {
             else{
                 axios.get(this.api_url+'?page=' + page)
                     .then(response => {
-                        this.emitter.emit('paginating', response.data);
+                        this.emitter.emit('paginating', response.data, page);
                     });
             }
         },
