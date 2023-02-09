@@ -11,7 +11,9 @@ use OwenIt\Auditing\Auditable as AuditableTrait;
 
 class CourseCategory extends Model implements Auditable
 {
-    use HasFactory, SoftDeletes, AuditableTrait;
+    use HasFactory;
+    use SoftDeletes;
+    use AuditableTrait;
 
     protected $fillable = [
         'name',
@@ -21,5 +23,10 @@ class CourseCategory extends Model implements Auditable
     public function courses()
     {
         return $this->belongsToMany(Course::class, 'course_course_category');
+    }
+
+    public function randomCourses()
+    {
+        return $this->belongsToMany(Course::class, 'course_course_category')->inRandomOrder()->take(2);
     }
 }

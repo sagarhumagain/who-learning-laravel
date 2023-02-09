@@ -9,7 +9,7 @@
                 <slide v-for="item in data" :key="item.id" >
                     <div class="who-card shadow-0"  >
                         <h4 class="text-center">{{item.name}}</h4>
-                        <div class="who-card  shadow-0 table-responsive" v-for="item in item.courses" :key="item.id">
+                        <div class="who-card  shadow-0 table-responsive" v-for="item in item.random_courses" :key="item.id">
                             <table class="w-100 text-center">
                                 <tr>
                                     <th>Name</th>

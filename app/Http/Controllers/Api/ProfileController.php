@@ -3,18 +3,24 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ProfileApprovalMail;
 use App\Models\Employee;
 use App\Models\User;
+use App\Services\MailService;
+use Exception;
 use Hash;
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ProfileController extends BaseController
 {
     protected $folder = 'users';
-    public function __construct(Employee $model)
+    private $mailService;
+    public function __construct(Employee $model, MailService $mailService)
     {
         $this->model = $model;
+        $this->mailService = $mailService;
         $this->folder_path = 'images'.DIRECTORY_SEPARATOR.$this->folder;
     }
 
@@ -79,12 +85,16 @@ class ProfileController extends BaseController
             }
             try {
                 Employee::updateOrCreate(['id' => $request->id], $request->all());
+
+                $user = User::find($request->user_id);
+                if ($user->is_first_time_login == 0) {
+                    $this->mailService->sendProfileApprovalMail($request);
+                }
             } catch (\Exception $e) {
                 return response()->json(['error' => $e->getMessage()], 500);
             }
-
             $data['error']='false';
-            $data['message']='Your Profile Info! Has Been Updated';
+            $data['message']='Your Profile Info! Has Been Updated Successfully. An email has been sent to your supervisor for approval. Please update your contract details.';
         } catch (\Exception $e) {
             $data['error']='true';
             $data['message']=$e->getMessage();

@@ -144,7 +144,7 @@
                                         <div class="col-md-12">
 
                                         <div class="form-group mt-3">
-                                                <button @click.prevent="updateInfo" type="submit" class="btn btn-success">Update</button>
+                                                <button @click.prevent="updateInfo" :disabled="disabled" type="submit" class="btn btn-success">Update</button>
                                         </div>
                                         </div>
                                     </div>
@@ -202,6 +202,7 @@ import Multiselect from 'vue-multiselect'
                     oldpassword: null,
                     confirmpassword: null,
                 }),
+                disabled: false,
 
             }
         },
@@ -253,6 +254,8 @@ import Multiselect from 'vue-multiselect'
                 }
             },
             async updateInfo() {
+                this.$Progress.start();
+                this.disabled = true;
                 const response = await this.form.put('/api/v1/profile/'+this.form.id);
                 try{
                     if(response.data.error == 'false'){
@@ -272,6 +275,7 @@ import Multiselect from 'vue-multiselect'
                             )
                         this.$Progress.fail();
                     }
+                    this.disabled = false;
                 }catch(error){
                     this.$swal(
                                 'Error!',
@@ -279,7 +283,10 @@ import Multiselect from 'vue-multiselect'
                                 'warning'
                             )
                     this.$Progress.fail();
+                    this.disabled = false;
                 }
+                this.$Progress.finish();
+                this.disabled = false;
             },
             async loadProfile(){
                 //check if user is logged in

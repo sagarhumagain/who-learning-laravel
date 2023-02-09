@@ -12,6 +12,7 @@ use App\Models\Pillar;
 use App\Models\StaffCategory;
 use App\Models\StaffType;
 use App\Models\User;
+use App\Services\MailService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -28,9 +29,12 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function __construct(User $user)
+    private $mailService;
+
+    public function __construct(User $user, MailService $mailService)
     {
         $this->user = $user;
+        $this->mailService = $mailService;
     }
 
     public function index()
@@ -50,7 +54,6 @@ class UserController extends Controller
                 $q->latest()->get();
             })->latest()->paginate(50);
         }
-
 
         return $data;
     }
@@ -120,6 +123,7 @@ class UserController extends Controller
             //assign courses after approving user
             if ($user->is_first_time_login == 1 && $request->is_first_time_login == 0) {
                 $this->assignCourse($id);
+                $this->mailService->sendProfileApprovedMail($user->email);
             }
             $user->update($request->all());
             $data['error']= false ;

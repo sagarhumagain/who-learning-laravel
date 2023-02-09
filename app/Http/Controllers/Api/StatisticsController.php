@@ -12,6 +12,9 @@ use App\Models\CourseCategory;
 use App\Models\CourseCourseCategory;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use DateInterval;
+use DatePeriod;
+use DateTime;
 
 class StatisticsController extends Controller
 {
@@ -145,13 +148,28 @@ class StatisticsController extends Controller
 
     //normal-user
 
-    public function fetchUserDashboardStats()
+    public function fetchUserDashboardStats(Request $request)
     {
         $data = [];
         $user = auth()->user();
-        $courseUsers = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
-        ->select(DB::raw('courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved'))
-        ->where('course_user.user_id', $user->id)->get();
+        try {
+            $query =   CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
+            ->select(DB::raw('courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved'))
+            ->whereNull('course_user.deleted_at')
+            ->where('course_user.user_id', $user->id);
+
+            if ($request->start_date) {
+                //filter by date
+                $query->whereBetween('course_user.updated_at', [Carbon::parse($request->start_date)->startOfDay(), Carbon::parse($request->end_date)->endOfDay()]);
+            } else {
+                //current year data
+                $query->whereYear('course_user.updated_at', date('Y'));
+            }
+            $courseUsers = $query->get();
+        } catch(\Exception $e) {
+            return response()->json($e->getMessage());
+        }
+
         $data['total_enrolled_courses'] = $courseUsers->count();
         $data['total_completed_courses'] = 0;
         $data['course_duration_required'] = 100;
@@ -164,59 +182,61 @@ class StatisticsController extends Controller
         }
         return response()->json($data);
     }
-    public function fetchUserUpcomingDeadlines()
+    public function fetchUserUpcomingDeadlines(Request $request)
     {
         $user = auth()->user();
-        $data = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
+        $query = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
         ->select(DB::raw('courses.name as name, courses.credit_hours as credit_hours, courses.due_date as due_date'))
         ->whereNull('course_user.completed_date')
         ->whereNull('course_user.is_approved')
-        ->where('course_user.user_id', $user->id)
-        ->orderBy('course_user.completed_date', 'ASC')
+        ->where('course_user.user_id', $user->id);
+
+        if ($request->start_date) {
+            //filter by date
+            $query->whereBetween('course_user.updated_at', [Carbon::parse($request->start_date)->startOfDay(), Carbon::parse($request->end_date)->endOfDay()]);
+        } else {
+            //current year data
+            $query->whereYear('course_user.updated_at', date('Y'));
+        }
+        $data = $query->orderBy('course_user.completed_date', 'ASC')
         ->get();
 
         return response()->json($data);
     }
 
-    public function fetchUserCompletedCourse()
+    public function fetchUserCompletedCourse(Request $request)
     {
         $user = auth()->user();
-        $data = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
+        $query = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
         ->select(DB::raw('courses.name as name, courses.credit_hours as credit_hours'))
         ->whereNotNull('course_user.completed_date')
         ->where('course_user.is_approved', true)
-        ->where('course_user.user_id', $user->id)
-        ->get();
-
+        ->where('course_user.user_id', $user->id);
+        if ($request->start_date) {
+            //filter by date
+            $query->whereBetween('course_user.completed_date', [Carbon::parse($request->start_date)->startOfDay(), Carbon::parse($request->end_date)->endOfDay()]);
+        } else {
+            //current year data
+            $query->whereYear('course_user.completed_date', date('Y'));
+        }
+        $data = $query->get();
         return response()->json($data);
     }
 
     public function fetchUserYearlyProgress(Request $request)
     {
-        // //get last three years
-        // $years = [];
-        // for ($i = 0; $i < 3; $i++) {
-                //     $years[] = $year - $i;
-        // }
-
-
-        // $user = auth()->user();
-        // $data = CourseUser::selectRaw('count(id) as count, year(completed_date) as year')
-        //   ->whereYear('completed_date', '>=', $years[2])
-        //   ->where('is_approved', 1)
-        //   ->where('user_id', $user->id)
-        //   ->groupBy('year')
-        //   ->pluck('count', 'year')->toArray();
-
         try {
             $year = Carbon::now()->format('Y');
             if ($request->year) {
                 $year = $request->year;
             }
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;
             $user = auth()->user();
 
-            $data = CourseUser::selectRaw('count(id) as count, date_part(\'month\', completed_date) as month')
-                ->whereYear('completed_date', $year)
+
+            $data = CourseUser::selectRaw('count(id) as count, MONTH(completed_date) as month')
+                ->whereRaw('YEAR(completed_date) = ?', [$year])
                 ->where('is_approved', 1)
                 ->where('user_id', $user->id)
                 ->groupBy('month')
@@ -230,6 +250,7 @@ class StatisticsController extends Controller
             }
             ksort($data);
             $finalData = array_values($data);
+
 
             return response()->json($finalData);
         } catch(\Exception $e) {

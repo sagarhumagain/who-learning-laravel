@@ -74,14 +74,13 @@ class CourseController extends BaseController
                 $q->with('createdBy');
             });
 
-            if(auth()->user()->hasRole('supervisor')){
+            if (auth()->user()->hasRole('supervisor')) {
                 $supervisee_ids = [];
                 $supervisee_ids = Employee::where('supervisor_user_id', auth()->user()->id)->pluck('user_id')->toArray();
                 $query->whereHas('courseAssignment', function ($q) use ($supervisee_ids) {
-                        $q->whereIn('assigned_by_user_id', $supervisee_ids);
+                    $q->whereIn('assigned_by_user_id', $supervisee_ids);
                 });
-            }
-            else if(auth()->user()->hasRole('normal-user')){
+            } elseif (auth()->user()->hasRole('normal-user')) {
                 $query->whereHas('courseAssignment', function ($q) {
                     $q->where('assigned_by_user_id', auth()->user()->id)->with('createdBy');
                 });
@@ -255,7 +254,7 @@ class CourseController extends BaseController
             if ($course->is_approved == 1 && !$user->hasRole(['super-admin', 'course-admin'])) {
                 throw new \Exception('Please contact the admin to edit courses which are already approved in the system.');
             }
-            if($user->hasRole('normal-user') && $course->is_approved == 0){
+            if ($user->hasRole('normal-user') && $course->is_approved == 0) {
                 $request['is_approved']= null;
             }
             $course->update($request->all());
@@ -404,7 +403,7 @@ class CourseController extends BaseController
             ->join('users', 'course_user.user_id', '=', 'users.id')
             ->select(DB::raw('course_user.user_id as user_id,courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.name as createdBy, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date,course_user.certificate_path as certificate'));
 
-        if($user->hasRole('supervisor')) {
+        if ($user->hasRole('supervisor')) {
             $supervisee_ids = [];
             $supervisee_ids = Employee::where('supervisor_user_id', auth()->user()->id)->pluck('user_id')->toArray();
             $query->where('course_user.user_id', $supervisee_ids);
@@ -420,10 +419,10 @@ class CourseController extends BaseController
     {
         $user = auth()->user();
         try {
-            $course = $user->courses()->pluck('course_id');
+            $course = CourseUser::where('user_id', $user->id)->whereNull('deleted_at')->pluck('course_id')->toArray();
             $suggestedCourses = CourseCategory::whereHas('courses', function ($q) use ($course) {
                 $q->where('courses.is_approved', 1)->whereIn('courses.id', $course);
-            })->with('courses', function ($q) use ($course) {
+            })->with('randomCourses', function ($q) use ($course) {
                 $q->where('courses.is_approved', 1)->whereNotIn('courses.id', $course);
             })->inRandomOrder()->get()->take(10);
         } catch(\Exception $e) {
