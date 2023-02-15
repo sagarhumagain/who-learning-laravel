@@ -68,7 +68,7 @@ Route::group(
         Route::apiResources(['supervisors' => SupervisorController::class]);
 
 
-        Route::post('/read_all', [BaseController::class, 'readAll']);
+        Route::post('/read_all_notification', [BaseController::class, 'readAll']);
         Route::post('/read_notification', [BaseController::class, 'read']);
         Route::post('/unread_notification', [BaseController::class, 'unread']);
         Route::get('/notifications', [BaseController::class, 'notifications']);

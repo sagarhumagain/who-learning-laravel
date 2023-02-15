@@ -11,5 +11,10 @@ export default (baseUrl, apiVersion) => ({
         }
         );
     },
+    async readNotifications() {
+
+        return await axios.post(`${baseUrl}${apiVersion}/read_all_notification`);
+    }
+
 
   });
