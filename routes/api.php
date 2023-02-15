@@ -111,5 +111,7 @@ Route::group(
 
         Route::get('/suggest/courses', [CourseController::class, 'listSuggestedCourses']);
         Route::get('/deadlines-exceed', [CourseController::class, 'getExceededDeadlines']);
+
+        Route::get('/users-stats', [StatisticsController::class, 'usersStats']);
     }
 );

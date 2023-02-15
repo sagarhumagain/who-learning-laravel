@@ -76,6 +76,12 @@
             </div>
 
         </div>
+
+        <div class="col-md-12" >
+            <user-course/>
+        </div>
+
+
     </div>
 </template>
 
@@ -87,6 +93,8 @@ import DoughnutChart from '@/components/DoughnutChart'
 import Table from '@/components/Table'
 import Form from 'vform'
 import DashboardFilter from '@/components/DashboardFilter'
+import UserCourse from '@/components/UserCourse.vue'
+
 
 export default {
     name:"admin-dashboard",
@@ -149,7 +157,8 @@ export default {
         BarChart,
         DoughnutChart,
         Table,
-        DashboardFilter
+        DashboardFilter,
+        UserCourse
     },
     methods: {
 

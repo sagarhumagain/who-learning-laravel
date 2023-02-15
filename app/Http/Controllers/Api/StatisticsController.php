@@ -285,4 +285,28 @@ class StatisticsController extends Controller
             return response()->json($e->getMessage());
         }
     }
+    public function usersStats(){
+    // dd(User::with('courses')->get());
+        try {
+
+            $data = User::withCount([
+                'courses as completed_courses_count' => function ($query) {
+                    $query->whereNotNull('completed_date')
+                          ->where('course_user.is_approved', 1);
+                },
+                'courses as enrolled_courses_count' => function ($query) {
+                    $query->whereNull('completed_date');
+                },
+                'courses as credit_hours_count' => function ($query) {
+                    $query->select(DB::raw('sum(credit_hours)'))
+                    ->whereNotNull('completed_date')
+                    ->where('course_user.is_approved', 1);
+                }
+            ])
+            ->get();
+            return response()->json($data);
+        } catch(\Exception $e) {
+            return response()->json($e->getMessage());
+        }
+    }
 }
