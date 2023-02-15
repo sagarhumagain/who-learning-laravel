@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BaseController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
@@ -19,6 +20,13 @@ Route::get('/', function () {
 });
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+
+
+
+Route::get('/epub', [BaseController::class, 'epub']);
+Route::post('/epub', [BaseController::class, 'epubReader'])->name('epubReader');
+
+
 
 
 Route::get('{any}', function () {

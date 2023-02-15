@@ -12,11 +12,13 @@ use App\Models\Role;
 use App\Models\StaffCategory;
 use App\Models\StaffType;
 use App\Models\User;
+use DOMDocument;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use ZipArchive;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -140,5 +142,63 @@ class BaseController extends Controller
         ];
         return $data;
         ;
+    }
+
+    public function epub()
+    {
+        return view('epub');
+    }
+    public function epubReader(Request $request)
+    {
+        $file = $request->file('file');
+        $zip = new ZipArchive();
+        $res = $zip->open($file);
+        dd($res);
+        if ($res === true) {
+            $container = $zip->getFromName('META-INF/container.xml');
+            dd($container);
+            preg_match('/full-path="(.*?)"/', $container, $matches);
+            $opf = $matches[1];
+
+            $opf = $zip->getFromName($opf);
+
+            preg_match('/<dc:title>(.*?)<\/dc:title>/', $opf, $matches);
+            $title = $matches[1];
+
+            preg_match('/<dc:creator opf:role="aut">(.*?)<\/dc:creator>/', $opf, $matches);
+            $author = $matches[1];
+
+            $chapters = [];
+
+            //<item id="Chapter01" href="xhtml/11_chapter01.xhtml" media-type="application/xhtml+xml" />
+            preg_match_all('/<item id="(.*?)" href="(.*?)" media-type="(.*?)" \/>/', $opf, $matches, PREG_SET_ORDER);
+
+            foreach ($matches as $match) {
+                $id = $match[1];
+                $href = $match[2];
+                $mediaType = $match[3];
+
+                if ($mediaType == 'application/xhtml+xml') {
+                    $chapters[$id] = [
+                        'href' => $href,
+                        'chapter_content' => $zip->getFromName($href),
+                    ];
+                }
+            }
+
+            $zip->close();
+
+
+            dd($title, $author, $chapters);
+
+            // Pass the information to the view
+            return view('epub', [
+                'title' => $title,
+                'author' => $author,
+                'chapters' => $chapters,
+            ]);
+        } else {
+            return redirect()->back()->with('error', 'Failed to extract the contents of the EPUB file.');
+        }
     }
 }

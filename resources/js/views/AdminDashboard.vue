@@ -1,6 +1,9 @@
 <template>
     <div class="container">
         <div class="row">
+
+            <DashboardFilter :filterRecords="filterRecords" :loadUserDashboard="loadUserDashboard" :form="form" />
+
             <!-- <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-header">
@@ -39,8 +42,8 @@
                       <p class="text-center">{{chartData.name}}</p>
                     </div>
                   </div>
-                </Card> -->
-                <!-- <Card title="Top Learners">
+                </Card>
+                <Card title="Top Learners">
                   <div class="row">
                     <div class="col-12">
                       <Table />
@@ -82,11 +85,20 @@ import Card from '@/components/Card'
 import BarChart from '@/components/BarChart'
 import DoughnutChart from '@/components/DoughnutChart'
 import Table from '@/components/Table'
+import Form from 'vform'
+import DashboardFilter from '@/components/DashboardFilter'
 
 export default {
     name:"admin-dashboard",
     data(){
         return {
+
+            form: new Form({
+                year: new Date().getFullYear(),
+                start_date: new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0,10),
+                end_date: new Date().toISOString().slice(0,10),
+            }),
+
             user:this.$store.state.auth.user,
             isLoaded: false,
             approvals: {
@@ -136,46 +148,57 @@ export default {
         Card,
         BarChart,
         DoughnutChart,
-        Table
+        Table,
+        DashboardFilter
+    },
+    methods: {
+
+        async filterRecords(){
+            let response = await this.$api.statistics.filterMostPopularCourses(this.form.start_date, this.form.end_date);
+            //replace previous chart data
+            this.barChart.chartDatas[0] = response.data;
+
+            response = await this.$api.statistics.filterAdminDashboardStats(this.form.start_date, this.form.end_date);
+            this.counts = {
+                ...this.counts,
+                ...response.data
+            }
+
+        },
+        async loadUserDashboard() {
+
+            // let response = await this.$api.statistics.fetchMandatoryCourses();
+            // this.mandatoryCourseChart = {
+            //     ...this.mandatoryCourseChart,
+            //     chartDatas: response.data
+            // };
+            let response = await this.$api.statistics.fetchMostPopularCourses();
+            this.barChart.chartDatas[0] = response.data;
+
+            response = await this.$api.statistics.fetchStaffByPillar();
+            this.barChart.chartDatas[1] = response.data;
+
+            response = await this.$api.statistics.fetchAdminDashboardStats();
+            this.counts = {
+                ...this.counts,
+                ...response.data
+            }
+            response = await this.$api.courses.listUnapprovedCourse();
+            this.approvals = {
+                ...this.approvals,
+                rowData: response.data.data
+            };
+            response = await this.$api.courses.getExceededDeadlines();
+            this.exceededDeadlines = {
+                ...this.exceededDeadlines,
+                rowData: response.data
+            };
+
+        }
     },
     async created() {
-      let response = await this.$api.statistics.fetchMandatoryCourses();
-      this.mandatoryCourseChart = {
-        ...this.mandatoryCourseChart,
-        chartDatas: response.data
-      };
-      response = await this.$api.statistics.fetchMostPopularCourses();
-      this.barChart = {
-        ...this.barChart,
-        chartDatas: [
-          ...this.barChart.chartDatas,
-          response.data
-        ]
-      };
-      response = await this.$api.statistics.fetchStaffByPillar();
-      this.barChart = {
-        ...this.barChart,
-        chartDatas: [
-          ...this.barChart.chartDatas,
-          response.data
-        ]
-      };
-      response = await this.$api.statistics.fetchAdminDashboardStats();
-      this.counts = {
-        ...this.counts,
-        ...response.data
-      }
-      response = await this.$api.courses.listUnapprovedCourse();
-      this.approvals = {
-        ...this.approvals,
-        rowData: response.data.data
-      };
-      response = await this.$api.courses.getExceededDeadlines();
-      this.exceededDeadlines = {
-        ...this.exceededDeadlines,
-        rowData: response.data
-      };
-  },
+        this.loadUserDashboard();
+    },
 
 
 

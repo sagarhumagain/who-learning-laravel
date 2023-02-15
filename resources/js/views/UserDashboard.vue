@@ -1,53 +1,7 @@
 <template>
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <h5 >Filter</h5>
-            </div>
-            <div class="form-group col-md-5">
-                <label for="start_date" >Start Date</label>
-                <v-date-picker v-model="form.start_date"  name="start_date" placeholder="Start Date" class="form-control" :class="{ 'is-invalid': form.errors.has('start_date')}"
-                    :model-config="{
-                    type: 'string',
-                    mask: 'YYYY-MM-DD',
-                    }"
-                    :masks="masks"
-                    mode="date"
-                >
-                    <template v-slot="{ inputValue, inputEvents }">
-                    <input
-                        class="custom-datepicker"
-                        :value="inputValue"
-                        v-on="inputEvents"
-                    />
-                    </template>
-                </v-date-picker>
-            </div>
-
-            <div class="form-group col-md-5">
-                <label for="end_date" >End Date</label>
-                <v-date-picker v-model="form.end_date" :min-date="form.start_date" @dayclick="filterRecords()" name="end_date" placeholder="End Date" class="form-control" :class="{ 'is-invalid': form.errors.has('end_date')}"
-                    :model-config="{
-                    type: 'string',
-                    mask: 'YYYY-MM-DD',
-                    }"
-                    :masks="masks"
-                    mode="date"
-                >
-                    <template v-slot="{ inputValue, inputEvents }">
-                    <input
-                        class="custom-datepicker"
-                        :disabled="!form.start_date"
-                        :value="inputValue"
-                        v-on="inputEvents"
-                    />
-                    </template>
-                </v-date-picker>
-            </div>
-            <div class="form-group col-md-2 ">
-                <button class="btn btn-primary mt-4" @click="loadUserDashboard(),clearForm()">Reset</button>
-            </div>
-
+            <DashboardFilter :filterRecords="filterRecords" :loadUserDashboard="loadUserDashboard" :form="form" />
 
             <div class="col-md-3 col-sm-6 col-12">
                 <Card title="Total Enrolled Courses">
@@ -134,6 +88,7 @@ import LineChart from '@/components/LineChart';
 import SuggestedCourse from '@/components/SuggestedCourse';
 import Slider from '@/components/slider';
 import Form from 'vform'
+import DashboardFilter from '@/components/DashboardFilter'
 
 export default {
     name:"user-dashboard",
@@ -146,9 +101,6 @@ export default {
                 start_date: new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0,10),
                 end_date: new Date().toISOString().slice(0,10),
             }),
-            masks: {
-                input: 'YYYY-MM-DD',
-            },
             years: [
             ],
             suggestedCourses:[],
@@ -209,12 +161,10 @@ export default {
         Table,
         LineChart,
         SuggestedCourse,
-        Slider
+        Slider,
+        DashboardFilter
     },
     methods:{
-        clearForm(){
-            this.form.reset();
-        },
       async fetchSuggestedCourse () {
         let response = await this.$api.courses.listSuggestedCourse();
         this.suggestedCourses = response.data.filter(item=>{

@@ -31,6 +31,16 @@ export default (baseUrl, apiVersion) => ({
         return await axios.get(`${baseUrl}${apiVersion}/courses/users/pending-approval`);
     },
 
+    async filterMostPopularCourses(start_date, end_date) {
+        return await axios.get(`${baseUrl}${apiVersion}/statistics/course-popular?start_date=${start_date}&end_date=${end_date}`);
+    },
+    async filterStaffByPillar(start_date, end_date) {
+        return await axios.get(`${baseUrl}${apiVersion}/statistics/staff-pillar?start_date=${start_date}&end_date=${end_date}`);
+    },
+    async filterAdminDashboardStats(start_date, end_date) {
+        return await axios.get(`${baseUrl}${apiVersion}/statistics/admin-stats?start_date=${start_date}&end_date=${end_date}`);
+    },
+
     async filterUserDashboardStats(start_date, end_date) {
         return await axios.get(`${baseUrl}${apiVersion}/statistics/user-stats?start_date=${start_date}&end_date=${end_date}`);
     },
