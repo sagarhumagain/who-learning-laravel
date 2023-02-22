@@ -10,6 +10,7 @@ use App\Models\CourseUser;
 use App\Models\UserPillar;
 use App\Models\CourseCategory;
 use App\Models\CourseCourseCategory;
+use App\Models\Employee;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use DateInterval;
@@ -289,13 +290,37 @@ class StatisticsController extends Controller
     {
         // dd(User::with('courses')->get());
         try {
+            $user = auth()->user();
+
+            if ($user->hasRole('supervisor')) {
+                $supervisee_ids = Employee::where('supervisor_user_id', auth()->user()->id)->pluck('user_id')->toArray();
+
+                $data = User::whereIn('id', $supervisee_ids)
+                ->withCount([
+                    'courses as completed_courses_count' => function ($query) {
+                        $query->whereNotNull('completed_date')
+                              ->where('course_user.is_approved', 1);
+                    },
+                    'courses as enrolled_courses_count' => function ($query) {
+                        $query->Where('course_user.is_approved', 1);
+                    },
+                    'courses as credit_hours_count' => function ($query) {
+                        $query->select(DB::raw('sum(credit_hours)'))
+                        ->whereNotNull('completed_date')
+                        ->where('course_user.is_approved', 1);
+                    }
+                ])
+                ->get();
+                return response()->json($data);
+            }
+
             $data = User::withCount([
                 'courses as completed_courses_count' => function ($query) {
                     $query->whereNotNull('completed_date')
                           ->where('course_user.is_approved', 1);
                 },
                 'courses as enrolled_courses_count' => function ($query) {
-                    $query;
+                    $query->Where('course_user.is_approved', 1);
                 },
                 'courses as credit_hours_count' => function ($query) {
                     $query->select(DB::raw('sum(credit_hours)'))

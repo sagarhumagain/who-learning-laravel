@@ -14,6 +14,7 @@ import {apiRepositories} from '@/services/api';
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 import moment from 'moment';
 
+
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { fas } from '@fortawesome/free-solid-svg-icons'

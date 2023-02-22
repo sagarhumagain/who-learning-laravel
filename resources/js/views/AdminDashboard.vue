@@ -96,6 +96,7 @@ import Table from '@/components/Table'
 import Form from 'vform'
 import DashboardFilter from '@/components/DashboardFilter'
 import UserCourse from '@/components/UserCourse.vue'
+import moment from 'moment'
 
 
 export default {
@@ -105,8 +106,9 @@ export default {
 
             form: new Form({
                 year: new Date().getFullYear(),
-                start_date: new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0,10),
-                end_date: new Date().toISOString().slice(0,10),
+                start_date: moment().startOf('year').format('YYYY-MM-DD'),
+                //today's date
+                end_date: moment().format('YYYY-MM-DD'),
             }),
 
             user:this.$store.state.auth.user,

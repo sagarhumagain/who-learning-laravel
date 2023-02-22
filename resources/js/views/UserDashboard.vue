@@ -48,6 +48,7 @@
                 </div>
             </Card>
 
+
               <div class="row">
                   <h2>Year Filter Calendar </h2>
                   <div class="col-md-4">
@@ -71,6 +72,10 @@
                 </Card>
               </div>
             <Slider :data="suggestedCourses" :title="'Suggested Courses'" />
+             <div class="col-md-12 text-left" v-role="'supervisor'">
+                <user-course/>
+            </div>
+
 
         </div>
 
@@ -89,6 +94,8 @@ import SuggestedCourse from '@/components/SuggestedCourse';
 import Slider from '@/components/slider';
 import Form from 'vform'
 import DashboardFilter from '@/components/DashboardFilter'
+import moment from 'moment'
+import UserCourse from '@/components/UserCourse.vue'
 
 export default {
     name:"user-dashboard",
@@ -98,8 +105,9 @@ export default {
             form: new Form({
                 year: new Date().getFullYear(),
                 //current year start date
-                start_date: new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0,10),
-                end_date: new Date().toISOString().slice(0,10),
+                start_date: moment().startOf('year').format('YYYY-MM-DD'),
+                //today's date
+                end_date: moment().format('YYYY-MM-DD'),
             }),
             years: [
             ],
@@ -162,7 +170,8 @@ export default {
         LineChart,
         SuggestedCourse,
         Slider,
-        DashboardFilter
+        DashboardFilter,
+        UserCourse
     },
     methods:{
       async fetchSuggestedCourse () {
