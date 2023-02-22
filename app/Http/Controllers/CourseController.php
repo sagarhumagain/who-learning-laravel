@@ -16,6 +16,7 @@ use App\Models\CourseCategory;
 use App\Models\CourseUser;
 use App\Models\Employee;
 use App\Models\User;
+use App\Services\MailService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -114,7 +115,7 @@ class CourseController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CourseCreateValidation $request)
+    public function store(CourseCreateValidation $request, MailService $mailService)
     {
         $user = auth()->user();
 
@@ -141,8 +142,9 @@ class CourseController extends BaseController
             //course create
             $course = Course::create($courseFields);
             //course created event
-            if ($user->hasRole(['super-admin','course-admin'])) {
+            if ($user->hasRole(['normal-user', 'supervisor'])) {
                 event(new CourseCreatedEvent($course));
+                $mailService->sendCourseCreatedMail($course->name);
             }
             //attached course categories
             if ($request->course_category_ids) {
@@ -179,7 +181,6 @@ class CourseController extends BaseController
 
             //course assignement setting create
             CourseAssignmentSetting::create($assignmentFields);
-
             //course assigned event
             event(new CourseAssignedEvent($request));
             //update certificate for normal users
@@ -197,6 +198,7 @@ class CourseController extends BaseController
                         ];
                     $course_user->update($data);
                     event(new CertificateUpdateEvent($course_user));
+                    $mailService->sendCourseCompletedMail($course_user);
                 }
             } catch (Exception $e) {
                 $data['error'] = true;
@@ -258,7 +260,7 @@ class CourseController extends BaseController
                 $request['is_approved']= null;
             }
             $course->update($request->all());
-            if ($user->hasRole(['super-admin','course-admin'])) {
+            if ($user->hasRole(['normal-user', 'supervisor'])) {
                 event(new CourseUpdateEvent($course));
             }
 
@@ -313,7 +315,7 @@ class CourseController extends BaseController
         }
     }
 
-    public function updateEnrolledCourse(UpdateCourseValidation $request)
+    public function updateEnrolledCourse(UpdateCourseValidation $request, MailService $mailService)
     {
         $user = auth()->user();
         try {
@@ -322,7 +324,7 @@ class CourseController extends BaseController
             $course = Course::findOrFail($request->id);
 
             $course->update($request->all());
-            if ($user->hasRole(['super-admin','course-admin'])) {
+            if ($user->hasRole(['normal-user' , 'supervisor'])) {
                 event(new CourseUpdateEvent($course));
             }
             if ($request->course_category_ids) {
@@ -381,6 +383,7 @@ class CourseController extends BaseController
 
                     $course_user->update($data);
                     event(new CertificateUpdateEvent($course_user));
+                    $mailService->sendCourseCompletedMail($course_user);
                 } catch (Exception $e) {
                     $data['error'] = true;
                     $data['message'] = $e->getMessage();
@@ -479,12 +482,13 @@ class CourseController extends BaseController
         }
         return $user_course;
     }
-    public function approveCourse(Request $request)
+    public function approveCourse(Request $request, MailService $mailService)
     {
         try {
             $course_user = CourseUser::where('user_id', $request->user_id)->where('course_id', $request->course_id)->first();
             $course_user->update(['is_approved'=> 1]);
             event(new CourseApprovalEvent($course_user));
+            $mailService->sendCourseApprovedMail($course_user);
             $data['error'] = false;
             $data['message'] = "Course Updated Successfully";
         } catch (Exception $e) {

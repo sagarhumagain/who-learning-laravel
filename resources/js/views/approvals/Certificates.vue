@@ -112,6 +112,7 @@
                 $('#'+this.v_modal_data.modal_name).modal('show');
             },
             approveCourse(val){
+                this.$Progress.start();
                 this.form.reset();
                 this.form.fill(val);
                 this.form.post('/api/v1/approve-course')

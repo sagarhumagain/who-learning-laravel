@@ -121,6 +121,7 @@
                 this.$router.push({name:'course-create'})
             },
             async approveCourse(course,val){
+                this.$Progress.start();
                 const status = !val ? 'disapprove' : 'approve';
                 this.form.fill(course)
 

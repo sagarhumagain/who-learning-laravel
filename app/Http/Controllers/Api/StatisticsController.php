@@ -129,32 +129,32 @@ class StatisticsController extends Controller
     public function fetchAdminDashboardStats(Request $request)
     {
         $data = [];
-        $data['total_courses'] = Course::when($request->start_date,function($query) use($request){
+        $data['total_courses'] = Course::when($request->start_date, function ($query) use ($request) {
             return $query->whereBetween('created_at', [Carbon::parse($request->start_date)->startOfDay(), Carbon::parse($request->end_date)->endOfDay()]);
-        },function($query){
+        }, function ($query) {
             return $query->whereYear('created_at', date('Y'));
         })->count();
-        $data['total_staffs'] = User::when($request->start_date,function($query) use($request){
+        $data['total_staffs'] = User::when($request->start_date, function ($query) use ($request) {
             return $query->whereBetween('created_at', [Carbon::parse($request->start_date)->startOfDay(), Carbon::parse($request->end_date)->endOfDay()]);
-        },function($query){
+        }, function ($query) {
             return $query->whereYear('created_at', date('Y'));
         })->count();
 
 
         $data['total_course_duration'] = Course::where('is_approved', 1)
-        ->when($request->start_date,function($query) use($request){
+        ->when($request->start_date, function ($query) use ($request) {
             return $query->whereBetween('created_at', [Carbon::parse($request->start_date)->startOfDay(), Carbon::parse($request->end_date)->endOfDay()]);
-        },function($query){
+        }, function ($query) {
             return $query->whereYear('created_at', date('Y'));
         })->sum('credit_hours');
 
         $query = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
         ->whereNotNull('course_user.completed_date')
         ->where('course_user.is_approved', 1);
-        if($request->start_date){
+        if ($request->start_date) {
             $query->whereBetween('course_user.updated_at', [Carbon::parse($request->start_date)->startOfDay(), Carbon::parse($request->end_date)->endOfDay()]);
-        }else{
-           $query ->whereYear('course_user.updated_at', date('Y'));
+        } else {
+            $query ->whereYear('course_user.updated_at', date('Y'));
         }
         $data['total_duration_completed'] = $query->sum('courses.credit_hours');
         return response()->json($data);
@@ -285,17 +285,17 @@ class StatisticsController extends Controller
             return response()->json($e->getMessage());
         }
     }
-    public function usersStats(){
-    // dd(User::with('courses')->get());
+    public function usersStats()
+    {
+        // dd(User::with('courses')->get());
         try {
-
             $data = User::withCount([
                 'courses as completed_courses_count' => function ($query) {
                     $query->whereNotNull('completed_date')
                           ->where('course_user.is_approved', 1);
                 },
                 'courses as enrolled_courses_count' => function ($query) {
-                    $query->whereNull('completed_date');
+                    $query;
                 },
                 'courses as credit_hours_count' => function ($query) {
                     $query->select(DB::raw('sum(credit_hours)'))

@@ -14,26 +14,28 @@
                     </div>
                 </div>
             </div> -->
-            <div class="col-md-3 col-sm-6 col-12">
-                <Card title="Total Staffs">
-                  {{counts.total_staffs}}
-                </Card>
-            </div>
-            <div class="col-md-3 col-sm-6 col-12">
-                <Card title="Total Courses">
-                  {{counts.total_courses}}
-                </Card>
-            </div>
-            <div class="col-md-3 col-sm-6 col-12">
-                <Card title="Total Courses Duration (in hrs)">
-                  {{counts.total_course_duration}}
-                </Card>
-            </div>
-            <div class="col-md-3 col-sm-6 col-12">
-                <Card title="Total Courses Completed(in hrs)">
-                  {{counts.total_duration_completed}}
-                </Card>
-            </div>
+                <div class="col-md-3 col-sm-6 col-12">
+                    <Card title="Total Staffs">
+                    {{counts.total_staffs}}
+                    </Card>
+                </div>
+                <div class="col-md-3 col-sm-6 col-12">
+                    <Card title="Total Courses">
+                    {{counts.total_courses}}
+                    </Card>
+                </div>
+                <div class="col-md-3 col-sm-6 col-12">
+                    <Card title="Total Courses Duration">
+                    {{counts.total_course_duration}} hrs
+                    </Card>
+                </div>
+                <div class="col-md-3 col-sm-6 col-12">
+                    <Card title="Total Courses Completed">
+                    {{counts.total_duration_completed}} hrs
+                    </Card>
+                </div>
+
+
             <div class="col-md-8 col-sm-12 col-12">
                 <!-- <Card title="Mandatory Courses Overview">
                   <div class="row">
@@ -77,7 +79,7 @@
 
         </div>
 
-        <div class="col-md-12" >
+        <div class="col-md-12 text-left">
             <user-course/>
         </div>
 
