@@ -265,7 +265,7 @@ class StatisticsController extends Controller
 
 
             $data = CourseUser::selectRaw('count(id) as count, EXTRACT(MONTH FROM completed_date) as month')
-                ->whereRaw('YEAR(completed_date) = ?', [$year])
+                ->whereRaw('EXTRACT(YEAR FROM completed_date) = '.$year)
                 ->where('is_approved', 1)
                 ->where('user_id', $user->id)
                 ->groupBy('month')
