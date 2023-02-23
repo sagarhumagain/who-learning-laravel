@@ -294,8 +294,9 @@ class StatisticsController extends Controller
 
             if ($user->hasRole('supervisor')) {
                 $supervisee_ids = Employee::where('supervisor_user_id', auth()->user()->id)->pluck('user_id')->toArray();
-
-                $data = User::whereIn('id', $supervisee_ids)
+                $data = User::whereHas('roles', function ($q) {
+                    $q->whereIn('name', ['normal-user','supervisor']);
+                })->whereIn('id', $supervisee_ids)
                 ->withCount([
                     'courses as completed_courses_count' => function ($query) {
                         $query->whereNotNull('completed_date')
@@ -314,7 +315,9 @@ class StatisticsController extends Controller
                 return response()->json($data);
             }
 
-            $data = User::withCount([
+            $data = User::whereHas('roles', function ($q) {
+                $q->whereIn('name', ['normal-user','supervisor']);
+            })->withCount([
                 'courses as completed_courses_count' => function ($query) {
                     $query->whereNotNull('completed_date')
                           ->where('course_user.is_approved', 1);
