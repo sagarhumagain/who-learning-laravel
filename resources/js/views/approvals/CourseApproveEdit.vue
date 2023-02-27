@@ -182,8 +182,8 @@ export default {
                             title: response.data.message,
                         })
                         this.disabled=false
-                        this.emitter.emit('AfterCreate'); //Fire an reload event
                         this.$Progress.finish();
+                        this.$router.push('/approve/certificates')
                     }
                 }).catch(({response}) => {
                         this.$swal(

@@ -430,7 +430,7 @@ class CourseController extends BaseController
         } elseif ($user->hasRole('supervisor')) {
             $supervisee_ids  = $this->getSuprerviseeIds();
             //check if the user is authorized to approve the certificate
-            if (in_array($query->user_id, $supervisee_ids)) {
+            if (in_array($request->user_id, $supervisee_ids)) {
                 $query->where('course_user.user_id', $request->user_id);
             } else {
                 return response()->json(['error' => 'You are not authorized to approve this certificate'], 401);
@@ -511,7 +511,6 @@ class CourseController extends BaseController
     }
     public function approveCourse(Request $request, MailService $mailService)
     {
-        $this->authorize('can-approve-course');
         try {
             $course_user = CourseUser::where('user_id', $request->user_id)->where('course_id', $request->course_id)->first();
             $course_user->update(['is_approved'=> 1]);
