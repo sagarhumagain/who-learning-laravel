@@ -308,6 +308,8 @@ export default {
             }
         },
         async loadCourse(){
+
+            this.$Progress.start();
             try{
                 const response  = await  axios.get("/api/v1/courses?id=" + this.$route.params.id);
                 this.form.fill(response.data);
@@ -344,6 +346,7 @@ export default {
                 }
             }catch(e){
             }
+            this.$Progress.finish();
         },
         setFormDisabled(){
             if(this.$gates.hasAnyRole('super-admin|course-admin')){

@@ -45,6 +45,9 @@
                                      <a href="#" @click="approveCourse(course)">
                                         <i class="fa fa-check"></i>
                                     </a>
+                                    <router-link :to="'/approve/certificate/user_id/'+course.user_id+ '/course_id/'+course.course_id" class="ml-2">
+                                        <i class="fa fa-eye"></i>
+                                    </router-link>
 
                                 </td>
                             </tr>

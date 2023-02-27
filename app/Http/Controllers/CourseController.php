@@ -144,7 +144,7 @@ class CourseController extends BaseController
             //course created event
             if ($user->hasRole(['normal-user', 'supervisor'])) {
                 event(new CourseCreatedEvent($course));
-                $mailService->sendCourseCreatedMail($course->name);
+                $mailService->sendCourseCreatedMail($course->name, $course->id);
             }
             //attached course categories
             if ($request->course_category_ids) {
@@ -418,6 +418,17 @@ class CourseController extends BaseController
         return $user_course;
     }
 
+    public function getUnapprovedCertificate(Request $request)
+    {
+        $user_course = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
+            ->join('users', 'course_user.user_id', '=', 'users.id')
+            ->select(DB::raw('course_user.user_id as user_id,courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.name as createdBy, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date,course_user.certificate_path'))
+            ->where('course_user.user_id', $request->user_id)
+            ->where('course_user.course_id', $request->course_id)->first();
+
+        return $user_course;
+    }
+
     public function listSuggestedCourses()
     {
         $user = auth()->user();
@@ -490,7 +501,7 @@ class CourseController extends BaseController
             event(new CourseApprovalEvent($course_user));
             $mailService->sendCourseApprovedMail($course_user);
             $data['error'] = false;
-            $data['message'] = "Course Updated Successfully";
+            $data['message'] = "Course Approved Successfully";
         } catch (Exception $e) {
             $data['error'] = true;
             $data['message'] = $e->getMessage();

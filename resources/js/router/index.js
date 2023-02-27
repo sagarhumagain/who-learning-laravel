@@ -18,6 +18,7 @@ const DahboardLayout = () => import('@/layouts/Dashboard.vue' /* webpackChunkNam
 const Dashboard = () => import('@/views/Dashboard.vue' /* webpackChunkName: "resource/js/components/dashboard" */)
 const CourseCreate = () => import('@/views/courses/Create.vue' /* webpackChunkName: "resource/js/components/coursecreate" */)
 const CourseEdit = () => import('@/views/courses/Edit.vue' /* webpackChunkName: "resource/js/components/courseedit" */)
+const CourseApproveEdit = () => import('@/views/approvals/CourseApproveEdit.vue' /* webpackChunkName: "resource/js/components/courseapproveedit" */)
 const Users = () => import('@/views/users/Users.vue' /* webpackChunkName: "resource/js/components/users" */)
 const Courses = () => import('@/views/courses/Courses.vue' /* webpackChunkName: "resource/js/components/courses" */)
 const Employee = () => import('@/views/users/Employee.vue' /* webpackChunkName: "resource/js/components/employee" */)
@@ -83,6 +84,15 @@ let routeChildrens;
                     title:`Approve Courses`
                 }
               },
+              {
+                name:"approve-certificate",
+                path: '/approve/certificate/user_id/:user_id/course_id/:course_id',
+                component: CourseApproveEdit,
+                meta:{
+                    title:`Update Course`
+                },
+                props: true,
+              },
             {
               name:"employee",
               path: '/user/profile',
@@ -100,6 +110,7 @@ let routeChildrens;
                   title:`Approve Certificates`
               }
             },
+
             {
                   name:"employee",
                   path: '/user/profile',

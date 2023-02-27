@@ -109,6 +109,8 @@ Route::group(
         Route::get('/approvals/courses', [CourseController::class, 'listUnapprovedCourses']);
         Route::post('/approve-course', [CourseController::class, 'approveCourse']);
 
+        Route::get('/approve/certificate', [CourseController::class, 'getUnapprovedCertificate']);
+
         Route::get('/suggest/courses', [CourseController::class, 'listSuggestedCourses']);
         Route::get('/deadlines-exceed', [CourseController::class, 'getExceededDeadlines']);
 
