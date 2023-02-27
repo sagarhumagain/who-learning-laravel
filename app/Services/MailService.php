@@ -64,7 +64,6 @@ class MailService
         //get supervisor email
         $admins =  $this->getAdmins();
 
-        send mail to admins
         foreach ($admins as $admin) {
             Mail::to($admin->email)->send(new CourseMail($data));
         }
