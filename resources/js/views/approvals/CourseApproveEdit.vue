@@ -4,7 +4,7 @@
             <div class="col-12 col-md-6 offset-md-3">
                 <div class="card shadow sm">
                     <div class="card-body">
-                        <h1 class="text-center">Approve Course for {{this.course.createdBy}}</h1>
+                        <h1 class="text-center">Approve Course for {{this.course.created_by}}</h1>
                         <h4 class="text-center" v-if="form.remarks">Remarks: {{form.remarks}}</h4>
                         <hr/>
                         <form @submit.prevent="approveCourse()" @keydown="form.onKeydown($event)">
