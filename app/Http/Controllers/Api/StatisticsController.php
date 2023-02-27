@@ -303,7 +303,7 @@ class StatisticsController extends Controller
                               ->where('course_user.is_approved', 1);
                     },
                     'courses as enrolled_courses_count' => function ($query) {
-                        $query->Where('course_user.is_approved', 1);
+                        $query->whereNull('course_user.deleted_at');
                     },
                     'courses as credit_hours_count' => function ($query) {
                         $query->select(DB::raw('sum(credit_hours)'))
@@ -311,7 +311,9 @@ class StatisticsController extends Controller
                         ->where('course_user.is_approved', 1);
                     }
                 ])
+                ->withCount('courses')
                 ->get();
+
                 return response()->json($data);
             }
 
@@ -323,7 +325,7 @@ class StatisticsController extends Controller
                           ->where('course_user.is_approved', 1);
                 },
                 'courses as enrolled_courses_count' => function ($query) {
-                    $query->Where('course_user.is_approved', 1);
+                    $query->whereNull('course_user.deleted_at');
                 },
                 'courses as credit_hours_count' => function ($query) {
                     $query->select(DB::raw('sum(credit_hours)'))
