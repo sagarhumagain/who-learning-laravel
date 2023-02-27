@@ -25,5 +25,9 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
+        Gate::define('can-approve-course', function (User $user) {
+            return $user->role === 'supervisor' || $user->role === 'super-admin';
+        });
     }
 }

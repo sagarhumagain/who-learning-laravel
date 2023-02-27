@@ -407,8 +407,7 @@ class CourseController extends BaseController
             ->select(DB::raw('course_user.user_id as user_id,courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.name as createdBy, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date,course_user.certificate_path as certificate'));
 
         if ($user->hasRole('supervisor')) {
-            $supervisee_ids = [];
-            $supervisee_ids = Employee::where('supervisor_user_id', auth()->user()->id)->pluck('user_id')->toArray();
+            $supervisee_ids  = $this->getSuprerviseeIds();
             $query->where('course_user.user_id', $supervisee_ids);
         }
         $user_course = $query->where('course_user.is_approved', null)
@@ -420,11 +419,28 @@ class CourseController extends BaseController
 
     public function getUnapprovedCertificate(Request $request)
     {
-        $user_course = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
-            ->join('users', 'course_user.user_id', '=', 'users.id')
-            ->select(DB::raw('course_user.user_id as user_id,courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.name as createdBy, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date,course_user.certificate_path'))
-            ->where('course_user.user_id', $request->user_id)
-            ->where('course_user.course_id', $request->course_id)->first();
+        $user = auth()->user();
+        $query = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
+        ->join('users', 'course_user.user_id', '=', 'users.id')
+        ->select(DB::raw('course_user.user_id as user_id,courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.name as createdBy, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date,course_user.certificate_path'))
+        ->where('course_user.course_id', $request->course_id);
+
+        if ($user->hasRole('super-admin')) {
+            $query->where('course_user.user_id', $request->user_id);
+        } elseif ($user->hasRole('supervisor')) {
+            $supervisee_ids  = $this->getSuprerviseeIds();
+            //check if the user is authorized to approve the certificate
+            if (in_array($query->user_id, $supervisee_ids)) {
+                $query->where('course_user.user_id', $request->user_id);
+            } else {
+                return response()->json(['error' => 'You are not authorized to approve this certificate'], 401);
+            }
+        } else {
+            return response()->json(['error' => 'You are not authorized to approve this certificate'], 401);
+        }
+
+
+        $user_course = $query->first();
 
         return $user_course;
     }
@@ -495,6 +511,7 @@ class CourseController extends BaseController
     }
     public function approveCourse(Request $request, MailService $mailService)
     {
+        $this->authorize('can-approve-course');
         try {
             $course_user = CourseUser::where('user_id', $request->user_id)->where('course_id', $request->course_id)->first();
             $course_user->update(['is_approved'=> 1]);
@@ -542,5 +559,12 @@ class CourseController extends BaseController
     public function setApprovalStatusForUser($user)
     {
         return $user->hasRole(['super-admin', 'course-admin', 'supervisor']) ? true : null;
+    }
+
+    public function getSuprerviseeIds()
+    {
+        $supervisee_ids = [];
+        $supervisee_ids = Employee::where('supervisor_user_id', auth()->user()->id)->pluck('user_id')->toArray();
+        return $supervisee_ids;
     }
 }

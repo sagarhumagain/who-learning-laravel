@@ -201,7 +201,25 @@ export default {
                     const response  = await  axios.get("/api/v1/approve/certificate?user_id=" + this.$route.params.user_id + "&course_id=" + this.$route.params.course_id);
                     this.form.fill(response.data);
                     this.course = response.data;
+
                 }catch(e){
+
+                    const { status } = e.response
+                    if(status == 401)
+                        this.$swal(
+                            'Error!',
+                            "You are not authorized to access this page.",
+                            'warning'
+                        ).then(() => {
+                            this.$router.push('/dashboard')
+                        })
+                    else
+                        this.$swal(
+                            'Error!',
+                            "Something Went Wrong.",
+                            'warning'
+                        )
+
                 }
                 this.$Progress.finish();
 
