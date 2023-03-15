@@ -87,7 +87,7 @@ class ProfileController extends BaseController
                 Employee::updateOrCreate(['id' => $request->id], $request->all());
 
                 $user = User::find($request->user_id);
-                if ($user->is_first_time_login == 0) {
+                if ($user->is_first_time_login == 1) {
                     $this->mailService->sendProfileApprovalMail($request);
                 }
             } catch (\Exception $e) {

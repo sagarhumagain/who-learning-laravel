@@ -22,7 +22,7 @@ class MailService
             'url' => FacadesRequest::root().'/'.'users',
         ];
         $supervisor_email = User::where('id', $request->supervisor_user_id)->first()->email;
-        Mail::to($supervisor_email)->send(new ProfileApprovalMail($data));
+        Mail::to('sahumagain@gmail.com')->send(new ProfileApprovalMail($data));
     }
 
     public function sendProfileApprovedMail($email)
