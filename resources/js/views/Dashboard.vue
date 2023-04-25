@@ -1,7 +1,5 @@
 <template>
     <div class="container">
-              <button @click="loadModal()" key="modal" class="btn btn-primary">Load Modal</button>
-
       <div v-role:any="'super-admin|course-admin'">
         <admin-dashboard/>
       </div>
