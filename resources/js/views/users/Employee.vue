@@ -50,9 +50,9 @@
                             <li class="nav-item"><a class="nav-link" href="#activity" data-bs-toggle="tab">Update Password</a></li>
                         </ul>
                     </div><!-- /.card-header -->
-                    <div class="card-body">
+                    <div class="card-body p-0">
                         <div class="tab-content">
-                            <div class="tab-pane" id="activity">
+                            <div class="tab-pane card-body" id="activity">
                                 <!-- Post -->
                                 <div class="post">
                                     <form class="form-horizontal">
@@ -111,7 +111,7 @@
                                         </div>
 
 
-                                        <div class="form-group col-md-4 col-12">
+                                        <div class="form-group col-md-4 mt-2 col-12">
                                             <label for="" >Address *</label>
 
                                                 <input type="text" v-model="form.address" class="form-control" placeholder="Address" :class="{ 'is-invalid': form.errors.has('address') }">
@@ -119,13 +119,13 @@
 
                                         </div>
 
-                                        <div class="form-group col-md-4 col-12">
-                                            <label for="photo" class="control-label">Signature Image *</label>
+                                        <div class="form-group col-md-4 mt-2 col-12">
+                                            <label for="photo" class="control-label">Signature Image </label>
                                                 <input type="file" accept="image/png" id="signature" @change="$function.imageUpload($event, form ,'signature')"  class="form-control">
                                                 <img class="img-lg mb-3 elevation-3 float-right"  :src="form.signature"/>
                                             <has-error :form="form" field="signature"></has-error>
                                         </div>
-                                        <div class="form-group col-md-4 col-12">
+                                        <div class="form-group col-md-4 mt-2 col-12">
                                             <label for="supervisor" class="control-label">Supervisor*</label>
                                             <multiselect v-model="form.supervisor_user_id"
                                                 tag-placeholder="Select Supervisor"
@@ -143,7 +143,7 @@
 
                                         <div class="col-md-12">
 
-                                        <div class="form-group mt-3">
+                                        <div class="form-group ">
                                                 <button @click.prevent="updateInfo" :disabled="disabled" type="submit" class="btn btn-success">Update</button>
                                         </div>
                                         </div>

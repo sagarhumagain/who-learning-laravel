@@ -44,6 +44,7 @@ export default {
 
     },
     created(){
+        console.log(this.modal_data)
 
 
     }
