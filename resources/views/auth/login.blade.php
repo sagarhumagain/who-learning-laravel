@@ -39,13 +39,16 @@
                                 @enderror
                             {{-- <input type="password" v-model="formData.password" name="password" id="password" class="form-control"> --}}
                         </div>
-                        <div class="form-group col-12 mb-2">
+                        <div class="form-group col-12 d-flex justify-content-between mb-2">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
 
                                     <label class="form-check-label" for="remember">
                                         {{ __('Remember Me') }}
                                     </label>
+                                </div>
+                                <div class="forger-password">
+                                    <label> <a href="{{ route('password.request') }}">Forgot Password</a></label>
                                 </div>
                         </div>
 
@@ -57,6 +60,9 @@
                         <div class="col-12 text-center mt-3">
                             <label>Don't have an account? <a href="{{ route('register') }}">Register Now!</a></label>
                         </div>
+                        <div class="col-12 text-center mt-3">
+                        </div>
+
                     </form>
                 </div>
             </div>
