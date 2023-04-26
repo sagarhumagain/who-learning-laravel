@@ -189,7 +189,7 @@ class StatisticsController extends Controller
 
             if ($request->start_date) {
                 //filter by date
-                $query->whereBetween('course_user.completed_date)', [Carbon::parse($request->start_date)->startOfDay(), Carbon::parse($request->end_date)->endOfDay()]);
+                $query->whereBetween('course_user.completed_date', [Carbon::parse($request->start_date)->startOfDay(), Carbon::parse($request->end_date)->endOfDay()]);
             } else {
                 //current year data
                 $query->whereYear('course_user.completed_date', date('Y'));
