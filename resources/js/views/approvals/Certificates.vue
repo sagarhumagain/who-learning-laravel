@@ -53,6 +53,9 @@
                             </tr>
                             </tbody></table>
                     </div>
+                    <div class="card-footer">
+                        <pagination-wrapper class="mt-3" :data="this.courses" :has_param="false" :api_url="api_url" pagination_title="Approval List"></pagination-wrapper>
+                    </div>
 
                 </div>
                 <!-- /.card -->
@@ -74,6 +77,7 @@
     import Modal from '@/components/Modal';
     import ErrorMsg from '@/components/error-msg';
     import ModalView from '@/components/ModalView';
+    import PaginationWrapper from '@/components/Pagination/PaginationWrapper.vue';
 
 
     export default {
@@ -83,7 +87,8 @@
             HasError,
             Modal,
             ErrorMsg,
-            ModalView
+            ModalView,
+            PaginationWrapper,
         },
         /*Filling the data into form*/
         data() {
@@ -106,6 +111,7 @@
                     modal_name:'viewCourseDetails',
                     title:'Certificate'
                 },
+                api_url:'/api/v1/approvals/courses',
             }
         },
         methods: {
@@ -226,6 +232,9 @@
             //Load the userlist if add or created a new user
             this.emitter.on("AfterCreate", () => {
                 this.loadCourse();
+            })
+            this.emitter.on('paginating',(item)=>{
+                this.courses = item
             })
 
         }

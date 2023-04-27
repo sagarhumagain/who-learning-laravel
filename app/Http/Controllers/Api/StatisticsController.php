@@ -161,15 +161,22 @@ class StatisticsController extends Controller
         return response()->json($data);
     }
 
-    public function fetchPendingApprovals()
+    public function fetchPendingApprovals(Request $request)
     {
         $user = auth()->user();
-        $data = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
-        ->select(DB::raw('courses.name as name, courses.credit_hours as credit_hours'))
-        ->whereNotNull('course_user.completed_date')
-        ->whereNull('course_user.is_approved')
-        ->where('course_user.user_id', $user->id)
-        ->get();
+        $query = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
+        ->select(DB::raw('courses.name as name, courses.credit_hours as credit_hours'));
+        if ($request->start_date) {
+            $query->whereBetween('course_user.completed_date', [Carbon::parse($request->start_date)->startOfDay(), Carbon::parse($request->end_date)->endOfDay()]);
+        } else {
+            $query ->whereYear('course_user.completed_date', date('Y'));
+        }
+        $query->whereNull('course_user.is_approved')
+        ->where('course_user.user_id', $user->id);
+
+        $data = $query->get();
+
+
 
         return response()->json($data);
     }
