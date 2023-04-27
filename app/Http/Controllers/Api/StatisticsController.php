@@ -241,7 +241,7 @@ class StatisticsController extends Controller
         ->whereNotNull('course_user.completed_date')
         ->where('course_user.is_approved', true)
         ->where('course_user.user_id', $user->id);
-        if ($request->start_date) {
+        if ($request->start_date && $request->end_date) {
             //filter by date
             $query->whereBetween('course_user.completed_date', [Carbon::parse($request->start_date)->startOfDay(), Carbon::parse($request->end_date)->endOfDay()]);
         } else {

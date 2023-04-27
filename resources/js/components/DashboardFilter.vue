@@ -4,7 +4,7 @@
     </div>
     <div class="form-group col-md-5">
         <label for="start_date" >Start Date</label>
-        <v-date-picker v-model="form.start_date"  name="start_date" placeholder="Start Date" class="form-control" :class="{ 'is-invalid': form.errors.has('start_date')}"
+        <v-date-picker v-model="form.start_date"  @dayclick="filterRecords()"  name="start_date" placeholder="Start Date" class="form-control" :class="{ 'is-invalid': form.errors.has('start_date')}"
             :model-config="{
             type: 'string',
             mask: 'YYYY-MM-DD',
@@ -14,11 +14,13 @@
         >
             <template v-slot="{ inputValue, inputEvents }">
             <input
+            readonly
                 class="custom-datepicker"
                 :value="inputValue"
                 v-on="inputEvents"
             />
             </template>
+
         </v-date-picker>
     </div>
 
@@ -29,12 +31,14 @@
             type: 'string',
             mask: 'YYYY-MM-DD',
             }"
+            :rules="[validateDate]"
             :masks="masks"
             mode="date"
         >
             <template v-slot="{ inputValue, inputEvents }">
             <input
                 class="custom-datepicker"
+                readonly
                 :disabled="!form.start_date"
                 :value="inputValue"
                 v-on="inputEvents"
@@ -78,6 +82,8 @@ export default {
         clearForm(){
             this.form.reset();
         },
+
+
 
 
 

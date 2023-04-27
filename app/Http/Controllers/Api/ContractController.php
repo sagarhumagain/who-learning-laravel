@@ -30,7 +30,9 @@ class ContractController extends Controller
     public function store(ContractRequest $request)
     {
         try {
-            $this->assignPillars($request->pillar_id, $request->user_id);
+            if($request->pillar_id) {
+                $this->assignPillars($request->pillar_id, $request->user_id);
+            }
             Contract::create($request->all());
             $data['error']= false;
             $data['message']='Contract Info! Has Been Created';
@@ -62,7 +64,9 @@ class ContractController extends Controller
     public function update(ContractRequest $request, $id)
     {
         try {
-            $this->assignPillars($request->pillar_id, $request->user_id);
+            if($request->pillar_id) {
+                $this->assignPillars($request->pillar_id, $request->user_id);
+            }
             Contract::updateOrCreate(['id' => $id], $request->all());
             $data['error']= false;
             $data['message']='Contract Info! Has Been Updated';

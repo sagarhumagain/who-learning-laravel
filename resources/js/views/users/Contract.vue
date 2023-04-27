@@ -146,6 +146,30 @@
                 </multiselect>
                 <error-msg :errors="errors" field="staff_category_id"></error-msg>
             </div>
+            <div class="form-group col-md-6 ">
+                <h6> Contract Status</h6>
+                <div class="form-control">
+                    <input v-model="form.is_active" true-value="1" false-value="0" type="checkbox" name="is_active"  class="form-check-input mr-2" :class="{ 'is-invalid': form.errors.has('is_active') }">
+                    <label class="form-check-label" for="1">
+                        Is Active
+                    </label>
+                    <error-msg :errors="errors" field="is_active"></error-msg>
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <h6>Unit</h6>
+                <multiselect v-model="form.unit_id"
+                    tag-placeholder="Unit"
+                    placeholder="Unit"
+                    :options="Object.keys(units).map(Number)"
+                    :custom-label="opt => units[opt]"
+                    :multiple="false"
+                    :allow-empty="false"
+                    :taggable="true"
+                    >
+                </multiselect>
+                <error-msg :errors="errors" field="unit_id"></error-msg>
+            </div>
             <div class="form-group col-md-6">
                 <h6>Pillars</h6>
                 <multiselect v-model="form.pillar_id"
@@ -158,16 +182,7 @@
                     >
                 </multiselect>
             </div>
-            <div class="form-group col-md-6 ">
-                <h6> Contract Status</h6>
-                <div class="form-control">
-                    <input v-model="form.is_active" true-value="1" false-value="0" type="checkbox" name="is_active"  class="form-check-input mr-2" :class="{ 'is-invalid': form.errors.has('is_active') }">
-                    <label class="form-check-label" for="1">
-                        Is Active
-                    </label>
-                    <error-msg :errors="errors" field="is_active"></error-msg>
-                </div>
-            </div>
+
         </modal>
 </template>
 <script>
@@ -208,6 +223,7 @@ export default {
             staff_categories:[],
             contract_types:[],
             staff_types:[],
+            units : [],
             masks: {
                 date: 'YYYY-MM-DD',
             },
@@ -225,6 +241,7 @@ export default {
                 contract_type_id: '',
                 staff_category_id: '',
                 is_active: '',
+                unit_id: '',
             }),
             errors:{},
 
@@ -237,6 +254,12 @@ export default {
         newContractModal() {
             this.editmode = false;
             this.form.reset();
+            if(this.user.contracts.slice(-1)[0]){
+                //replace start_date with end_date
+                this.user.contracts.slice(-1)[0].contract_start = this.user.contracts.slice(-1)[0].contract_end;
+                this.user.contracts.slice(-1)[0].contract_end = '';
+                this.form.fill(this.user.contracts.slice(-1)[0]);
+            }
             this.form.user_id = this.user.id;
             this.form.name = this.user.name;
             $('#addNewContract').modal('show');
@@ -283,7 +306,8 @@ export default {
                     this.designations =data.designation_types
                     this.staff_categories = data.staff_categories
                     this.contract_types = data.contract_types
-                    this.staff_types = data.staff_types
+                    this.staff_types = data.staff_types,
+                    this.units = data.units
                 }catch (e) {
 
                     this.$swal(

@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\StaffCategoryStaffTypeController;
 use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\SupervisorController;
+use App\Http\Controllers\Api\UnitController;
 use App\Http\Controllers\Auth\LoginController;
 
 /*
@@ -115,5 +116,6 @@ Route::group(
         Route::get('/deadlines-exceed', [CourseController::class, 'getExceededDeadlines']);
 
         Route::get('/users-stats', [StatisticsController::class, 'usersStats']);
+        Route::get('/units', [UnitController::class, 'getUnits']);
     }
 );

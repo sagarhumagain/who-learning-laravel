@@ -292,16 +292,18 @@
                 </multiselect>
             </div>
             <div class="form-group col-md-6">
-                <h6>Pillars</h6>
-                <multiselect v-model="form.pillar_id"
-                    tag-placeholder="Pillars"
-                    placeholder="Select Pillars"
-                    label="name" track-by="id"
-                    :options="pillars"
-                    :multiple="true"
+                <h6>Unit</h6>
+                <multiselect v-model="form.unit_id"
+                    tag-placeholder="Unit"
+                    placeholder="Unit"
+                    :options="Object.keys(units).map(Number)"
+                    :custom-label="opt => units[opt]"
+                    :multiple="false"
+                    :allow-empty="false"
                     :taggable="true"
                     >
                 </multiselect>
+                <error-msg :errors="errors" field="unit_id"></error-msg>
             </div>
             <div class="form-group col-md-6 ">
                 <h6> Contract Status</h6>
@@ -313,6 +315,20 @@
                     <error-msg :errors="errors" field="is_active"></error-msg>
                 </div>
             </div>
+
+            <div class="form-group col-md-6">
+                <h6>Pillars</h6>
+                <multiselect v-model="form.pillar_id"
+                    tag-placeholder="Pillars"
+                    placeholder="Select Pillars"
+                    label="name" track-by="id"
+                    :options="pillars"
+                    :multiple="true"
+                    :taggable="true"
+                    >
+                </multiselect>
+            </div>
+
         </modal>
 
     </div>
@@ -352,6 +368,7 @@
                 staff_categories:[],
                 contract_types:[],
                 staff_types:[],
+                units : [],
 
                 modal_data:{
                     modal_size:'modal-lg',
@@ -387,6 +404,7 @@
                     designation_id:null,
                     staff_category_id:null,
                     contract_type_id:null,
+                    unit_id:null,
                 }),
                 pform: new Form({
                     id: null,
@@ -408,17 +426,29 @@
                 $('#addNewUser').modal('show');
             },
             newContractModal(id,name) {
+
+
                 this.editmode = false;
                 this.form.reset();
                 this.form.user_id = id;
                 this.form.name = name
+
+                const matchingUser = this.users.data.find(user => user.id === id);
+                const lastContract = matchingUser.contracts?.slice(-1)?.[0];
+                this.form.supervisor_user_id = lastContract?.supervisor_user_id ?? null;
+                this.form.unit_id = lastContract?.unit_id ?? null;
+                this.form.staff_category_id = lastContract?.staff_category_id ?? null;
+                this.form.staff_type_id = lastContract?.staff_type_id ?? null;
+                this.form.designation_id = lastContract?.designation_id ?? null;
+                this.form.contract_type_id = lastContract?.contract_type_id ?? null;
+                this.form.contract_start = lastContract?.contract_start ?? null;
                 $('#addNewContract').modal('show');
             },
             editUserModal(user){
                 this.form.reset();
                 this.editmode = true;
                 const user_data = user
-                user_data.supervisor_user_id = user.employee ? user.employee.supervisor_user_id : null;
+                user_data.supervisor_user_id = user.contracts.slice(-1)[0] ? user.contracts.slice(-1)[0].supervisor_user_id : null;
                 console.log(user_data)
                 $('#addNewUser').modal('show');
                 this.emitter.emit('editing', user_data);
@@ -427,9 +457,9 @@
                 this.form.reset();
                 const user_data = user
                 user_data.user_id = user.id
-                if(user_data.employee){
-                    user_data.supervisor_user_id = user.employee.supervisor_user_id
-                    user_data.id = user_data.employee.id
+                if(user_data.contracts.slice(-1)[0]){
+                    user_data.supervisor_user_id = user.contracts.slice(-1)[0].supervisor_user_id
+                    user_data.id = user_data.contracts.slice(-1)[0].id
                 }else{
                     user_data.id = null
                 }
@@ -474,7 +504,7 @@
             },
             approveUser(user) {
 
-                if(!user.contracts.length || !user.employee){
+                if(!user.contracts.length || !user.contracts.slice(-1)[0]){
                     this.$swal(
                         'Warning!',
                         'Please assign supervisor and update the contract details.',
@@ -542,6 +572,8 @@
                     this.staff_categories = data.staff_categories
                     this.contract_types = data.contract_types
                     this.staff_types = data.staff_types
+                    this.units = data.units
+
                 }catch (e) {
                     this.$swal(
                         'Warning!',

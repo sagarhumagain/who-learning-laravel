@@ -31,7 +31,7 @@ class ContractRequest extends FormRequest
             'designation_id' => 'required',
             'staff_category_id' => 'required',
             'is_active' => 'required',
-            'pillar_id' => 'required',
+            'unit_id' => 'required',
         ];
     }
 }

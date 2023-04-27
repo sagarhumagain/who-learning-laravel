@@ -122,7 +122,8 @@ export default (baseUrl, apiVersion) => ({
   },
   async supervisors() {
     return await axios.get(`${baseUrl}${apiVersion}/supervisors`);
+  },
+  async units() {
+    return await axios.get(`${baseUrl}${apiVersion}/units`);
   }
-
-
 });

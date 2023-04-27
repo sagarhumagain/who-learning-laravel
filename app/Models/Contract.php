@@ -13,7 +13,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Contract extends Model implements Auditable
 {
-    use HasFactory, SoftDeletes, AuditableTrait;
+    use HasFactory;
+    use SoftDeletes;
+    use AuditableTrait;
 
     protected $fillable = [
         'contract_start',
@@ -23,7 +25,8 @@ class Contract extends Model implements Auditable
         'designation_id',
         'is_active',
         'staff_category_id',
-        'staff_type_id'
+        'staff_type_id',
+        'unit_id',
     ];
 
     public function contractType()

@@ -11,6 +11,7 @@ use App\Models\Pillar;
 use App\Models\Role;
 use App\Models\StaffCategory;
 use App\Models\StaffType;
+use App\Models\Unit;
 use App\Models\User;
 use DOMDocument;
 use Illuminate\Http\Request;
@@ -131,6 +132,7 @@ class BaseController extends Controller
         $designation_types = Designation::pluck('name', 'id');
         $staff_categories = StaffCategory::pluck('name', 'id');
         $staff_types = StaffType::pluck('name', 'id');
+        $units = Unit::pluck('name', 'id');
         $data = [
             'roles' => $roles,
             'pillars' => $pillars,
@@ -139,6 +141,7 @@ class BaseController extends Controller
             'designation_types' => $designation_types,
             'staff_categories' => $staff_categories,
             'staff_types' => $staff_types,
+            'units' => $units,
         ];
         return $data;
         ;

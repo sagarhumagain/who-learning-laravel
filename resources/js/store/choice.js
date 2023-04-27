@@ -1,4 +1,4 @@
-import {apiRepositories as $api} from '@/services/api';
+import { apiRepositories as $api } from '@/services/api';
 
 export default {
     namespaced: true,
@@ -16,6 +16,7 @@ export default {
         designationStaffType: [],
         staffCategoryStaffType: [],
         supervisors: [],
+        units : [],
 
     },
     getters:{
@@ -58,6 +59,10 @@ export default {
         supervisors(state) {
           return state.supervisors
         },
+        units(state) {
+            return state.units
+        }
+
     },
     mutations:{
         SET_PILLARS (state, value) {
@@ -99,6 +104,9 @@ export default {
         SET_SUPERVISORS (state, value) {
           state.supervisors = value
         },
+        SET_UNITS (state, value) {
+            state.units = value
+        }
     },
     actions:{
         async setEnums({commit}){
@@ -130,6 +138,9 @@ export default {
             commit('SET_STAFF_CATEGORY_STAFF_TYPE',response.data);
             response = await $api.enums.supervisors();
             commit('SET_SUPERVISORS',response.data);
+            response = await $api.enums.units();
+            commit('SET_UNITS',response.data);
+
 
           }
           catch (e) {
