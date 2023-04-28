@@ -120,7 +120,10 @@ class CourseController extends BaseController
         $user = auth()->user();
 
         //check duplicate courses
-        $duplicateCourse = Course::where('url', $request->url)->orWhere(DB::raw('UPPER(name)'), 'LIKE', DB::raw("UPPER('%{$request->name}%')"))->first();
+        $duplicateCourse = Course::where(function($q) use ($request){
+            $q->where('url', $request->url)
+            ->orWhere('url', '!=', 'N/A');
+        })->orWhere(DB::raw('UPPER(name)'), 'LIKE', DB::raw("UPPER('%{$request->name}%')"))->first();
         if ($duplicateCourse) {
             return response()->json([
                 'message' => 'Course already exists, please check course list to enroll the course.'

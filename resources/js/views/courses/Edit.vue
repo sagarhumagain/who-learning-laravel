@@ -19,7 +19,7 @@
                               <div v-if="form.errors.has('description')" v-html="form.errors.get('description')" />
                           </div>
                           <div class="form-group col-lg-12 col-md-12">
-                              <label for="url" >Course URL *</label>
+                              <label for="url" >Course URL (Type N/A if the course does not have a URL) *</label>
                               <input v-model="form.url" :disabled="course_disabled" type="text" name="url" placeholder="https://who.csod.com/ui/lms-learning-details/app/course/f526f260-fbdc-5ccb-84e0-04b6020f255b" class="form-control" :class="{ 'is-invalid': form.errors.has('url')}">
                               <div v-if="form.errors.has('url')" v-html="form.errors.get('url')" />
                           </div>

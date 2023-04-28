@@ -18,7 +18,7 @@
                               <error-msg :errors="errors" field="description"></error-msg>
                           </div>
                           <div class="form-group col-lg-12 col-md-12">
-                              <label for="url" >Course URL *</label>
+                              <label for="url" >Course URL (Type N/A if the course does not have a URL) *</label>
                               <input v-model="form.url" type="text" name="url" placeholder="https://who.csod.com/ui/lms-learning-details/app/course/f526f260-fbdc-5ccb-84e0-04b6020f255b" class="form-control" :class="{ 'is-invalid': form.errors.has('url')}">
                               <error-msg :errors="errors" field="url"></error-msg>
                           </div>
