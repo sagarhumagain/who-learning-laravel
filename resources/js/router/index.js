@@ -1,7 +1,4 @@
-import * as Vue from 'vue'
 import * as VueRouter from 'vue-router'
-import store from '@/store'
-import { getRoles } from '@/helpers/auth'
 
 
 
@@ -22,10 +19,12 @@ const CourseApproveEdit = () => import('@/views/approvals/CourseApproveEdit.vue'
 const Users = () => import('@/views/users/Users.vue' /* webpackChunkName: "resource/js/components/users" */)
 const Courses = () => import('@/views/courses/Courses.vue' /* webpackChunkName: "resource/js/components/courses" */)
 const Employee = () => import('@/views/users/Employee.vue' /* webpackChunkName: "resource/js/components/employee" */)
+const Designation = () => import('@/components/Pages/Designation.vue' /* webpackChunkName: "resource/js/components/designation" */)
 const ApproveCourses = () => import('@/views/approvals/Courses.vue' /* webpackChunkName: "resource/js/components/approvalcourses" */)
 const ApproveCertificates = () => import('@/views/approvals/Certificates.vue' /* webpackChunkName: "resource/js/components/certificates" */)
 const EnrolledCourse = () => import('@/views/courses/EnrolledCourse.vue' /* webpackChunkName: "resource/js/components/assignedcourse" */)
 const Sync = () => import('@/views/Sync.vue' /* webpackChunkName: "resource/js/components/sync" */)
+
 
 /* Authenticated Component */
 
@@ -127,6 +126,15 @@ let routeChildrens;
                         title:`Dashboard`
                     }
                 },
+                {
+                    name:"designation",
+                    path: '/designations',
+                    component: Designation,
+                    meta:{
+                        title:`Designation`
+                    }
+                },
+
 
 
 

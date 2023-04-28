@@ -91,10 +91,10 @@ export default {
                       href: '/user/profile',
                       title: 'View profile'
                     },
-                    // {
-                    //   href: '/users/add',
-                    //   title: 'Add a New User'
-                    // }
+                    {
+                      href: '/designations',
+                      title: 'Designations'
+                    }
                   ]
                 },
                 {

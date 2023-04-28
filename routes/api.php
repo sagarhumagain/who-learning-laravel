@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContractTypeController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseCategoryController;
-use App\Http\Controllers\DesignationController;
 use App\Http\Controllers\PillarController;
 use App\Http\Controllers\StaffCategoryController;
 use App\Http\Controllers\StaffTypeController;
@@ -17,6 +16,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ContractTypeDesignationController;
 use App\Http\Controllers\Api\ContractTypeStaffCategoryController;
 use App\Http\Controllers\Api\ContractTypeStaffTypeController;
+use App\Http\Controllers\Api\DesignationController;
 use App\Http\Controllers\Api\DesignationStaffCategoryController;
 use App\Http\Controllers\Api\DesignationStaffTypeController;
 use App\Http\Controllers\Api\PermissionController;
@@ -51,6 +51,7 @@ Route::group(
 
         Route::group(['middleware' => ['role:super-admin|supervisor']], function () {
             Route::apiResources(['user'=>UserController::class]);
+            Route::apiResources(['designation' => DesignationController::class]);
 
             Route::post('/assign-course-to-new-users', [CourseController::class, 'assignCourseToNewUsers']);
         });
@@ -84,7 +85,7 @@ Route::group(
         Route::get('/approve/courses', [CourseController::class, 'getApprovalCourseList']);
         Route::put('/update-assigned-course', [CourseController::class, 'updateEnrolledCourse']);
 
-        Route::resource('/designations', DesignationController::class);
+        // Route::resource('/designations', DesignationController::class);
         Route::resource('/pillars', PillarController::class);
         Route::resource('/staff-categories', StaffCategoryController::class);
         Route::resource('/staff-types', StaffTypeController::class);
