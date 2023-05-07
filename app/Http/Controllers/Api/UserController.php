@@ -42,7 +42,9 @@ class UserController extends Controller
         if (auth()->user()->hasRole('supervisor')) {
             $data= $this->user->with('roles', 'employee', 'pillars')->with('courses', function ($q) {
                 $q->where('courses.is_approved', 1)->orWhereNull('courses.is_approved');
-            })->with('contracts', function ($q) {
+            })
+            ->with('completedCourses')
+            ->with('contracts', function ($q) {
                 $q->latest()->get();
             })->whereHas('employee', function ($q) {
                 $q->where('supervisor_user_id', auth()->user()->id);
@@ -50,7 +52,9 @@ class UserController extends Controller
         } else {
             $data= $this->user->with('roles', 'employee', 'pillars')->with('courses', function ($q) {
                 $q->where('courses.is_approved', 1)->orWhereNull('courses.is_approved');
-            })->with('contracts', function ($q) {
+            })
+            ->with('completedCourses')
+            ->with('contracts', function ($q) {
                 $q->latest()->get();
             })->latest()->paginate(50);
         }

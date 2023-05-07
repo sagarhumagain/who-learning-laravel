@@ -192,7 +192,8 @@ class StatisticsController extends Controller
             $query =   CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
             ->select(DB::raw('courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved'))
             ->whereNull('course_user.deleted_at')
-            ->where('course_user.user_id', $user->id);
+            ->where('course_user.user_id', $user->id)
+            ->where('course_user.is_approved', 1);
 
             if ($request->start_date) {
                 //filter by date

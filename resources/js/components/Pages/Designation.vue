@@ -16,7 +16,7 @@
                             <tbody>
                             <tr class="bg-light">
                                 <th>S.N.</th>
-                                <th style="width:25%">Holiday Name</th>
+                                <th style="width:25%">Name</th>
                                 <th>Description</th>
                                 <th>Actions</th>
                             </tr>
@@ -89,7 +89,7 @@
 
             return {
                 groups: this.$store.state.groups,
-                component_name : 'Designations',
+                component_name : 'Designation',
                 editmode: false,
                 disabled: false,
                 records:{},

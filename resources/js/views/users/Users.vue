@@ -448,7 +448,7 @@
                 this.form.reset();
                 this.editmode = true;
                 const user_data = user
-                user_data.supervisor_user_id = user.contracts.slice(-1)[0] ? user.contracts.slice(-1)[0].supervisor_user_id : null;
+                user_data.supervisor_user_id = user.employee ? user.employee.supervisor_user_id : null;
                 console.log(user_data)
                 $('#addNewUser').modal('show');
                 this.emitter.emit('editing', user_data);
@@ -457,9 +457,9 @@
                 this.form.reset();
                 const user_data = user
                 user_data.user_id = user.id
-                if(user_data.contracts.slice(-1)[0]){
-                    user_data.supervisor_user_id = user.contracts.slice(-1)[0].supervisor_user_id
-                    user_data.id = user_data.contracts.slice(-1)[0].id
+                if(user_data.employee){
+                    user_data.supervisor_user_id = user.employee.supervisor_user_id
+                    user_data.id = user_data.employee.id
                 }else{
                     user_data.id = null
                 }
