@@ -42,7 +42,7 @@
                                     <a href="#" @click="coureseDetail(course.certificate)">
                                         <i class="fa fa-file mr-2"></i>
                                     </a>
-                                     <a href="#" @click="approveCourse(course)">
+                                     <a href="#"  @click="approveCourse(course)">
                                         <i class="fa fa-check"></i>
                                     </a>
                                     <router-link :to="'/approve/certificate/user_id/'+course.user_id+ '/course_id/'+course.course_id" class="ml-2">

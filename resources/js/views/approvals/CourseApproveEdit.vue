@@ -91,7 +91,7 @@
                           </div>
                         <div class="col-12 mb-2 text-center mt-3 ">
 
-                          <button type="submit" :disabled="disabled || course_user_disabled" class="btn-fill text-center">
+                          <button type="submit" v-if="!form.is_approved" :disabled="disabled || course_user_disabled" class="btn-fill text-center">
                             Approve Course
                           </button>
                         </div>

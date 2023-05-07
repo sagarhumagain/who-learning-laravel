@@ -119,6 +119,40 @@
                                         </div>
                                     </div>
                                 </td>
+                                 <td>
+                                    <div class="accordion" id="accordionExample">
+                                        <div class="accordion-item rounded-0">
+                                            <button data-bs-toggle="collapse" :data-bs-target="'#course_completed'+user.id" class="accordion-button rounded-0" type="button">
+                                                <a href="#" data-bs-toggle="collapse" :data-bs-target="'#course_completed'+user.id" aria-expanded="true" aria-controls="collapseOne">Completed Courses</a>
+                                                <a href="#" type="" class="btn"><i class="fa fa-plus fa-fw"></i></a>
+
+                                            </button>
+                                            <div :id="'course_completed'+user.id" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                            <div class="accordion-body">
+                                                <table class="table table-hover">
+                                                    <tbody>
+                                                    <tr class="bg-light">
+                                                        <th>Course Name </th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                    <tr v-for="course in user.completed_courses" :key="course.id">
+                                                        <td>{{course.name}}</td>
+                                                        <td>
+                                                           <router-link :to="'/approve/certificate/user_id/'+course.pivot.user_id+ '/course_id/'+course.pivot.course_id" class="ml-2">
+                                                                <i class="fa fa-eye"></i>
+                                                            </router-link>
+                                                        </td>
+
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+
+
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                             </tbody></table>
                     </div>
