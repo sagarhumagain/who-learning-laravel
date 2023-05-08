@@ -408,6 +408,7 @@ class CourseController extends BaseController
 
         if ($user->hasRole('supervisor')) {
             $supervisee_ids  = $this->getSuprerviseeIds();
+            dd($supervisee_ids);
             $query->where('course_user.user_id', $supervisee_ids);
         }
         $user_course = $query->where('course_user.is_approved', null)
