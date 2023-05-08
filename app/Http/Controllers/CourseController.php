@@ -405,11 +405,9 @@ class CourseController extends BaseController
         $query = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
             ->join('users', 'course_user.user_id', '=', 'users.id')
             ->select(DB::raw('course_user.user_id as user_id,courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.name as createdBy, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date,course_user.certificate_path as certificate'));
-
         if ($user->hasRole('supervisor')) {
             $supervisee_ids  = $this->getSuprerviseeIds();
-            dd($supervisee_ids);
-            $query->where('course_user.user_id', $supervisee_ids);
+            $query->whereIn('course_user.user_id', $supervisee_ids);
         }
         $user_course = $query->where('course_user.is_approved', null)
         ->whereNotNull('course_user.completed_date')
