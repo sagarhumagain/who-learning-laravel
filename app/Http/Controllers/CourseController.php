@@ -412,7 +412,8 @@ class CourseController extends BaseController
         }
         $user_course = $query->where('course_user.is_approved', null)
         ->whereNotNull('course_user.completed_date')
-        ->latest()->paginate(50);
+        ->orderBy('course_user.created_at', 'desc')
+        ->paginate(50);
 
         // $query->where('course_user.is_approved', null);
 
