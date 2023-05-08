@@ -191,7 +191,6 @@ class BaseController extends Controller
 
             $zip->close();
 
-
             dd($title, $author, $chapters);
 
             // Pass the information to the view
@@ -203,5 +202,17 @@ class BaseController extends Controller
         } else {
             return redirect()->back()->with('error', 'Failed to extract the contents of the EPUB file.');
         }
+    }
+
+    public function report()
+    {
+        $list = User::with('completedCourses')
+        ->whereHas('contracts', function ($q) {
+            $q->whereHas('designation', function ($q) {
+                $q->where('name', 'Information Management Associate	');
+            });
+        })->toSql();
+
+        return $list;
     }
 }

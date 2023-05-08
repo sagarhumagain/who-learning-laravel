@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,8 @@ Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
 Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+
+Route::get('/report', [BaseController::class, 'report']);
 
 
 
