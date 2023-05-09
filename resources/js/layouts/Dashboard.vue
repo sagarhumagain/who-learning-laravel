@@ -64,6 +64,11 @@ export default {
                   title: 'Dashboard',
                   icon: 'fa fa-gauge'
                 },
+                // {
+                //   href: '/course-user-report',
+                //   title: 'Course User Report',
+                //   icon: 'fa fa-file'
+                // },
                 {
                   // href: '/courses',
                   title: 'Courses',

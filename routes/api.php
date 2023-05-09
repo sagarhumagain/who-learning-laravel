@@ -116,5 +116,8 @@ Route::group(
 
         Route::get('/users-stats', [StatisticsController::class, 'usersStats']);
         Route::get('/units', [UnitController::class, 'index']);
+
+        Route::get('/report', [BaseController::class, 'report']);
+
     }
 );

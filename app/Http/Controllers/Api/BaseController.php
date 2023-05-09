@@ -206,12 +206,7 @@ class BaseController extends Controller
 
     public function report()
     {
-        $list = User::with('completedCourses')
-        ->whereHas('contracts', function ($q) {
-            $q->whereHas('designation', function ($q) {
-                $q->where('name', 'Information Management Associate	');
-            });
-        })->toSql();
+        $list = Course::with('users')->get();
 
         return $list;
     }

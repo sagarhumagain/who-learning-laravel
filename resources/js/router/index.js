@@ -24,6 +24,8 @@ const ApproveCourses = () => import('@/views/approvals/Courses.vue' /* webpackCh
 const ApproveCertificates = () => import('@/views/approvals/Certificates.vue' /* webpackChunkName: "resource/js/components/certificates" */)
 const EnrolledCourse = () => import('@/views/courses/EnrolledCourse.vue' /* webpackChunkName: "resource/js/components/assignedcourse" */)
 const Sync = () => import('@/views/Sync.vue' /* webpackChunkName: "resource/js/components/sync" */)
+const CourseUserReport = () => import('@/components/Pages/CourseUserReport.vue' /* webpackChunkName: "resource/js/components/CourseUserReport" */)
+
 
 
 /* Authenticated Component */
@@ -40,6 +42,14 @@ let routeChildrens;
             component: Courses,
             meta:{
                 title:`Courses`
+            }
+          },
+          {
+            name:"course-user-report",
+            path: '/course-user-report',
+            component: CourseUserReport,
+            meta:{
+                title:`Course User Report`
             }
           },
           {

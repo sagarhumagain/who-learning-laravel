@@ -1,8 +1,7 @@
-import { inject } from "vue";
 import Auth from "@/api/auth";
-import Notification from "@/api/notification";
 import Courses from "@/api/courses";
 import Enums from "@/api/enums";
+import Notification from "@/api/notification";
 import Statistics from "@/api/statistics";
  // if (process.client) {
   //   const token = localStorage.getItem("token");
@@ -22,3 +21,4 @@ import Statistics from "@/api/statistics";
     statistics: Statistics(baseUrl, apiVersion)
   };
   // inject("api", repositories);
+

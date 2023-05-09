@@ -24,7 +24,6 @@ Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('re
 Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 
-Route::get('/report', [BaseController::class, 'report']);
 
 
 

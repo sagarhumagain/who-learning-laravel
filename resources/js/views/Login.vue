@@ -29,6 +29,7 @@
                             <div class="col-12 text-center mt-3">
                                 <label>Don't have an account? <router-link :to="{name:'register'}">Register Now!</router-link></label>
                             </div>
+
                         </form>
                     </div>
                 </div>
