@@ -33,6 +33,7 @@
                                 <th>Description</th>
                                 <th>Course Category</th>
                                 <th v-role:any="'super-admin|course-admin'">Status</th>
+                                <th>Course Link </th>
                                 <th>Actions</th>
                             </tr>
                             <tr v-for="(course, index) in courses.data" :key="course.id">
@@ -54,6 +55,9 @@
                                     <span v-else-if="course.is_approved == 0" class="color-red">Disapproved</span>
                                     <span v-else-if="course.is_approved == 2" class="color-red">Reverification</span>
 
+                                </td>
+                                <td> <a v-if="/^http/.test(course.url)" :href="course.url" target="_blank" class="color-primary">{{course.url}}</a>
+                                    <span v-else>{{course.url}}</span>
                                 </td>
                                 <td class="w-15">
                                     <!-- <a href="#" @click="editCourse(course,course.id)" class="btn btn-sm btn-success mr-2">Edit
