@@ -498,7 +498,7 @@ class CourseController extends BaseController
         try {
             $auth_user = auth()->user();
             $course_user = Course::join('course_user', 'courses.id', '=', 'course_user.course_id')
-            ->where('course_user.user_id', $auth_user->id)->whereNull('course_user.deleted_at')->filter($request->all())->get();
+            ->where('course_user.user_id', $auth_user->id)->whereNull('course_user.deleted_at')->orderBy('course_user.is_approved')->filter($request->all())->get();
             return $course_user;
         } catch(\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
