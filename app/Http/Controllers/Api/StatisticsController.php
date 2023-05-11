@@ -13,6 +13,7 @@ use App\Models\CourseCourseCategory;
 use App\Models\Employee;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use COM;
 use DateInterval;
 use DatePeriod;
 use DateTime;
@@ -190,24 +191,26 @@ class StatisticsController extends Controller
         $user = auth()->user();
         try {
             $query =   CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
-            ->select(DB::raw('courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved'))
+            ->select(DB::raw('courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, course_user.completed_date as completed_date'))
             ->whereNull('course_user.deleted_at')
-            ->where('course_user.user_id', $user->id)
-            ->where('course_user.is_approved', 1);
+            ->where('course_user.user_id', $user->id);
 
-            if ($request->start_date) {
+            $completed = clone $query;
+            $enrolled = clone $query;
+
+            if ($request->start_date && $request->end_date) {
                 //filter by date
-                $query->whereBetween('course_user.completed_date', [Carbon::parse($request->start_date)->startOfDay(), Carbon::parse($request->end_date)->endOfDay()]);
+                $completed->whereBetween('course_user.completed_date', [Carbon::parse($request->start_date)->startOfDay(), Carbon::parse($request->end_date)->endOfDay()]);
             } else {
                 //current year data
-                $query->whereYear('course_user.completed_date', date('Y'));
+                $completed->whereYear('course_user.completed_date', date('Y'));
             }
-            $courseUsers = $query->get();
+            $courseUsers = $completed->where('course_user.is_approved', 1)->get();
         } catch(\Exception $e) {
             return response()->json($e->getMessage());
         }
 
-        $data['total_enrolled_courses'] = $courseUsers->count();
+        $data['total_enrolled_courses'] = $enrolled->get()->count();
         $data['total_completed_courses'] = 0;
         $data['course_duration_required'] = 100;
         $data['course_duration_completed'] = 0;
