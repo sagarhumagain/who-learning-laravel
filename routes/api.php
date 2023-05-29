@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\SupervisorController;
 use App\Http\Controllers\Api\UnitController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\DesignationController as ControllersDesignationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,7 +84,7 @@ Route::group(
         Route::get('/approve/courses', [CourseController::class, 'getApprovalCourseList']);
         Route::put('/update-assigned-course', [CourseController::class, 'updateEnrolledCourse']);
 
-        // Route::resource('/designations', DesignationController::class);
+        Route::resource('/designations', ControllersDesignationController::class);
         Route::resource('/pillars', PillarController::class);
         Route::resource('/staff-categories', StaffCategoryController::class);
         Route::resource('/staff-types', StaffTypeController::class);

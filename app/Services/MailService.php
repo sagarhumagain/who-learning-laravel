@@ -89,4 +89,36 @@ class MailService
         })->get();
         return $admins;
     }
+
+    public function sendCourseAssignedMail($data, $course_name, $due_date)
+    {
+
+        $users =  User::leftJoin(\DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
+            $join->on('users.id', '=', 't2.user_id');
+        })
+        ->where(function ($q) use ($data) {
+            $q->where(function ($q) use ($data) {
+                $q->whereHas('pillars', function ($q) use ($data) {
+                    $q->whereIn('pillar_id', $data['pillar_ids']);
+                })
+                ->orWhereIn('staff_type_id', $data['staff_type_ids'])
+                ->orWhereIn('contract_type_id', $data['contract_type_ids'])
+                ->orWhereIn('staff_category_id', $data['staff_category_ids'])
+                ->orWhereIn('designation_id', $data['staff_designation_ids']);
+            });
+        })->select('users.id as id', 'email')->get();
+
+
+        $mail_data = [
+            'subject' => 'Course Assigned',
+            'message' => 'You have been assigned a '.$course_name.' course to complete within a specified deadline '.$due_date ?? '' ,
+            'url' => FacadesRequest::root().'/'.'courses/'.$data['course_id'].'/edit',
+        ];
+        $cc_users = $users->pluck('email')->toArray();
+
+        Mail::cc($cc_users)->send(new CourseMail($mail_data));
+
+
+
+    }
 }

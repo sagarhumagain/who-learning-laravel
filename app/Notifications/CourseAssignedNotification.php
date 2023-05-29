@@ -39,10 +39,15 @@ class CourseAssignedNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+        $url = url('/courses/'.$this->course_assignment_setting['id'].'/edit');
+
+        return (new MailMessage())
+                    ->line('Course Assignment and Deadline')
+                    ->line('We are pleased to inform you that you have been assigned a new course to complete within a specified deadline. Please review the details below:')
+                    ->line('Course Name: '.$this->course_assignment_setting['course_name'])
+                    ->line('Course Deadline: '.$this->course_assignment_setting['due_date'])
+                    ->action('Notification Action', $url)
+                    ->line('Thank you!');
     }
 
     /**
@@ -53,18 +58,17 @@ class CourseAssignedNotification extends Notification
      */
     public function toArray($notifiable)
     {
-        $assigned_pillar_name  = $this->course_assignment_setting['assigned_pillar_name'] ?  'Pillar '.implode(' , ', $this->course_assignment_setting['assigned_pillar_name']) : '';
+        $assigned_pillar_name  = $this->course_assignment_setting['assigned_pillar_name'] ? 'Pillar '.implode(' , ', $this->course_assignment_setting['assigned_pillar_name']) : '';
         $assigned_contract_type_name  = $this->course_assignment_setting['assigned_contract_type_name'] ? 'contract type '. implode(' , ', $this->course_assignment_setting['assigned_contract_type_name']) : '';
         $assigned_staff_type_name  = $this->course_assignment_setting['assigned_staff_type_name'] ? 'staff type '. implode(' , ', $this->course_assignment_setting['assigned_staff_type_name']) : '';
         $assigned_staff_designation_name  = $this->course_assignment_setting['assigned_staff_designation_name'] ? 'staff designation '. implode(' , ', $this->course_assignment_setting['assigned_staff_designation_name']) : '';
 
-        $message = 'New course '.$this->course_assignment_setting['course_name'].' has been created by '.auth()->user()->name.' to ';
-        if($assigned_pillar_name)
-        {
+        $message = 'New Course '.$this->course_assignment_setting['course_name'].' has been assigned by '.auth()->user()->name.' to ';
+        if($assigned_pillar_name) {
             $message = $message . $assigned_pillar_name . ' ,';
         }if ($assigned_contract_type_name) {
-            $message = $message . $assigned_contract_type_name . ' ,'; 
-        }if ($assigned_staff_type_name) {   
+            $message = $message . $assigned_contract_type_name . ' ,';
+        }if ($assigned_staff_type_name) {
             $message = $message . $assigned_staff_type_name . ' ,';
         }if ($assigned_staff_designation_name) {
             $message = $message . $assigned_staff_designation_name . '.';

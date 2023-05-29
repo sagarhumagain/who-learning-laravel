@@ -176,7 +176,7 @@ class CourseController extends BaseController
             })->select('users.id as id')
             ->get();
 
-            //attached course to users
+            //attached course to users if created by normal user or supervisor
             if($user->hasRole(['normal-user', 'supervisor'])) {
                 $course->users()->attach($users);
             }
@@ -186,6 +186,9 @@ class CourseController extends BaseController
             //course assigned event
             event(new CourseAssignedEvent($request));
             //update certificate for normal users
+
+            $mailService->sendCourseAssignedMail($assignmentFields, $course->name, $course->due_date);
+
             try {
                 if ($user->hasRole('normal-user') && $request->certificate_path && $request->completed_date) {
                     $course_user = CourseUser::where('course_id', $course->id)->where('user_id', $user->id)->firstOrFail();
@@ -320,6 +323,7 @@ class CourseController extends BaseController
     public function updateEnrolledCourse(UpdateCourseValidation $request, MailService $mailService)
     {
         $user = auth()->user();
+
         try {
             $request['due_date'] = $request->due_date == "null" ? null : $request->due_date;
             $request['description'] = $request->description == "null" ? null : $request->description;
@@ -343,6 +347,7 @@ class CourseController extends BaseController
                         'staff_designation_ids' => parent::filterArrayByKey($request->staff_designation_ids, 'id'),
                         'course_id' => $course->id,
                         'assigned_by_user_id' => $user->id,
+
                     ];
                     $users = User::leftJoin(DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
                         $join->on('users.id', '=', 't2.user_id');
@@ -363,6 +368,12 @@ class CourseController extends BaseController
                         ['course_id' => $course->id],
                         $assignmentFields
                     );
+                    event(new CourseAssignedEvent($request));
+
+                    //mail
+                    $mailService->sendCourseAssignedMail($assignmentFields, $course->name, $course->due_date);
+
+
                 } catch (Exception $e) {
                     $data['error'] = true;
                     $data['message'] = $e->getMessage();
@@ -500,7 +511,7 @@ class CourseController extends BaseController
         try {
             $auth_user = auth()->user();
             $course_user = Course::join('course_user', 'courses.id', '=', 'course_user.course_id')
-            ->where('course_user.user_id', $auth_user->id)->whereNull('course_user.deleted_at')->orderBy('course_user.is_approved','DESC')->filter($request->all())->get();
+            ->where('course_user.user_id', $auth_user->id)->whereNull('course_user.deleted_at')->orderBy('course_user.is_approved', 'DESC')->filter($request->all())->get();
             return $course_user;
         } catch(\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);

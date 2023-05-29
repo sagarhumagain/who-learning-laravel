@@ -27,7 +27,9 @@ class CourseAssignedListener extends BaseController
     private function buildAssignmentSettings(Request $request)
     {
         $assignment_setting_value['course_name'] = $request->name;
-        
+        $assignment_setting_value['due_date'] = $request->due_date;
+        $assignment_setting_value['id'] = $request->id;
+
         $assignment_setting_value['assigned_pillar_name'] = parent::filterArrayByKey($request->pillar_ids, 'name');
         $assignment_setting_value['assigned_staff_type_name'] = parent::filterArrayByKey($request->staff_type_ids, 'name');
         $assignment_setting_value['assigned_contract_type_name'] = parent::filterArrayByKey($request->contract_type_ids, 'name');
