@@ -53,6 +53,7 @@ Route::group(
             Route::apiResources(['user'=>UserController::class]);
             Route::apiResources(['designation' => DesignationController::class]);
             Route::post('/assign-course-to-new-users', [CourseController::class, 'assignCourseToNewUsers']);
+            Route::get('/report', [BaseController::class, 'report']);
         });
         Route::get('/get-choices', [BaseController::class, 'getChoices']);
 
@@ -118,7 +119,8 @@ Route::group(
         Route::get('/users-stats', [StatisticsController::class, 'usersStats']);
         Route::get('/units', [UnitController::class, 'index']);
 
-        Route::get('/report', [BaseController::class, 'report']);
+
+
 
     }
 );
