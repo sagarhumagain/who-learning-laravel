@@ -19,10 +19,10 @@ use App\Models\User;
 Route::get('/', function () {
     return redirect('login');
 });
-Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
-Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
-Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
-Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+// Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+// Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+// Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+// Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 
 
 
@@ -34,10 +34,15 @@ Route::post('/epub', [BaseController::class, 'epubReader'])->name('epubReader');
 
 
 
+
+Auth::routes();
+
 Route::get('{any}', function () {
     return view('welcome');
-})->where('any', '^(?!pgadmin).*')->middleware('web');
-Auth::routes();
+})->where('any', '^(?!pgadmin).*');
+
+
+
 
 // Route::group(['middleware' => ['auth']], function () {
 //     // Route::resource('roles', RoleController::class);

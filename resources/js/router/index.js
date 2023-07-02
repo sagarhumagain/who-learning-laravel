@@ -177,6 +177,7 @@ const Routes = [
     },
 
 
+
     {
         path:"/",
         component:DahboardLayout,
@@ -184,9 +185,7 @@ const Routes = [
             middleware:"auth"
         },
         children: routeChildrens
-       },
-
-
+    },
 ]
 
 
@@ -218,5 +217,29 @@ const router = VueRouter.createRouter({
 //         next({name:"login"})
 //     }
 // })
+
+const excludedRoutes = ['/login'];
+
+function redirectToLogin() {
+  window.location.href = '/login';
+}
+
+router.beforeEach(async (to, from, next) => {
+  if (excludedRoutes.includes(to.path)) {
+    next();
+    return;
+  }
+  try {
+    const response = await axios.get('/api/session-status');
+    if (response.data.status === 'logged in') {
+      next();
+    } else {
+      redirectToLogin();
+    }
+  } catch (error) {
+    redirectToLogin();
+  }
+});
+
 
 export default router

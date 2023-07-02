@@ -124,3 +124,9 @@ Route::group(
 
     }
 );
+
+
+Route::get('/session-status', function () {
+    $status = auth()->user() ? 'logged in' : 'logged out';
+    return response()->json(['status' => $status]);
+})->middleware('auth:api');
