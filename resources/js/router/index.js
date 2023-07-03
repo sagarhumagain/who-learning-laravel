@@ -218,27 +218,30 @@ const router = VueRouter.createRouter({
 //     }
 // })
 
-const excludedRoutes = ['/login'];
+const excludedRoutes = ['/login', '/register', '/password/reset', '/password/reset/{token}' ];
+
 
 function redirectToLogin() {
   window.location.href = '/login';
 }
 
 router.beforeEach(async (to, from, next) => {
-  if (excludedRoutes.includes(to.path)) {
-    next();
-    return;
-  }
-  try {
-    const response = await axios.get('/api/session-status');
-    if (response.data.status === 'logged in') {
+    const isExcluded = excludedRoutes.some((route) => to.fullPath.startsWith(route));
+
+    if (isExcluded) {
       next();
-    } else {
-      redirectToLogin();
+      return;
     }
-  } catch (error) {
-    redirectToLogin();
-  }
+    try {
+        const response = await axios.get('/api/session-status');
+        if (response.data.status === 'logged in') {
+        next();
+        } else {
+        redirectToLogin();
+        }
+    } catch (error) {
+        redirectToLogin();
+    }
 });
 
 
