@@ -21,15 +21,15 @@
                         </div>
                         <ul class="list-group list-group-unbordered mb-3 mt-3">
                             <li class="list-group-item">
-                                <a href="" traget="blank" class="float-right"><i class="fa fa-user"></i> </a>
+                                <a href="" traget="blank" class="float-right m-2"><i class="fa fa-user"></i> </a>
                                 <b>{{form.name}}</b>
                             </li>
                             <li class="list-group-item">
-                                <a href="" traget="blank" class="float-right"><i class="fa fa-envelope"></i> </a>
+                                <a href="" traget="blank" class="float-right m-2"><i class="fa fa-envelope"></i> </a>
                                 <b>{{form.secondary_contact}}</b>
                             </li>
                             <li class="list-group-item">
-                                <a href="" traget="blank" class="float-right"><i class="fa fa-phone"></i> </a>
+                                <a href="" traget="blank" class="float-right m-2"><i class="fa fa-phone"></i> </a>
                                 <b>{{form.primary_contact}}</b>
                             </li>
 

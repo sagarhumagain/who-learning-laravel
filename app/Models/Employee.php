@@ -35,7 +35,7 @@ class Employee extends Model implements Auditable
      * @var array<int, string>
      */
     protected $hidden = [
-     
+
   ];
 
     /**
@@ -44,9 +44,9 @@ class Employee extends Model implements Auditable
      * @var array<string, string>
      */
     protected $casts = [
-      
+
   ];
-  
+
     /**
      * Get the user of employee.
      */
@@ -60,6 +60,6 @@ class Employee extends Model implements Auditable
      */
     public function supervisor()
     {
-        return $this->hasOne(User::class, 'supervisor_user_id');
+        return $this->belongsTo(User::class, 'supervisor_user_id');
     }
 }

@@ -83,16 +83,13 @@ class ProfileController extends BaseController
             if (!$request->emp_code) {
                 $request['emp_code'] = parent::getRandId();
             }
-            try {
-                Employee::updateOrCreate(['id' => $request->id], $request->all());
+            Employee::updateOrCreate(['id' => $request->id], $request->all());
+            $user = User::find($request->user_id);
 
-                $user = User::find($request->user_id);
-                if ($user->is_first_time_login == 1) {
-                    $this->mailService->sendProfileApprovalMail($request);
-                }
-            } catch (\Exception $e) {
-                return response()->json(['error' => $e->getMessage()], 500);
+            if ($user->is_first_time_login == 1) {
+                $this->mailService->sendProfileApprovalMail($request);
             }
+
             $data['error']='false';
             $data['message']='Your Profile Info! Has Been Updated Successfully. An email has been sent to your supervisor for approval. Please update your contract details.';
         } catch (\Exception $e) {

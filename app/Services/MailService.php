@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Mail\ContractUpdate;
 use App\Mail\CourseMail;
 use App\Mail\ProfileApprovalMail;
 use App\Models\Course;
 use App\Models\User;
+use Exception;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Request as FacadesRequest;
@@ -34,6 +36,26 @@ class MailService
         ];
         Mail::to($email)->send(new ProfileApprovalMail($data));
     }
+
+    public function sendContractApproveMail($request)
+    {
+        try{
+
+            $data = [
+                'subject' => 'Contract Update',
+                'message' => $request->name.' has updated his contract. Please review the contract and if the contract details are not correct, please update the contract.',
+                'url' => FacadesRequest::root().'/'.'users',
+            ];
+            $supervisor_email = $request->employee->supervisor->email;
+            Mail::to($supervisor_email)->send(new ContractUpdate($data));
+        }
+        catch(Exception $e){
+            return $e->getMessage();
+        }
+    }
+
+
+
 
     public function sendCourseCreatedMail($course_name, $course_id)
     {
@@ -92,7 +114,6 @@ class MailService
 
     public function sendCourseAssignedMail($data, $course_name, $due_date)
     {
-
         $users =  User::leftJoin(\DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
             $join->on('users.id', '=', 't2.user_id');
         })
@@ -117,8 +138,8 @@ class MailService
         $cc_users = $users->pluck('email')->toArray();
 
         Mail::cc($cc_users)->send(new CourseMail($mail_data));
-
-
-
     }
+
+
+
 }

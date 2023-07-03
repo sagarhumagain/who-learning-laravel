@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
 
+use function PHPUnit\Framework\isEmpty;
+
 class HasProfileMiddleware
 {
     /**
@@ -22,7 +24,7 @@ class HasProfileMiddleware
             $data['error'] = true;
             $data['message'] = 'Please complete your profile first and wait for the admin approval';
             return response()->json($data, 401);
-        }else if (auth()->user()->contracts->last()->contract_end < Carbon::now()){
+        }else if (!isEmpty(auth()->user()->contracts) && auth()->user()->contracts->last()->contract_end < Carbon::now() && auth()->user()->hasRole('normal-user') ){
             $data['error'] = true;
             $data['message'] = 'Your contract has expired';
             return response()->json($data, 401);

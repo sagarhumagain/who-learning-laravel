@@ -6,11 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Contract\ContractRequest;
 use App\Models\Contract;
 use App\Models\User;
+use App\Services\MailService;
 use Exception;
 use Illuminate\Http\Request;
 
 class ContractController extends Controller
 {
+
+    public function __construct(MailService $mailService)
+    {
+        $this->mailService = $mailService;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -34,6 +40,9 @@ class ContractController extends Controller
                 $this->assignPillars($request->pillar_id, $request->user_id);
             }
             Contract::create($request->all());
+            $data = $this->getProfile($request->user_id);
+            $this->mailService->sendContractApproveMail($data);
+
             $data['error']= false;
             $data['message']='Contract Info! Has Been Created';
         } catch (Exception $e) {
@@ -68,6 +77,11 @@ class ContractController extends Controller
                 $this->assignPillars($request->pillar_id, $request->user_id);
             }
             Contract::updateOrCreate(['id' => $id], $request->all());
+
+            //send contract approval mail
+            $data = $this->getProfile($request->user_id);
+            $this->mailService->sendContractApproveMail($data);
+
             $data['error']= false;
             $data['message']='Contract Info! Has Been Updated';
         } catch (Exception $e) {
@@ -103,5 +117,17 @@ class ContractController extends Controller
             array_push($pillars, $pillar['id']);
         }
         $user->pillars()->sync($pillars);
+    }
+
+    public function getProfile($user_id)
+    {
+        return User::where('id', $user_id)
+        ->whereHas('employee', function ($q) {
+            $q->with('supervisor');
+        })
+        ->with('employee.supervisor', 'employee') // Eager load the supervisor and employee relationships
+        ->first();
+
+
     }
 }
