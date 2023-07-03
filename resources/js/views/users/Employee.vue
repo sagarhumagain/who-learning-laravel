@@ -256,8 +256,8 @@ import Multiselect from 'vue-multiselect'
             async updateInfo() {
                 this.$Progress.start();
                 this.disabled = true;
-                const response = await this.form.put('/api/v1/profile/'+this.form.id);
                 try{
+                    const response = await this.form.put('/api/v1/profile/'+this.form.id);
                     if(response.data.error == 'false'){
                         this.$swal(
                                 'Updated!',
@@ -267,26 +267,31 @@ import Multiselect from 'vue-multiselect'
                             await this.$store.dispatch("auth/login");
                         this.emitter.emit('AfterProfileUpdate'); //Fire an reload event
                         this.updated = true
+                        this.$Progress.finish();
+                        this.disabled = false;
                     }else{
+
                         this.$swal(
                                 'Error!',
                                 response.data.message,
                                 'warning'
                             )
+                        this.disabled = false;
                         this.$Progress.fail();
                     }
-                    this.disabled = false;
                 }catch(error){
+
                     this.$swal(
-                                'Error!',
-                                'Something Went Wrong.',
-                                'warning'
-                            )
+                        'Error!',
+                        error.response.data.message,
+                        'warning'
+                    )
                     this.$Progress.fail();
                     this.disabled = false;
                 }
                 this.$Progress.finish();
                 this.disabled = false;
+
             },
             async loadProfile(){
                 //check if user is logged in

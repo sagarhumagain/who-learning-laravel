@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Profile\ProfileUpdateRequest;
 use App\Mail\ProfileApprovalMail;
 use App\Models\Employee;
 use App\Models\User;
@@ -68,8 +69,9 @@ class ProfileController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProfileUpdateRequest $request, $id)
     {
+
         $path =  $this->folder_path.DIRECTORY_SEPARATOR.$request->user_id;
         parent::checkFolderExist($path);
 
