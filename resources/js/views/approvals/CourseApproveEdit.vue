@@ -96,7 +96,7 @@
                           </button>
                         </div>
                            <div class="modal-body">
-                            <iframe :src="'/'+form.certificate_path" v-if="form.certificate_path && form.certificate_path.length > 8" width="100%" height="500px"></iframe>
+                            <iframe :src="'/'+form.certificate_path+'#toolbar=0'" v-if="form.certificate_path && form.certificate_path.length > 8" width="100%" height="500px"></iframe>
                             </div>
                         </form>
                     </div>

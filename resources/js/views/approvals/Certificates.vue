@@ -70,7 +70,7 @@
     </div>
     <modal-view  :modal_data="v_modal_data">
             <div class="card-body table-responsive p-0">
-                    <iframe :src="'/'+certificate" width="100%" height="700px"></iframe>
+                    <iframe :src="'/'+certificate+'#toolbar=0'" width="100%" height="700px"></iframe>
             </div>
         </modal-view>
 </template>
@@ -121,9 +121,11 @@
         },
         methods: {
             async approveCourse(val, status){
+                console.log(val.certificate);
                 this.form.reset();
                 this.form.fill(val);
                 this.form.is_approved = status;
+
 
 
                 const result = status == '0' ? await this.$swal({
@@ -143,10 +145,10 @@
                     title: 'Are you sure?',
                     text: "You want to approve this certificate?",
                     icon: 'warning',
+                    html: '<div><p>Confirmation message...</p><iframe src="/' + val.certificate + '#toolbar=0" width="100%" height="330px"></iframe></div>',
                     showCancelButton: true,
                     confirmButtonText: 'Yes, Approve it!'
-                })
-
+                });
                 if (result.value) {
                 this.$Progress.start();
                 this.disabled=true;
