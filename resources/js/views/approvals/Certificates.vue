@@ -42,11 +42,15 @@
                                     <a href="#" @click="coureseDetail(course.certificate)">
                                         <i class="fa fa-file mr-2"></i>
                                     </a>
-                                     <a href="#"  @click="approveCourse(course)">
-                                        <i class="fa fa-check"></i>
+                                    <a href="#"  class="color-green" @click="approveCourse(course,1)">
+                                        <i class="fa fa-check mr-2"></i>
                                     </a>
+                                    <a href="#" class="color-red"  @click="approveCourse(course,0)">
+                                        <i class="fa fa-times mr-2"></i>
+                                    </a>
+
                                     <router-link :to="'/approve/certificate/user_id/'+course.user_id+ '/course_id/'+course.course_id" class="ml-2">
-                                        <i class="fa fa-eye"></i>
+                                        <i class="fa fa-eye "></i>
                                     </router-link>
 
                                 </td>
@@ -105,6 +109,7 @@
                     completed_date: null,
                     is_approved: null,
                     certificate_path: null,
+                    remarks: null,
                 }),
                 v_modal_data:{
                     modal_size:'modal-lg',
@@ -115,16 +120,38 @@
             }
         },
         methods: {
-            coureseDetail(val){
-                this.certificate = null
-                this.certificate = val
-                $('#'+this.v_modal_data.modal_name).modal('show');
-            },
-            approveCourse(val){
-                this.$Progress.start();
+            async approveCourse(val, status){
                 this.form.reset();
                 this.form.fill(val);
-                this.form.post('/api/v1/approve-course')
+                this.form.is_approved = status;
+
+
+                const result = status == '0' ? await this.$swal({
+                    title: 'Please write remarks',
+                    input: 'text',
+                    inputPlaceholder: 'Remarks',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "You want to disapprove this certificate?",
+                    inputValidator: (value) => {
+                        if (!value) {
+                        return 'You need to write something!'
+                        }
+                    }
+                }) :  await  this.$swal({
+                    title: 'Are you sure?',
+                    text: "You want to approve this certificate?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Approve it!'
+                })
+
+                if (result.value) {
+                this.$Progress.start();
+                this.disabled=true;
+                this.form.remarks = result.value;
+                this.form.post('/api/v1/approve-certificate')
                 .then((response) => {
                         if(response.data.error == 'true'){
                             this.$swal({
@@ -161,6 +188,14 @@
                             this.disabled=false;
                             this.$Progress.fail();
                     })
+
+
+                }
+            },
+            coureseDetail(val){
+                this.certificate = null
+                this.certificate = val
+                $('#'+this.v_modal_data.modal_name).modal('show');
             },
              onFileChange(e){
                 this.form.certificate_path = e.target.files[0];

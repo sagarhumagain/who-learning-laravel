@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class CourseApprovalNotification extends Notification
+class CertificateApprovalNotification extends Notification
 {
     use Queueable;
 
@@ -40,7 +40,7 @@ class CourseApprovalNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
+        return (new MailMessage())
                     ->line('The introduction to the notification.')
                     ->action('Notification Action', url('/'))
                     ->line('Thank you for using our application!');
@@ -58,7 +58,7 @@ class CourseApprovalNotification extends Notification
         if ($this->data->is_approved == 1) {
             $title  = 'Course Approved';
             $message = "Your Course has been approved. Please click read more for more detail";
-        }else{
+        } else {
             $title  = 'Course Rejected';
             $message = "Your Course has been rejected. Please click read more for more detail";
         }

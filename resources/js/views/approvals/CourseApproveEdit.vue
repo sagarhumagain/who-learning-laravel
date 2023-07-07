@@ -4,7 +4,7 @@
             <div class="col-12 col-md-6 offset-md-3">
                 <div class="card shadow sm">
                     <div class="card-body">
-                        <h1 class="text-center">Approve Course for {{form.createdBy}}</h1>
+                        <h1 class="text-center">Approve Course for {{form.created_by}}</h1>
                         <h4 class="text-center" v-if="form.remarks">Remarks: {{form.remarks}}</h4>
                         <hr/>
                         <form @submit.prevent="approveCourse()" @keydown="form.onKeydown($event)">
@@ -114,7 +114,7 @@ import ErrorMsg from '@/components/error-msg'
 import axios from 'axios'
 
 export default {
-    name:'approve-edit',
+    name:'course-approve-edit',
     components:{
       Multiselect,
       ErrorMsg
@@ -145,7 +145,7 @@ export default {
               certificate_path:null,
               assigned_by_user_id: null,
               is_approved: null,
-              createdBy: null,
+              created_by: null,
             }),
             masks: {
                     input: 'YYYY-MM-DD',

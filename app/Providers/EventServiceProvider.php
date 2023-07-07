@@ -2,12 +2,14 @@
 
 namespace App\Providers;
 
+use App\Events\CertificateApproveEvent;
 use App\Events\CertificateUpdateEvent;
 use App\Events\CourseApprovalEvent;
 use App\Events\CourseAssignedEvent;
 use App\Events\CourseCreatedEvent;
 use App\Events\CourseUpdateEvent;
 use App\Events\Welcome;
+use App\Listeners\CertificateApprovalListener;
 use App\Listeners\CertificateUpdateListener;
 use App\Listeners\CourseApprovalListener;
 use App\Listeners\CourseAssignedListener;
@@ -18,6 +20,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use phpseclib3\File\ASN1\Maps\Certificate;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -45,6 +48,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         CourseApprovalEvent::class => [
             CourseApprovalListener::class,
+        ],
+        CertificateApproveEvent::class => [
+            CertificateApprovalListener::class,
         ],
     ];
 

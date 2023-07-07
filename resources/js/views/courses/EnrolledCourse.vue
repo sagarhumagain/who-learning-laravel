@@ -20,7 +20,7 @@
                                 <th style="width:25%">Course Name</th>
                                 <th>Credit Hours</th>
                                 <th>Due Date</th>
-                                <th>Description</th>
+                                <th>Remarks</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -30,7 +30,7 @@
                                 </td>
                                 <td>{{course.credit_hours}}</td>
                                 <td>{{course.due_date}}</td>
-                                <td>{{course.description}}</td>
+                                <td>{{course.remarks}}</td>
                                 <td>
                                     <p class="color-red" v-if=" course.completed_date == null">Incomplete</p>
                                     <p class="color-yellow" v-else-if="course.is_approved == null && course.completed_date">Approval Pending</p>

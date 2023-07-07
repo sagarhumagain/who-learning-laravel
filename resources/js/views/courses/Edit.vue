@@ -6,6 +6,9 @@
                     <div class="card-body">
                         <h1 class="text-center">Update Course</h1>
                         <h4 class="text-center" v-if="form.remarks">Remarks: {{form.remarks}}</h4>
+                        <h4 class="text-center" v-if="certificate_remarks">Certificate Remarks: {{certificate_remarks}}</h4>
+
+
                         <hr/>
                         <form @submit.prevent="updateCourse()" @keydown="form.onKeydown($event)">
                           <div class="form-group col-lg-12 col-md-12">
@@ -162,7 +165,7 @@
                           </button>
                         </div>
                            <div class="modal-body">
-                            <iframe :src="'/'+form.certificate_path" v-if="form.certificate_path && form.certificate_path.length > 8" width="100%" height="500px"></iframe>
+                            <iframe :src="'/'+form.certificate_path+'#toolbar=0'" v-if="form.certificate_path && form.certificate_path.length > 8" width="100%" height="550"></iframe>
                             </div>
                         </form>
                     </div>
@@ -220,7 +223,8 @@ export default {
             masks: {
                     input: 'YYYY-MM-DD',
                 },
-            course : this.$route.params.course
+            course : this.$route.params.course,
+            certificate_remarks: null,
 
         }
     },
@@ -319,6 +323,7 @@ export default {
                     this.form.completed_date = response.data.users[0].pivot.completed_date;
                     this.form.certificate_path = response.data.users[0].pivot.certificate_path;
                     this.form.course_user_approved = response.data.users[0].pivot.is_approved || false;
+                    this.certificate_remarks = response.data.users[0].pivot.remarks;
                 }
                 if(response.data.course_assignment){
                     //created_by

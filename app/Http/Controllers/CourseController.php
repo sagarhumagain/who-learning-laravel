@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CertificateApproveEvent;
 use App\Events\CertificateUpdateEvent;
 use App\Events\CourseApprovalEvent;
 use App\Events\CourseAssignedEvent;
@@ -74,6 +75,9 @@ class CourseController extends BaseController
             })->with('courseCategories')->with('courseAssignment', function ($q) {
                 $q->with('createdBy');
             });
+
+
+
 
             if (auth()->user()->hasRole('supervisor')) {
                 $supervisee_ids = [];
@@ -262,7 +266,8 @@ class CourseController extends BaseController
                 throw new \Exception('Please contact the admin to edit courses which are already approved in the system.');
             }
             if ($user->hasRole('normal-user') && $course->is_approved == 0) {
-                $request['is_approved']= null;
+                dd('here');
+                $request['is_approved'] = null;
             }
             $course->update($request->all());
             if ($user->hasRole(['normal-user', 'supervisor'])) {
@@ -323,93 +328,118 @@ class CourseController extends BaseController
     public function updateEnrolledCourse(UpdateCourseValidation $request, MailService $mailService)
     {
         $user = auth()->user();
+        $data = [];
 
         try {
             $request['due_date'] = $request->due_date == "null" ? null : $request->due_date;
             $request['description'] = $request->description == "null" ? null : $request->description;
-            $course = Course::findOrFail($request->id);
 
-            $course->update($request->all());
-            if ($user->hasRole(['normal-user' , 'supervisor'])) {
+            $course = Course::with('users', 'courseCategories')->findOrFail($request->id);
+            $this->updateCourse($course, $request);
+
+            if ($user->hasRole(['normal-user', 'supervisor'])) {
                 event(new CourseUpdateEvent($course));
             }
+
             if ($request->course_category_ids) {
                 $courseCategoryIds = parent::filterArrayByKey($request->course_category_ids, 'id');
                 $course->courseCategories()->sync($courseCategoryIds);
             }
-            if ($user->hasRole(['super-admin'])) {
-                try {
-                    $assignmentFields = [
-                        'pillar_ids' => parent::filterArrayByKey($request->pillar_ids, 'id'),
-                        'staff_type_ids' => parent::filterArrayByKey($request->staff_type_ids, 'id'),
-                        'contract_type_ids' => parent::filterArrayByKey($request->contract_type_ids, 'id'),
-                        'staff_category_ids' => parent::filterArrayByKey($request->staff_category_ids, 'id'),
-                        'staff_designation_ids' => parent::filterArrayByKey($request->staff_designation_ids, 'id'),
-                        'course_id' => $course->id,
-                        'assigned_by_user_id' => $user->id,
 
-                    ];
-                    $users = User::leftJoin(DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
-                        $join->on('users.id', '=', 't2.user_id');
-                    })
-                    ->where(function ($q) use ($assignmentFields) {
-                        $q->whereHas('pillars', function ($q) use ($assignmentFields) {
-                            $q->whereIn('pillar_id', $assignmentFields['pillar_ids']);
-                        })
-                        ->orWhereIn('staff_type_id', $assignmentFields['staff_type_ids'])
-                        ->orWhereIn('contract_type_id', $assignmentFields['contract_type_ids'])
-                        ->orWhereIn('staff_category_id', $assignmentFields['staff_category_ids'])
-                        ->orWhereIn('designation_id', $assignmentFields['staff_designation_ids']);
-                    })->select('users.id as id')
-                    ->get();
-                    $course->users()->syncWithoutDetaching($users);
+            if ($user->hasRole('super-admin')) {
+                $assignmentFields = $this->prepareAssignmentFields($request, $course, $user);
+                $users = $this->getUsersForAssignment($assignmentFields);
+                $course->users()->syncWithoutDetaching($users);
 
-                    CourseAssignmentSetting::updateOrCreate(
-                        ['course_id' => $course->id],
-                        $assignmentFields
-                    );
-                    event(new CourseAssignedEvent($request));
+                CourseAssignmentSetting::updateOrCreate(
+                    ['course_id' => $course->id],
+                    $assignmentFields
+                );
+                event(new CourseAssignedEvent($request));
 
-                    //mail
-                    $mailService->sendCourseAssignedMail($assignmentFields, $course->name, $course->due_date);
+                $mailService->sendCourseAssignedMail($assignmentFields, $course->name, $course->due_date);
 
-
-                } catch (Exception $e) {
-                    $data['error'] = true;
-                    $data['message'] = $e->getMessage();
-                }
             } elseif (($user->hasRole('normal-user') || $user->hasRole('supervisor')) && $request->certificate_path != 'null') {
-                try {
-                    $course_user = CourseUser::where('course_id', $course->id)->where('user_id', $user->id)->firstOrFail();
-                    if ($request->certificate_path != $course_user->certificate_path) {
-                        $path =  $this->folder_path.DIRECTORY_SEPARATOR.auth()->user()->id;
-                        parent::checkFolderExist($path);
-                        $fileName = $course->id.'_certificate'.'.'.$request->certificate_path->getClientOriginalExtension();
-                        $request->certificate_path->move($path, $fileName);
-                        $data = [
-                            'certificate_path' => $path.DIRECTORY_SEPARATOR.$fileName,
-                            'completed_date' => $request->completed_date
-                        ];
-                    } else {
-                        $data['completed_date'] = $request->completed_date;
-                    }
-
-                    $course_user->update($data);
-                    event(new CertificateUpdateEvent($course_user));
-                    $mailService->sendCourseCompletedMail($course_user);
-                } catch (Exception $e) {
-                    $data['error'] = true;
-                    $data['message'] = $e->getMessage();
-                }
+                $this->updateCourseUserCertificate($course, $user, $request, $mailService);
             }
+
             $data['error'] = false;
             $data['message'] = 'Course updated successfully';
         } catch (\Exception $e) {
             $data['error'] = true;
-            $data['message']=$e->getMessage();
+            $data['message'] = $e->getMessage();
         }
+
         return response()->json($data);
     }
+
+    private function updateCourse($course, $request)
+    {
+        $course->update($request->all());
+    }
+
+    private function prepareAssignmentFields($request, $course, $user)
+    {
+        return [
+            'pillar_ids' => parent::filterArrayByKey($request->pillar_ids, 'id'),
+            'staff_type_ids' => parent::filterArrayByKey($request->staff_type_ids, 'id'),
+            'contract_type_ids' => parent::filterArrayByKey($request->contract_type_ids, 'id'),
+            'staff_category_ids' => parent::filterArrayByKey($request->staff_category_ids, 'id'),
+            'staff_designation_ids' => parent::filterArrayByKey($request->staff_designation_ids, 'id'),
+            'course_id' => $course->id,
+            'assigned_by_user_id' => $user->id,
+        ];
+    }
+
+    private function getUsersForAssignment($assignmentFields)
+    {
+        return User::leftJoin(DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
+            $join->on('users.id', '=', 't2.user_id');
+        })
+            ->where(function ($q) use ($assignmentFields) {
+                $q->whereHas('pillars', function ($q) use ($assignmentFields) {
+                    $q->whereIn('pillar_id', $assignmentFields['pillar_ids']);
+                })
+                ->orWhereIn('staff_type_id', $assignmentFields['staff_type_ids'])
+                ->orWhereIn('contract_type_id', $assignmentFields['contract_type_ids'])
+                ->orWhereIn('staff_category_id', $assignmentFields['staff_category_ids'])
+                ->orWhereIn('designation_id', $assignmentFields['staff_designation_ids']);
+            })
+            ->select('users.id as id')
+            ->get();
+    }
+
+    private function updateCourseUserCertificate($course, $user, $request, $mailService)
+    {
+        try {
+            $course_user = CourseUser::where('course_id', $course->id)
+                ->where('user_id', $user->id)
+                ->firstOrFail();
+
+            if ($request->certificate_path != $course_user->certificate_path) {
+                $path = $this->folder_path . DIRECTORY_SEPARATOR . auth()->user()->id;
+                parent::checkFolderExist($path);
+                $fileName = $course->id . '_certificate' . '.' . $request->certificate_path->getClientOriginalExtension();
+                $request->certificate_path->move($path, $fileName);
+                $data = [
+                    'certificate_path' => $path . DIRECTORY_SEPARATOR . $fileName,
+                    'completed_date' => $request->completed_date
+                ];
+            } else {
+                $data['completed_date'] = $request->completed_date;
+            }
+            $data['is_approved'] = null;
+            $data['remarks'] = null;
+
+            $course_user->update($data);
+            event(new CertificateUpdateEvent($course_user));
+            $mailService->sendCourseCompletedMail($course_user);
+        } catch (Exception $e) {
+            $data['error'] = true;
+            $data['message'] = $e->getMessage();
+        }
+    }
+
 
     public function listUnapprovedCourses()
     {
@@ -447,7 +477,7 @@ class CourseController extends BaseController
         $user = auth()->user();
         $query = CourseUser::join('courses', 'course_user.course_id', '=', 'courses.id')
         ->join('users', 'course_user.user_id', '=', 'users.id')
-        ->select(DB::raw('course_user.user_id as user_id,courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.name as createdBy, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date,course_user.certificate_path'))
+        ->select(DB::raw('course_user.user_id as user_id,courses.name as name, courses.credit_hours as credit_hours, course_user.is_approved as is_approved, users.name as created_by, users.email as email, course_user.completed_date as completed_date, courses.id as course_id, courses.due_date as due_date,course_user.certificate_path'))
         ->where('course_user.course_id', $request->course_id);
 
         if ($user->hasRole('super-admin')) {
@@ -534,15 +564,15 @@ class CourseController extends BaseController
         }
         return $user_course;
     }
-    public function approveCourse(Request $request, MailService $mailService)
+    public function approveCertificate(Request $request, MailService $mailService)
     {
         try {
             $course_user = CourseUser::where('user_id', $request->user_id)->where('course_id', $request->course_id)->first();
-            $course_user->update(['is_approved'=> 1]);
-            event(new CourseApprovalEvent($course_user));
-            $mailService->sendCourseApprovedMail($course_user);
+            $course_user->update(['is_approved'=> $request->is_approved,'remarks' => $request->remarks]);
+            event(new CertificateApproveEvent($course_user));
+            $mailService->sendCertificateApprovedMail($course_user);
             $data['error'] = false;
-            $data['message'] = "Course Approved Successfully";
+            $data['message'] = "Certificate Approved Successfully";
         } catch (Exception $e) {
             $data['error'] = true;
             $data['message'] = $e->getMessage();

@@ -109,7 +109,7 @@ Route::group(
         Route::get('/statistics/user-yearly-progress', [StatisticsController::class, 'fetchUserYearlyProgress']);
 
         Route::get('/approvals/courses', [CourseController::class, 'listUnapprovedCourses']);
-        Route::post('/approve-course', [CourseController::class, 'approveCourse']);
+        Route::post('/approve-certificate', [CourseController::class, 'approveCertificate']);
 
         Route::get('/approve/certificate', [CourseController::class, 'getUnapprovedCertificate']);
 

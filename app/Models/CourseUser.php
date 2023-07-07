@@ -18,6 +18,7 @@ class CourseUser extends Model implements Auditable
       'course_id',
       'certificate_path',
       'completed_date',
-      'is_approved'
+      'is_approved',
+      'remarks',
     ];
 }

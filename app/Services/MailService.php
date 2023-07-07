@@ -39,7 +39,7 @@ class MailService
 
     public function sendContractApproveMail($request)
     {
-        try{
+        try {
 
             $data = [
                 'subject' => 'Contract Update',
@@ -48,8 +48,7 @@ class MailService
             ];
             $supervisor_email = $request->employee->supervisor->email;
             Mail::to($supervisor_email)->send(new ContractUpdate($data));
-        }
-        catch(Exception $e){
+        } catch(Exception $e) {
             return $e->getMessage();
         }
     }
@@ -91,16 +90,24 @@ class MailService
         }
     }
 
-    public function sendCourseApprovedMail($data)
+    public function sendCertificateApprovedMail($data)
     {
         $course_name = Course::where('id', $data->course_id)->first()->name;
         $user = User::where('id', $data->user_id)->first();
-        $data = [
-            'subject' => 'Course Approved',
-            'message' => 'Your course '.$course_name.' has been approved.',
-            'url' => FacadesRequest::root().'/enrolled/courses',
-        ];
 
+        if($data->is_approved == 1) {
+            $data = [
+                'subject' => 'Certificate approved for '.$course_name,
+                'message' => 'Your certificate for course '.$course_name.' has been approved.',
+                'url' => FacadesRequest::root().'/enrolled/courses',
+            ];
+        } else {
+            $data = [
+                'subject' => 'Certificate rejected for '.$course_name,
+                'message' => 'Your certificate for course '.$course_name.' has been rejected.',
+                'url' => FacadesRequest::root().'/enrolled/courses',
+            ];
+        }
         Mail::to($user->email)->send(new CourseMail($data));
     }
 
