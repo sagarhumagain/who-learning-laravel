@@ -1,6 +1,8 @@
 <template>
     <div class="container" v-role:any="'super-admin|supervisor'">
-        <div class="row pt-5" >
+        <search-filter :api_url='this.api_url' title="User" placeholder="Type email or name" />
+
+        <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
@@ -377,6 +379,8 @@
     import { Button, HasError, AlertError } from 'vform/src/components/bootstrap5'
     import ErrorMsg from '@/components/error-msg';
     import Modal from '@/components/Modal';
+    import SearchFilter from '@/components/SearchFilter';
+
     export default {
         components: {
             HasError,
@@ -384,7 +388,8 @@
             Modal,
             PageNotFound,
             PaginationWrapper,
-            ErrorMsg
+            ErrorMsg,
+            SearchFilter
         },
         data() {
 
@@ -622,6 +627,9 @@
             this.loadChoices();
             this.emitter.on("AfterCreate", () => {
                 this.loadUsers();
+            })
+            this.emitter.on("AfterSearch", (item) => {
+                this.users = item;
             })
             this.emitter.on('paginating',(item)=>{
                 this.users = item

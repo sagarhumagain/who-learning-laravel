@@ -1,6 +1,7 @@
 <template>
     <div class="container">
-        <div class="row pt-5" >
+        <search-filter :api_url='this.api_url' title="Certificate"  />
+        <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
@@ -82,6 +83,7 @@
     import ErrorMsg from '@/components/error-msg';
     import ModalView from '@/components/ModalView';
     import PaginationWrapper from '@/components/Pagination/PaginationWrapper.vue';
+    import SearchFilter from '@/components/SearchFilter.vue';
 
 
     export default {
@@ -93,6 +95,7 @@
             ErrorMsg,
             ModalView,
             PaginationWrapper,
+            SearchFilter
         },
         /*Filling the data into form*/
         data() {
@@ -270,6 +273,11 @@
             this.emitter.on("AfterCreate", () => {
                 this.loadCourse();
             })
+
+            this.emitter.on("AfterSearch", (item) => {
+                this.courses = item
+            })
+
             this.emitter.on('paginating',(item)=>{
                 this.courses = item
             })

@@ -37,27 +37,29 @@ class UserController extends Controller
         $this->mailService = $mailService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
+
+        $query = $this->user->filter($request->all())
+            ->with('roles', 'employee', 'pillars')
+            ->with('courses', function ($q) {
+                $q->where('courses.is_approved', 1)->orWhereNull('courses.is_approved');
+            })
+            ->with('completedCourses')
+            ->with('contracts', function ($q) {
+                $q->latest();
+            })
+            ->latest();
+
         if (auth()->user()->hasRole('supervisor')) {
-            $data= $this->user->with('roles', 'employee', 'pillars')->with('courses', function ($q) {
-                $q->where('courses.is_approved', 1)->orWhereNull('courses.is_approved');
-            })
-            ->with('completedCourses')
-            ->with('contracts', function ($q) {
-                $q->latest()->get();
-            })->whereHas('employee', function ($q) {
+            $data = $query->whereHas('employee', function ($q) {
                 $q->where('supervisor_user_id', auth()->user()->id);
-            })->latest()->paginate(50);
-        } else {
-            $data= $this->user->with('roles', 'employee', 'pillars')->with('courses', function ($q) {
-                $q->where('courses.is_approved', 1)->orWhereNull('courses.is_approved');
             })
-            ->with('completedCourses')
-            ->with('contracts', function ($q) {
-                $q->latest()->get();
-            })->latest()->paginate(50);
+                ->paginate(50);
+        } else {
+            $data = $query->paginate(50);
         }
+
 
         return $data;
     }

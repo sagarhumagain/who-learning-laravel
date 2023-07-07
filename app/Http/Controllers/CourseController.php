@@ -76,9 +76,6 @@ class CourseController extends BaseController
                 $q->with('createdBy');
             });
 
-
-
-
             if (auth()->user()->hasRole('supervisor')) {
                 $supervisee_ids = [];
                 $supervisee_ids = Employee::where('supervisor_user_id', auth()->user()->id)->pluck('user_id')->toArray();
@@ -441,7 +438,7 @@ class CourseController extends BaseController
     }
 
 
-    public function listUnapprovedCourses()
+    public function listUnapprovedCourses(Request $request)
     {
         $user = auth()->user();
 
@@ -454,20 +451,15 @@ class CourseController extends BaseController
         }
         $user_course = $query->where('course_user.is_approved', null)
         ->whereNotNull('course_user.completed_date')
+        ->when($request['search'] ?? null, function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('courses.name', 'like', '%' . $search . '%')
+                    ->orWhere('users.name', 'like', '%' . $search . '%')
+                    ->orWhere('users.email', 'like', '%' . $search . '%');
+            });
+        })
         ->orderBy('course_user.updated_at', 'desc')
         ->paginate(50);
-
-        // $query->where('course_user.is_approved', null);
-
-        // if ($request->start_date && $request->end_date) {
-        //     //filter by date
-        //     $query->whereBetween('course_user.completed_date', [Carbon::parse($request->start_date)->startOfDay(), Carbon::parse($request->end_date)->endOfDay()]);
-        // } else {
-        //     //current year data
-        //     $query->whereYear('course_user.completed_date', date('Y'));
-        // }
-
-        // $user_course = $query->paginate(50);
 
         return $user_course;
     }

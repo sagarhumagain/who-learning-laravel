@@ -10,7 +10,9 @@ use OwenIt\Auditing\Auditable as AuditableTrait;
 
 class CourseUser extends Model implements Auditable
 {
-    use HasFactory, SoftDeletes, AuditableTrait;
+    use HasFactory;
+    use SoftDeletes;
+    use AuditableTrait;
     protected $table = 'course_user';
     protected $guarded = [];
     protected $fillable = [
@@ -21,4 +23,7 @@ class CourseUser extends Model implements Auditable
       'is_approved',
       'remarks',
     ];
+
+
+
 }

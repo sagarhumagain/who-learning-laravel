@@ -83,11 +83,10 @@
                                             <i class="fa fa-times" title="Disapprove Course"></i>
                                         </a>
                                     </div>
-
-
                                 </td>
                             </tr>
-                            </tbody></table>
+                            </tbody>
+                        </table>
                     </div>
 
                     <div class="card-footer">
@@ -335,31 +334,26 @@
 
             /*==== Start of Show existing Course function ====*/
             async loadCourses(page = null) {
-
                 const {data} = await axios.get(this.api_url + (page ? '?page=' + page : ''));
                 this.courses = data;
             }
             /*==== End of Show existing Course function ====*/
-
         },
         created() {
 
-              this.loadCourses(); //load the course in the table
+            this.loadCourses(); //load the course in the table
               //Load the courselist if add or created a new course
-              this.emitter.on("AfterCreate", () => {
+            this.emitter.on("AfterCreate", () => {
                   this.loadCourses(this.page);
-              })
-              this.emitter.on("AfterSearch", (data) => {
+            })
+            this.emitter.on("AfterSearch", (data) => {
                   this.courses = data
-              })
+            })
 
-              this.emitter.on('paginating',(item)=>{
+            this.emitter.on('paginating',(item)=>{
                 this.courses = item
                 this.page = item.current_page
-                })
-
-
-
+            })
 
         }
 
