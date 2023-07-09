@@ -160,7 +160,8 @@
                           </div>
                         <div class="col-12 mb-2 text-center mt-3 ">
 
-                          <button type="submit" :disabled="disabled || course_user_disabled" class="btn-fill text-center">
+
+                          <button type="submit" v-if="!course_user_disabled" :disabled="disabled" class="btn-fill text-center">
                             Update
                           </button>
                         </div>
@@ -265,7 +266,6 @@ export default {
                 formData.append('_method', 'PUT')
 
                 const response  = await axios.post('/api/v1/update-assigned-course', formData, config)
-                this.disabled = true
                 if(response.data.error == true){
                     this.$swal({
                         toast: true,
@@ -360,7 +360,6 @@ export default {
             }
             else if(this.$gates.hasAnyRole('normal-user|supervisor' ) && this.form.assigned_by_user_id == this.user.id){
                 this.course_disabled = false;
-
             }else{
                 this.course_disabled = true;
             }

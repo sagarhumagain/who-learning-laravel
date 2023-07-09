@@ -12,6 +12,7 @@ use OwenIt\Auditing\Auditable as AuditableTrait;
 use App\Models\Employee;
 use App\Models\Course;
 use App\Models\Pillar;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable implements Auditable
@@ -21,6 +22,7 @@ class User extends Authenticatable implements Auditable
     use Notifiable;
     use HasRoles;
     use AuditableTrait;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.

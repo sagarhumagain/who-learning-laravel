@@ -153,7 +153,7 @@
                             <div class="col-12 mb-2 text-center mt-3 ">
 
 
-                          <button type="submit" :disabled="form.busy" class="btn-fill text-center">
+                          <button type="submit" :disabled="disabled" class="btn-fill text-center">
                             Create
                           </button>
                             </div>
@@ -191,6 +191,7 @@ export default {
             masks: {
               input: mask
             },
+            disabled:false,
             form: new Form({
               id:null,
               name: null,

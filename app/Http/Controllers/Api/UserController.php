@@ -150,9 +150,15 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
-        return ['message' =>'User Deleted'];
+        try {
+            User::findOrFail($id)->delete();
+            $data['error']= false ;
+            $data['message']='User Info! Has Been Deleted';
+        } catch (\Exception $exception) {
+            $data['error']= true;
+            $data['message']=$exception->getMessage();
+        }
+
     }
 
     public function assignCourse($id)

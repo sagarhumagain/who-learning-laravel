@@ -145,7 +145,7 @@ class CourseController extends BaseController
             //course created event
             if ($user->hasRole(['normal-user', 'supervisor'])) {
                 event(new CourseCreatedEvent($course));
-                $mailService->sendCourseCreatedMail($course->name, $course->id);
+                $mailService->sendCourseCreatedMail($course->name, $course->id, $user);
             }
             //attached course categories
             if ($request->course_category_ids) {
@@ -188,10 +188,11 @@ class CourseController extends BaseController
             event(new CourseAssignedEvent($request));
             //update certificate for normal users
 
-            $mailService->sendCourseAssignedMail($assignmentFields, $course->name, $course->due_date);
-
+            if($user->hasRole('super-admin')) {
+                $mailService->sendCourseAssignedMail($assignmentFields, $course->name, $course->due_date);
+            }
             try {
-                if ($user->hasRole('normal-user') && $request->certificate_path && $request->completed_date) {
+                if (($user->hasRole('normal-user') || $user->hasRole('supervisor'))  && $request->certificate_path && $request->completed_date) {
                     $course_user = CourseUser::where('course_id', $course->id)->where('user_id', $user->id)->firstOrFail();
 
                     $path =  $this->folder_path.DIRECTORY_SEPARATOR.auth()->user()->id;
@@ -204,7 +205,7 @@ class CourseController extends BaseController
                         ];
                     $course_user->update($data);
                     event(new CertificateUpdateEvent($course_user));
-                    $mailService->sendCourseCompletedMail($course_user);
+                    $mailService->sendCourseCompletedMail($course_user, $user);
                 }
             } catch (Exception $e) {
                 $data['error'] = true;
@@ -263,7 +264,6 @@ class CourseController extends BaseController
                 throw new \Exception('Please contact the admin to edit courses which are already approved in the system.');
             }
             if ($user->hasRole('normal-user') && $course->is_approved == 0) {
-                dd('here');
                 $request['is_approved'] = null;
             }
             $course->update($request->all());
@@ -352,6 +352,7 @@ class CourseController extends BaseController
                     ['course_id' => $course->id],
                     $assignmentFields
                 );
+
                 event(new CourseAssignedEvent($request));
 
                 $mailService->sendCourseAssignedMail($assignmentFields, $course->name, $course->due_date);
@@ -429,12 +430,21 @@ class CourseController extends BaseController
             $data['remarks'] = null;
 
             $course_user->update($data);
-            event(new CertificateUpdateEvent($course_user));
-            $mailService->sendCourseCompletedMail($course_user);
+
+            try {
+                event(new CertificateUpdateEvent($course_user));
+                $mailService->sendCourseCompletedMail($course_user, auth()->user());
+            } catch (Exception $e) {
+                $data['error'] = true;
+                $data['message'] = $e->getMessage();
+            }
+
+
         } catch (Exception $e) {
             $data['error'] = true;
             $data['message'] = $e->getMessage();
         }
+
     }
 
 

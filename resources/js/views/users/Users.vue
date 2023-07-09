@@ -449,6 +449,10 @@
                     id: null,
                     user_id:null,
                     supervisor_user_id:null,
+                    address: null,
+                    name: null,
+                    primary_contact: null,
+                    secondary_contact: null,
                 }),
                 errors:{},
                 api_url: '/api/v1/user',
@@ -493,18 +497,12 @@
                 this.emitter.emit('editing', user_data);
             },
             editUserProfile(user){
-                this.form.reset();
-                const user_data = user
-                user_data.user_id = user.id
-                if(user_data.employee){
-                    user_data.supervisor_user_id = user.employee.supervisor_user_id
-                    user_data.id = user_data.employee.id
-                }else{
-                    user_data.id = null
-                }
+                this.pform.reset();
+                const profile = user.employee ? user.employee : null;
+                profile.name = user.name;
                 this.editmode = true;
                 $('#addProfile').modal('show');
-                this.emitter.emit('editing', user_data);
+                this.emitter.emit('editing', profile);
             },
             editContractModal(contract,pillar_id){
                 this.editmode = true;
@@ -530,10 +528,10 @@
                                 'success'
                             )
                             this.emitter.emit('AfterCreate');
-                        }).catch(() => {
+                        }).catch((error) => {
                             this.$swal(
                                 'Warning!',
-                                'Unauthorized Access to delete.',
+                                error.response.data.message,
                                 'warning'
                             )
                         })
@@ -542,7 +540,6 @@
                 })
             },
             approveUser(user) {
-
                 if(!user.contracts.length || !user.contracts.slice(-1)[0]){
                     this.$swal(
                         'Warning!',
@@ -561,6 +558,7 @@
                     if (result.value) {
                         this.form.reset();
                         this.form.fill(user)
+                        console.log(this.form)
                         this.form.is_first_time_login = 0;
                         this.form.put('/api/v1/user/'+user.id).then(() => {
                             this.$swal(

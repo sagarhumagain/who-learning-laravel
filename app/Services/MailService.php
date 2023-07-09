@@ -56,7 +56,7 @@ class MailService
 
 
 
-    public function sendCourseCreatedMail($course_name, $course_id)
+    public function sendCourseCreatedMail($course_name, $course_id, $user)
     {
         $data = [
             'subject' => 'Course Created',
@@ -64,15 +64,16 @@ class MailService
             'url' => FacadesRequest::root().'/'.'courses/'.$course_name.'/edit',
         ];
         //get supervisor email
-        $admins = $this->getAdmins();
-        //send mail to admins
-        foreach ($admins as $admin) {
-            Mail::to($admin->email)->send(new CourseMail($data));
-        }
+        $supervisor_email = $user->employee->supervisor->email;
+
+        $admins =  $this->getAdmins();
+
+        Mail::to($supervisor_email)->cc($admins)->send(new CourseMail($data));
+
     }
 
 
-    public function sendCourseCompletedMail($data)
+    public function sendCourseCompletedMail($data, $user)
     {
         $course_name = Course::where('id', $data->course_id)->first()->name;
         $link = FacadesRequest::root().'/'.'approve/certificate/user_id/'.$data->user_id.'/course_id/'.$data->course_id.'';
@@ -81,13 +82,11 @@ class MailService
             'message' => auth()->user()->name.' has completed the course '.$course_name.'. Please review the course and approve it.',
             'url' => $link,
         ];
-
-        //get supervisor email
         $admins =  $this->getAdmins();
+        $supervisor_email = $user->employee->supervisor->email;
 
-        foreach ($admins as $admin) {
-            Mail::to($admin->email)->send(new CourseMail($data));
-        }
+        Mail::to($supervisor_email)->cc($admins)->send(new CourseMail($data));
+
     }
 
     public function sendCertificateApprovedMail($data)
@@ -115,7 +114,7 @@ class MailService
     {
         $admins =  User::whereHas('roles', function ($query) {
             $query->where('name', 'course-admin')->orWhere('name', 'super-admin');
-        })->get();
+        })->pluck('email')->toArray();
         return $admins;
     }
 

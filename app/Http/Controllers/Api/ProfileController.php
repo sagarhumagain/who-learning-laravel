@@ -88,12 +88,14 @@ class ProfileController extends BaseController
             Employee::updateOrCreate(['id' => $request->id], $request->all());
             $user = User::find($request->user_id);
 
-            if ($user->is_first_time_login == 1) {
+            if ($user->is_first_time_login == 1 && $user->hasRole('normal-user')) {
                 $this->mailService->sendProfileApprovalMail($request);
+                $data['message']='Your Profile Info! Has Been Updated Successfully. An email has been sent to your supervisor for approval. Please update your contract details.';
             }
 
             $data['error']='false';
-            $data['message']='Your Profile Info! Has Been Updated Successfully. An email has been sent to your supervisor for approval. Please update your contract details.';
+            $data['message']='Profile Info! Has Been Updated';
+
         } catch (\Exception $e) {
             $data['error']='true';
             $data['message']=$e->getMessage();
