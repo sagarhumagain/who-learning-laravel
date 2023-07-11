@@ -177,10 +177,8 @@ class CourseController extends BaseController
             })->select('users.id as id')
             ->get();
 
-            //attached course to users if created by normal user or supervisor
-            if($user->hasRole(['normal-user', 'supervisor'])) {
-                $course->users()->attach($users);
-            }
+            //attached course to users
+            $course->users()->attach($users);
 
             //course assignement setting create
             CourseAssignmentSetting::create($assignmentFields);
