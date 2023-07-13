@@ -145,7 +145,7 @@ class CourseController extends BaseController
             //course created event
             if ($user->hasRole(['normal-user', 'supervisor'])) {
                 event(new CourseCreatedEvent($course));
-                $mailService->sendCourseCreatedMail($course->name, $course->id, $user);
+                // $mailService->sendCourseCreatedMail($course->name, $course->id, $user);
             }
             //attached course categories
             if ($request->course_category_ids) {
@@ -203,7 +203,7 @@ class CourseController extends BaseController
                         ];
                     $course_user->update($data);
                     event(new CertificateUpdateEvent($course_user));
-                    $mailService->sendCourseCompletedMail($course_user, $user);
+                    // $mailService->sendCourseCompletedMail($course_user, $user);
                 }
             } catch (Exception $e) {
                 $data['error'] = true;
@@ -431,7 +431,7 @@ class CourseController extends BaseController
 
             try {
                 event(new CertificateUpdateEvent($course_user));
-                $mailService->sendCourseCompletedMail($course_user, auth()->user());
+                // $mailService->sendCourseCompletedMail($course_user, auth()->user());
             } catch (Exception $e) {
                 $data['error'] = true;
                 $data['message'] = $e->getMessage();
