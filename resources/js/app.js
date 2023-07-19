@@ -5,29 +5,27 @@
  */
 require('./bootstrap');
 
-import { createApp } from 'vue'
 import router from '@/router';
+import { apiRepositories } from '@/services/api';
 import store from '@/store';
-import VueSidebarMenu from 'vue-sidebar-menu';
 import 'bootstrap';
-import {apiRepositories} from '@/services/api';
-import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 import moment from 'moment';
+import { createApp } from 'vue';
+import VueSidebarMenu from 'vue-sidebar-menu';
+import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 
 
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { fas } from '@fortawesome/free-solid-svg-icons'
-library.add(fas);
+import { dom, library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from '@fortawesome/free-brands-svg-icons';
-library.add(fab);
 import { far } from '@fortawesome/free-regular-svg-icons';
-library.add(far);
-import { dom } from "@fortawesome/fontawesome-svg-core";
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import VCalendar from 'v-calendar';
 import 'v-calendar/dist/style.css';
-import { getRoles } from '@/helpers/auth';
 import VueGates from 'vue-gates';
+library.add(fas);
+library.add(fab);
+library.add(far);
 
 dom.watch();
 
@@ -44,14 +42,14 @@ app.use(store);
 app.use(VueSidebarMenu);
 
 //vform
+import VueProgressBar from "@aacassandra/vue3-progressbar";
 import {
-  Button,
-  HasError,
-  AlertError,
-  AlertErrors,
-  AlertSuccess
-} from
-'vform/src/components/bootstrap5'
+    AlertError,
+    AlertErrors,
+    AlertSuccess,
+    Button,
+    HasError
+} from 'vform/src/components/bootstrap5';
 
 app.component(Button.name, Button);
 app.component(HasError.name, HasError);
@@ -75,7 +73,6 @@ app.config.globalProperties.$filters = {
       return moment(created).toNow('UTC'); // April 7th 2019,(h:mm:ss a) 3:34:44 pm
   },
 }
-import VueProgressBar from "@aacassandra/vue3-progressbar";
 const option = {
     color: '#008dc9',
     failedColor: '#874b4b',
@@ -96,8 +93,8 @@ const emitter = mitt();
 app.config.globalProperties.emitter = emitter;
 
 // /*Sweet alert start*/
-import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import VueSweetalert2 from 'vue-sweetalert2';
 
 const options = {
     confirmButtonColor: '#41b882',
