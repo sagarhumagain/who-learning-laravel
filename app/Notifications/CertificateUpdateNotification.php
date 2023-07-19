@@ -60,7 +60,8 @@ class CertificateUpdateNotification extends Notification
         $user = User::find($this->data['user_id']);
         $course = Course::find($this->data['course_id']);
         $message = 'Certificate for '.$course->name.' has been updated by '.$user->name.'.';
-        $link = Request::root().'/'.'courses/'.$this->data['course_id'].'/edit';
+        $link = Request::root().'/'.'approve/certificate/user_id/'.$this->data['user_id'].'/course_id/'.$this->data['course_id'];
+
         return [
 
             'title' => 'Course Completed',

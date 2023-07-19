@@ -10,17 +10,18 @@
 
         <div class="dropdown-divider"></div>
 
-        <a v-for="notification in notifications" :key="notification.id" class="dropdown-item notification d-flex justify-content-between">
-        <div class="notification-content">
-            <h5 class="m-0">{{notification.data.title}} </h5>
-            <p class="m-0">{{notification.data.excerpt.substring(0,30)+'...'}}</p>
+        <div v-for="notification in notifications" :key="notification.id" href="" class="dropdown-item notification">
+            <div @click="redirectToNotificationDetails(notification.data)" class="d-flex align-items-center justify-content-between">
+                <div class="notification-content">
+                    <h5 class="m-0">{{notification.data.title}} </h5>
+                    <p class="m-0">{{notification.data.excerpt.substring(0,30)+'...'}}</p>
+                </div>
+                <div class="d-flex flex-column align-items-end">
+                <span class=" text-muted text-sm">{{$filters.duration(notification.created_at)}} ago</span>
+                <a class=" text-muted text-sm" @click="redirectToNotificationDetails(notification.data)">Read More</a>
+                </div>
+            </div>
         </div>
-        <div class="d-flex flex-column align-items-end">
-        <span class=" text-muted text-sm">{{$filters.duration(notification.created_at)}} ago</span>
-        <a class=" text-muted text-sm" :href="notification.data.link">Read More</a>
-        </div>
-
-        </a>
 
     </div>
 </template>
@@ -54,6 +55,17 @@ export default {
             });
 
         },
+        redirectToNotificationDetails(props) {
+
+            props.link = props.link ? props.link : 'Link not available';
+
+
+        // Redirect to Detail Component with props
+        this.$router.push({
+            name: 'notification-details',
+            params: props
+        });
+        }
     },
 
     created(){

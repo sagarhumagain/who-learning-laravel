@@ -77,6 +77,7 @@ class CourseAssignedNotification extends Notification
         return [
             'title' => 'New Course Assigned',
             'excerpt' => $message,
+            'link' => '/courses/'.$this->course_assignment_setting['id'].'/edit',
         ];
     }
 }

@@ -25,6 +25,8 @@ const ApproveCertificates = () => import('@/views/approvals/Certificates.vue' /*
 const EnrolledCourse = () => import('@/views/courses/EnrolledCourse.vue' /* webpackChunkName: "resource/js/components/assignedcourse" */)
 const Sync = () => import('@/views/Sync.vue' /* webpackChunkName: "resource/js/components/sync" */)
 const CourseUserReport = () => import('@/components/Pages/CourseUserReport.vue' /* webpackChunkName: "resource/js/components/CourseUserReport" */)
+const NotificationDetails = () => import('@/components/NotificationDetails.vue' /* webpackChunkName: "resource/js/components/NotificationDetails" */)
+
 
 
 
@@ -144,6 +146,16 @@ let routeChildrens;
                         title:`Designation`
                     }
                 },
+                {
+                    name: 'notification-details',
+                    path: '/notification-details/:title/:excerpt/:link',
+                    component: NotificationDetails,
+                    meta: {
+                      title: 'Notification Details'
+                    },
+                    props: true
+                  },
+
 
 
 
@@ -175,6 +187,7 @@ const Routes = [
         name: "sync",
         component: Sync,
     },
+
 
 
 
