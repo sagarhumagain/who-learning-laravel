@@ -3,29 +3,26 @@ import * as VueRouter from 'vue-router'
 
 
 /* Guest Component */
-const Login = () => import('@/views/Login.vue' /* webpackChunkName: "resource/js/components/login" */)
-const Register = () => import('@/views/Register.vue' /* webpackChunkName: "resource/js/components/register" */)
 /* Guest Component */
 
 /* Layouts */
-const DahboardLayout = () => import('@/layouts/Dashboard.vue' /* webpackChunkName: "resource/js/components/layouts/dashboard" */)
+import NotificationDetails from '@/components/NotificationDetails.vue'
+import CourseUserReport from '@/components/Pages/CourseUserReport.vue'
+import Designation from '@/components/Pages/Designation.vue'
+import DashboardLayout from '@/layouts/Dashboard.vue'
+import Dashboard from '@/views/Dashboard.vue'
+import Sync from '@/views/Sync.vue'
+import ApproveCertificates from '@/views/approvals/Certificates.vue'
+import CourseApproveEdit from '@/views/approvals/CourseApproveEdit.vue'
+import ApproveCourses from '@/views/approvals/Courses.vue'
+import Courses from '@/views/courses/Courses.vue'
+import CourseCreate from '@/views/courses/Create.vue'
+import CourseEdit from '@/views/courses/Edit.vue'
+import EnrolledCourse from '@/views/courses/EnrolledCourse.vue'
+import Employee from '@/views/users/Employee.vue'
+import Users from '@/views/users/Users.vue'
 /* Layouts */
 
-/* Authenticated Component */
-const Dashboard = () => import('@/views/Dashboard.vue' /* webpackChunkName: "resource/js/components/dashboard" */)
-const CourseCreate = () => import('@/views/courses/Create.vue' /* webpackChunkName: "resource/js/components/coursecreate" */)
-const CourseEdit = () => import('@/views/courses/Edit.vue' /* webpackChunkName: "resource/js/components/courseedit" */)
-const CourseApproveEdit = () => import('@/views/approvals/CourseApproveEdit.vue' /* webpackChunkName: "resource/js/components/courseapproveedit" */)
-const Users = () => import('@/views/users/Users.vue' /* webpackChunkName: "resource/js/components/users" */)
-const Courses = () => import('@/views/courses/Courses.vue' /* webpackChunkName: "resource/js/components/courses" */)
-const Employee = () => import('@/views/users/Employee.vue' /* webpackChunkName: "resource/js/components/employee" */)
-const Designation = () => import('@/components/Pages/Designation.vue' /* webpackChunkName: "resource/js/components/designation" */)
-const ApproveCourses = () => import('@/views/approvals/Courses.vue' /* webpackChunkName: "resource/js/components/approvalcourses" */)
-const ApproveCertificates = () => import('@/views/approvals/Certificates.vue' /* webpackChunkName: "resource/js/components/certificates" */)
-const EnrolledCourse = () => import('@/views/courses/EnrolledCourse.vue' /* webpackChunkName: "resource/js/components/assignedcourse" */)
-const Sync = () => import('@/views/Sync.vue' /* webpackChunkName: "resource/js/components/sync" */)
-const CourseUserReport = () => import('@/components/Pages/CourseUserReport.vue' /* webpackChunkName: "resource/js/components/CourseUserReport" */)
-const NotificationDetails = () => import('@/components/NotificationDetails.vue' /* webpackChunkName: "resource/js/components/NotificationDetails" */)
 
 
 
@@ -193,7 +190,7 @@ const Routes = [
 
     {
         path:"/",
-        component:DahboardLayout,
+        component:DashboardLayout,
         meta:{
             middleware:"auth"
         },
