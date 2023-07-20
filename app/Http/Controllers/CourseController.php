@@ -186,7 +186,7 @@ class CourseController extends BaseController
             event(new CourseAssignedEvent($request));
             //update certificate for normal users
 
-            if($user->hasRole('super-admin')) {
+            if($user->hasPermissionTo('course_assignment')) {
                 $mailService->sendCourseAssignedMail($assignmentFields, $course->name, $course->due_date);
             }
             try {
@@ -341,7 +341,7 @@ class CourseController extends BaseController
                 $course->courseCategories()->sync($courseCategoryIds);
             }
 
-            if ($user->hasRole('super-admin')) {
+            if ($user->hasPermissionTo('course_assignment')) {
                 $assignmentFields = $this->prepareAssignmentFields($request, $course, $user);
                 $users = $this->getUsersForAssignment($assignmentFields);
                 $course->users()->syncWithoutDetaching($users);

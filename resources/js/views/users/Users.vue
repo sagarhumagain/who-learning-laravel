@@ -1,5 +1,5 @@
 <template>
-    <div class="container" v-role:any="'super-admin|supervisor'">
+    <div class="container" v-role:any="'super-admin|supervisor|course-admin'">
         <search-filter :api_url='this.api_url' title="User" placeholder="Type email or name" />
 
         <div class="row">

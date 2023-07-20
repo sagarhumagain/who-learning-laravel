@@ -36,7 +36,7 @@ class PermissionSeeder extends Seeder
         $course_approve_permission = Permission::create(['name' => 'course_approve','guard_name'=>'api']);
         $courseuser_approve_permission = Permission::create(['name' => 'courseuser_approve','guard_name'=>'api']);
 
-        $admin = Role::where('name', 'super-admin')->first();
+        $admin = Role::whereIn('name', ['super-admin','course-admin'])->first();
         $course_permission->assignRole($admin);
         $course_approve_permission->assignRole($admin);
         $courseuser_approve_permission->assignRole($admin);

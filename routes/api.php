@@ -49,7 +49,7 @@ Route::group(
     function () {
         Route::post('/enroll/course', [CourseController::class, 'enrollToCourse']);
         Route::get('/course_user', [CourseController::class, 'listEnrolledCourse']);
-        Route::group(['middleware' => ['role:super-admin|supervisor']], function () {
+        Route::group(['middleware' => ['role:super-admin|supervisor|course-admin']], function () {
             Route::apiResources(['user'=>UserController::class]);
             Route::apiResources(['designation' => DesignationController::class]);
             Route::post('/assign-course-to-new-users', [CourseController::class, 'assignCourseToNewUsers']);

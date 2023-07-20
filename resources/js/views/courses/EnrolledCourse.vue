@@ -20,6 +20,7 @@
                                 <th style="width:25%">Course Name</th>
                                 <th>Credit Hours</th>
                                 <th>Due Date</th>
+                                <th> URL </th>
                                 <th>Remarks</th>
                                 <th>Status</th>
                                 <th>Actions</th>
@@ -30,6 +31,10 @@
                                 </td>
                                 <td>{{course.credit_hours}}</td>
                                 <td>{{course.due_date}}</td>
+                                <td>
+                                    <a :href="course.url" target="_blank" v-if="/^http/.test(course.url)">Course URL</a>
+                                    <p v-else>Not Available</p>
+                                </td>
                                 <td>{{course.remarks}}</td>
                                 <td>
                                     <p class="color-red" v-if=" course.completed_date == null">Incomplete</p>

@@ -53,7 +53,7 @@ export default {
      data(){
         const roles = store.state.auth.user.roles
         let menuItems;
-        if (roles?.includes('super-admin')) {
+        if (roles?.includes('super-admin') || roles?.includes('course-admin')) {
           menuItems = [
                 {
                   header: 'Main Navigation',
@@ -81,6 +81,10 @@ export default {
                     {
                       href: '/courses/',
                       title: 'Courses'
+                    },
+                    {
+                    href: '/course-user-report',
+                    title: 'Course User Report',
                     },
                   ]
                 },
@@ -118,7 +122,8 @@ export default {
                   ]
                 },
               ];
-        }else if (roles?.includes('supervisor')) {
+        }
+        else if (roles?.includes('supervisor')) {
          menuItems = [
                 {
                   header: 'Main Navigation',
@@ -182,7 +187,8 @@ export default {
                 },
 
               ];
-        } else {
+        }
+        else {
           menuItems = [
                 {
                   header: 'Main Navigation',
