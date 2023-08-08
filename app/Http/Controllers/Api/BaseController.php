@@ -206,7 +206,13 @@ class BaseController extends Controller
 
     public function report()
     {
-        $list = Course::with('users')->get();
+        $list = Course::with(['users' => function ($query) {
+            $query->wherePivot('is_approved', 1);
+        }])
+        ->has('users', '>=', 1) // Only retrieve courses with at least one approved user
+        ->get();
+
+
 
         return $list;
     }
