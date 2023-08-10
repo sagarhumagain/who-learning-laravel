@@ -254,7 +254,7 @@ export default {
         newContractModal() {
             this.editmode = false;
             this.form.reset();
-            if(this.user.contracts.slice(-1)[0]){
+            if(this.user.contracts && this.user.contracts.slice(-1)[0]){
                 //replace start_date with end_date
                 this.user.contracts.slice(-1)[0].contract_start = this.user.contracts.slice(-1)[0].contract_end;
                 this.user.contracts.slice(-1)[0].contract_end = '';
