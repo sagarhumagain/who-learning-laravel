@@ -45,14 +45,14 @@
                 <div class="card">
                     <div class="card-header p-2">
                         <ul class="nav nav-pills">
-                            <li class="nav-item"><a class="nav-link active" href="#settings" data-bs-toggle="tab">Profile Details</a></li>
+                            <li class="nav-item"><a class="nav-link active show" href="#settings" data-bs-toggle="tab">Profile Details</a></li>
                             <li class="nav-item"><a class="nav-link" href="#contract" data-bs-toggle="tab">Update Contract</a></li>
                             <li class="nav-item"><a class="nav-link" href="#activity" data-bs-toggle="tab">Update Password</a></li>
                         </ul>
                     </div><!-- /.card-header -->
                     <div class="card-body p-0">
                         <div class="tab-content">
-                            <div class="tab-pane active" id="settings">
+                            <div class="tab-pane active show" id="settings">
                                 <div class="card-body" >
 
                                     <div class="row">
