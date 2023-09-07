@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 
 class ContractController extends Controller
 {
-
     public function __construct(MailService $mailService)
     {
         $this->mailService = $mailService;
@@ -36,17 +35,17 @@ class ContractController extends Controller
     public function store(ContractRequest $request)
     {
         try {
-            if($request->pillar_id) {
+            if(isset($request->pillar_id)) {
                 $this->assignPillars($request->pillar_id, $request->user_id);
             }
             Contract::create($request->all());
             $data = $this->getProfile($request->user_id);
             $this->mailService->sendContractApproveMail($data);
 
-            $data['error']= false;
-            $data['message']='Contract Info! Has Been Created';
+            $data['error'] = false;
+            $data['message'] = 'Contract Info! Has Been Created';
         } catch (Exception $e) {
-            $data['error']= true;
+            $data['error'] = true;
             $data['message'] =  $e->getMessage();
         }
         return $data;
@@ -73,7 +72,7 @@ class ContractController extends Controller
     public function update(ContractRequest $request, $id)
     {
         try {
-            if($request->pillar_id) {
+            if(isset($request->pillar_id)) {
                 $this->assignPillars($request->pillar_id, $request->user_id);
             }
             Contract::updateOrCreate(['id' => $id], $request->all());
@@ -82,10 +81,10 @@ class ContractController extends Controller
             $data = $this->getProfile($request->user_id);
             $this->mailService->sendContractApproveMail($data);
 
-            $data['error']= false;
-            $data['message']='Contract Info! Has Been Updated';
+            $data['error'] = false;
+            $data['message'] = 'Contract Info! Has Been Updated';
         } catch (Exception $e) {
-            $data['error']= true;
+            $data['error'] = true;
             $data['message'] =  $e->getMessage();
         }
         return response()->json($data);
@@ -101,22 +100,20 @@ class ContractController extends Controller
     {
         try {
             Contract::find($id)->delete();
-            $data['error']= false;
-            $data['message']='Contract Info! Has Been Deleted';
+            $data['error'] = false;
+            $data['message'] = 'Contract Info! Has Been Deleted';
         } catch (Exception $e) {
-            $data['error']= true;
+            $data['error'] = true;
             $data['message'] =  $e->getMessage();
         }
     }
 
     public function assignPillars($pillar_ids, $user_id)
     {
-        $user = User::find($user_id);
-        $pillars = [];
-        foreach ($pillar_ids as $pillar) {
-            array_push($pillars, $pillar['id']);
-        }
-        $user->pillars()->sync($pillars);
+        $user = User::findOrFail($user_id);
+        $pillarIds = collect($pillar_ids)->pluck('id')->toArray();
+        // Sync the relationships
+        $user->pillars()->sync($pillarIds);
     }
 
     public function getProfile($user_id)

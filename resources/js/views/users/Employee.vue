@@ -117,7 +117,7 @@
                                 </div>
                             </div>
                             <div class="tab-pane" id="contract">
-                                <Contract></Contract>
+                                <Contract :user="this.$store.state.auth.user"></Contract>
                             </div>
                             <div class="tab-pane card-body" id="activity">
                                 <!-- Post -->

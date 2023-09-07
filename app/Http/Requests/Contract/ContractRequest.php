@@ -32,6 +32,7 @@ class ContractRequest extends FormRequest
             'staff_category_id' => 'required',
             'is_active' => 'required',
             'unit_id' => 'required',
+            'user_id' => 'required',
         ];
     }
 }

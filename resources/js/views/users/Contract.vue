@@ -260,7 +260,8 @@ export default {
                 this.user.contracts.slice(-1)[0].contract_end = '';
                 this.form.fill(this.user.contracts.slice(-1)[0]);
             }
-            this.form.user_id = this.user.id;
+            console.log(this.user.id);
+            this.form.user_id = this.$store.state.auth.user.id;
             this.form.name = this.user.name;
             $('#addNewContract').modal('show');
         },
