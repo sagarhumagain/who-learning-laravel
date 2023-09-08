@@ -121,7 +121,16 @@ class CourseController extends BaseController
         $user = auth()->user();
 
         //check duplicate courses
-        $duplicateCourse = Course::where('url', $request->url)->where('url', '!=', 'N/A')->orWhere(DB::raw('UPPER(name)'), 'LIKE', DB::raw("UPPER('%{$request->name}%')"))->first();
+
+        $duplicateCourse = Course::where(function ($query) use ($request) {
+            $query->where('url', $request->url)
+                ->where('url', '!=', 'N/A');
+        })
+        ->orWhere(function ($query) use ($request) {
+            $query->where(DB::raw('UPPER(name)'), 'LIKE', DB::raw("UPPER('%{$request->name}%')"));
+        })
+        ->first();
+
         if ($duplicateCourse) {
             return response()->json([
                 'message' => 'Course already exists, please check course list to enroll the course.'
@@ -568,7 +577,7 @@ class CourseController extends BaseController
     {
         try {
             $course_user = CourseUser::where('user_id', $request->user_id)->where('course_id', $request->course_id)->first();
-            $course_user->update(['is_approved'=> $request->is_approved,'remarks' => $request->remarks]);
+            $course_user->update(['is_approved' => $request->is_approved,'remarks' => $request->remarks]);
             event(new CertificateApproveEvent($course_user));
             $mailService->sendCertificateApprovedMail($course_user);
             $data['error'] = false;

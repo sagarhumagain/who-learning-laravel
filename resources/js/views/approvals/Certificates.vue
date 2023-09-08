@@ -69,11 +69,13 @@
 
 
     </div>
-    <modal-view  :modal_data="v_modal_data">
-            <div class="card-body table-responsive p-0">
-                    <iframe :src="'/'+certificate+'#toolbar=0'" width="100%" height="700px"></iframe>
-            </div>
-        </modal-view>
+    <modal-view :modal_data="v_modal_data">
+        <div class="card-body table-responsive p-0" style="height: 80vh; width: 100%;">
+            <iframe :src="'/'+certificate+'#toolbar=0'" style="width: 100%; height: 100%;" frameborder="0"></iframe>
+        </div>
+    </modal-view>
+
+
 </template>
 <script>
     import Multiselect from 'vue-multiselect'
@@ -124,13 +126,9 @@
         },
         methods: {
             async approveCourse(val, status){
-                console.log(val.certificate);
                 this.form.reset();
                 this.form.fill(val);
                 this.form.is_approved = status;
-
-
-
                 const result = status == '0' ? await this.$swal({
                     title: 'Please write remarks',
                     input: 'text',
@@ -156,6 +154,9 @@
                 this.$Progress.start();
                 this.disabled=true;
                 this.form.remarks = result.value;
+                if(result.value == true){
+                    this.form.remarks = null;
+                }
                 this.form.post('/api/v1/approve-certificate')
                 .then((response) => {
                         if(response.data.error == 'true'){

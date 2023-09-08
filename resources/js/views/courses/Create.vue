@@ -148,6 +148,12 @@
                                         placeholder="File"
                                         class="btn btn-sm btn-info btn-file-upload">
                                 <error-msg :errors="errors" field="certificate_path"></error-msg>
+                                <iframe
+                                    v-if="form.certificate_path"
+                                    :src="certificateURL+'#toolbar=0'"
+                                    style="width: 100%; height: 300px; border: none;"
+                                    ></iframe>
+
                             </div>
                           </div>
                             <div class="col-12 mb-2 text-center mt-3 ">
@@ -211,6 +217,13 @@ export default {
             })
         }
     },
+    computed: {
+        certificateURL() {
+        // Return the URL to display in the iframe
+        return this.form.certificate_path ? URL.createObjectURL(this.form.certificate_path) : '';
+        },
+    },
+
     methods:{
         onFileChange(event){
               const file = event.target.files[0];
