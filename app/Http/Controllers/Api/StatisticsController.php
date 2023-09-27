@@ -318,13 +318,15 @@ class StatisticsController extends Controller
                         $query->whereNull('course_user.deleted_at');
                     },
                     'courses as credit_hours_count' => function ($query) use ($currentYear) {
-                        $query->select(DB::raw('sum(credit_hours)'))
+                        $query->select(DB::raw('COALESCE(SUM(credit_hours), 0)'))
                             ->whereNotNull('completed_date')
                             ->where('course_user.is_approved', 1)
                             ->whereYear('completed_date', $currentYear); // Filter by current year
                     }
                 ])
                 ->withCount('courses')
+                ->orderBy('credit_hours_count', 'desc') // Sort by credit_hours_count in ascending order
+
                 ->get();
 
                 return response()->json($data);
@@ -343,12 +345,14 @@ class StatisticsController extends Controller
                     $query->whereNull('course_user.deleted_at');
                 },
                 'courses as credit_hours_count' => function ($query) use ($currentYear) {
-                    $query->select(DB::raw('sum(credit_hours)'))
+                    $query->select(DB::raw('COALESCE(SUM(credit_hours), 0)'))
                         ->whereNotNull('completed_date')
                         ->where('course_user.is_approved', 1)
                         ->whereYear('completed_date', $currentYear); // Filter by current year
                 }
-            ])->get();
+            ])
+            ->orderBy('credit_hours_count', 'desc') // Sort by credit_hours_count in ascending order
+            ->get();
             return response()->json($data);
         } catch(\Exception $e) {
             return response()->json($e->getMessage());
