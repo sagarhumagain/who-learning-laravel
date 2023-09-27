@@ -35,7 +35,7 @@ class StatisticsController extends Controller
 
     public function fetchTopLearners()
     {
-        $data =[];
+        $data = [];
         return response()->json($data);
     }
 
@@ -84,7 +84,7 @@ class StatisticsController extends Controller
           ->groupBy('course_user.course_id', 'courses.name')
           ->take(5)->get();
 
-        $data =[
+        $data = [
           'name' => 'Most Popular Courses',
           'labels' => [],
           'datasets' => [
@@ -109,7 +109,7 @@ class StatisticsController extends Controller
         ->select(DB::raw('pillars.name as name, count(*) as count'))
         ->groupBy('pillar_user.pillar_id', 'pillars.name')
         ->take(6)->get();
-        $data =[
+        $data = [
           'name' => 'Staffs by Pillar',
           'labels' => [],
           'datasets' => [
@@ -302,24 +302,26 @@ class StatisticsController extends Controller
         // dd(User::with('courses')->get());
         try {
             $user = auth()->user();
-
+            $currentYear = date('Y'); // Get the current year
             if ($user->hasRole('supervisor')) {
                 $supervisee_ids = Employee::where('supervisor_user_id', auth()->user()->id)->pluck('user_id')->toArray();
                 $data = User::whereHas('roles', function ($q) {
-                    $q->whereIn('name', ['normal-user','supervisor']);
+                    $q->whereIn('name', ['normal-user', 'supervisor']);
                 })->whereIn('id', $supervisee_ids)
                 ->withCount([
-                    'courses as completed_courses_count' => function ($query) {
+                    'courses as completed_courses_count' => function ($query) use ($currentYear) {
                         $query->whereNotNull('completed_date')
-                              ->where('course_user.is_approved', 1);
+                            ->where('course_user.is_approved', 1)
+                            ->whereYear('completed_date', $currentYear); // Filter by current year
                     },
                     'courses as enrolled_courses_count' => function ($query) {
                         $query->whereNull('course_user.deleted_at');
                     },
-                    'courses as credit_hours_count' => function ($query) {
+                    'courses as credit_hours_count' => function ($query) use ($currentYear) {
                         $query->select(DB::raw('sum(credit_hours)'))
-                        ->whereNotNull('completed_date')
-                        ->where('course_user.is_approved', 1);
+                            ->whereNotNull('completed_date')
+                            ->where('course_user.is_approved', 1)
+                            ->whereYear('completed_date', $currentYear); // Filter by current year
                     }
                 ])
                 ->withCount('courses')
@@ -328,23 +330,25 @@ class StatisticsController extends Controller
                 return response()->json($data);
             }
 
+
             $data = User::whereHas('roles', function ($q) {
-                $q->whereIn('name', ['normal-user','supervisor']);
+                $q->whereIn('name', ['normal-user', 'supervisor']);
             })->withCount([
-                'courses as completed_courses_count' => function ($query) {
+                'courses as completed_courses_count' => function ($query) use ($currentYear) {
                     $query->whereNotNull('completed_date')
-                          ->where('course_user.is_approved', 1);
+                        ->where('course_user.is_approved', 1)
+                        ->whereYear('completed_date', $currentYear); // Filter by current year
                 },
                 'courses as enrolled_courses_count' => function ($query) {
                     $query->whereNull('course_user.deleted_at');
                 },
-                'courses as credit_hours_count' => function ($query) {
+                'courses as credit_hours_count' => function ($query) use ($currentYear) {
                     $query->select(DB::raw('sum(credit_hours)'))
-                    ->whereNotNull('completed_date')
-                    ->where('course_user.is_approved', 1);
+                        ->whereNotNull('completed_date')
+                        ->where('course_user.is_approved', 1)
+                        ->whereYear('completed_date', $currentYear); // Filter by current year
                 }
-            ])
-            ->get();
+            ])->get();
             return response()->json($data);
         } catch(\Exception $e) {
             return response()->json($e->getMessage());
