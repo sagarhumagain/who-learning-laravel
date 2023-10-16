@@ -28,7 +28,7 @@ class CourseController extends BaseController
     public function __construct(Course $model)
     {
         $this->model = $model;
-        $this->folder_path = 'images'.DIRECTORY_SEPARATOR.$this->folder;
+        $this->folder_path = 'images' . DIRECTORY_SEPARATOR . $this->folder;
     }
     /**
      * Display a listing of the resource.
@@ -202,12 +202,12 @@ class CourseController extends BaseController
                 if (($user->hasRole('normal-user') || $user->hasRole('supervisor'))  && $request->certificate_path && $request->completed_date) {
                     $course_user = CourseUser::where('course_id', $course->id)->where('user_id', $user->id)->firstOrFail();
 
-                    $path =  $this->folder_path.DIRECTORY_SEPARATOR.auth()->user()->id;
+                    $path =  $this->folder_path . DIRECTORY_SEPARATOR . auth()->user()->id;
                     parent::checkFolderExist($path);
-                    $fileName = $course->id.'_certificate'.'.'.$request->certificate_path->getClientOriginalExtension();
+                    $fileName = $course->id . '_certificate' . '.' . $request->certificate_path->getClientOriginalExtension();
                     $request->certificate_path->move($path, $fileName);
                     $data = [
-                            'certificate_path' => $path.DIRECTORY_SEPARATOR.$fileName,
+                            'certificate_path' => $path . DIRECTORY_SEPARATOR . $fileName,
                             'completed_date' => $request->completed_date
                         ];
                     $course_user->update($data);
@@ -355,6 +355,10 @@ class CourseController extends BaseController
                 $users = $this->getUsersForAssignment($assignmentFields);
                 $course->users()->syncWithoutDetaching($users);
 
+                $previous_course_assignment = CourseAssignmentSetting::where('course_id', $course->id)->first();
+
+                $previous_course_assignment ? $old_course_assignment = $previous_course_assignment : $old_course_assignment = [];
+
                 CourseAssignmentSetting::updateOrCreate(
                     ['course_id' => $course->id],
                     $assignmentFields
@@ -362,7 +366,7 @@ class CourseController extends BaseController
 
                 event(new CourseAssignedEvent($request));
 
-                $mailService->sendCourseAssignedMail($assignmentFields, $course->name, $course->due_date);
+                $mailService->sendCourseAssignedMail($old_course_assignment, $assignmentFields, $course->name, $course->due_date);
 
             } elseif (($user->hasRole('normal-user') || $user->hasRole('supervisor')) && $request->certificate_path != 'null') {
                 $this->updateCourseUserCertificate($course, $user, $request, $mailService);

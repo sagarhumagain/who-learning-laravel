@@ -299,7 +299,6 @@ class StatisticsController extends Controller
     }
     public function usersStats()
     {
-        // dd(User::with('courses')->get());
         try {
             $user = auth()->user();
             $currentYear = date('Y'); // Get the current year
@@ -326,12 +325,9 @@ class StatisticsController extends Controller
                 ])
                 ->withCount('courses')
                 ->orderBy('credit_hours_count', 'desc') // Sort by credit_hours_count in ascending order
-
                 ->get();
-
                 return response()->json($data);
             }
-
 
             $data = User::whereHas('roles', function ($q) {
                 $q->whereIn('name', ['normal-user', 'supervisor']);
