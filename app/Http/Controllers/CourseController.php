@@ -156,48 +156,33 @@ class CourseController extends BaseController
                 event(new CourseCreatedEvent($course));
                 // $mailService->sendCourseCreatedMail($course->name, $course->id, $user);
             }
+
             //attached course categories
             if ($request->course_category_ids) {
                 $courseCategoryIds = parent::filterArrayByKey($request->course_category_ids, 'id');
                 $course->courseCategories()->attach($courseCategoryIds);
             }
 
-            $assignmentFields = [
-                'pillar_ids' => parent::filterArrayByKey($request->pillar_ids, 'id'),
-                'staff_type_ids' => parent::filterArrayByKey($request->staff_type_ids, 'id'),
-                'contract_type_ids' => parent::filterArrayByKey($request->contract_type_ids, 'id'),
-                'staff_category_ids' => parent::filterArrayByKey($request->staff_category_ids, 'id'),
-                'staff_designation_ids' => parent::filterArrayByKey($request->staff_designation_ids, 'id'),
-                'course_id' => $course->id,
-                'assigned_by_user_id' => $user->id,
-            ];
-            $users = User::leftJoin(\DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
-                $join->on('users.id', '=', 't2.user_id');
-            })
-            ->where(function ($q) use ($assignmentFields) {
-                $q->whereHas('pillars', function ($q) use ($assignmentFields) {
-                    $q->whereIn('pillar_id', $assignmentFields['pillar_ids']);
-                })
-                ->orWhereIn('staff_type_id', $assignmentFields['staff_type_ids'])
-                ->orWhereIn('contract_type_id', $assignmentFields['contract_type_ids'])
-                ->orWhereIn('staff_category_id', $assignmentFields['staff_category_ids'])
-                ->orWhereIn('designation_id', $assignmentFields['staff_designation_ids'])
-                ->orWhere('users.id', $assignmentFields['assigned_by_user_id']);
-            })->select('users.id as id')
-            ->get();
+            $assignmentFields = $this->prepareAssignmentFields($request, $course, $user);
+
+            $users = $this->getUsersForAssignment($assignmentFields);
 
             //attached course to users
             $course->users()->attach($users);
 
+
             //course assignement setting create
             CourseAssignmentSetting::create($assignmentFields);
-            //course assigned event
-            event(new CourseAssignedEvent($request));
-            //update certificate for normal users
+
 
             if($user->hasPermissionTo('course_assignment')) {
-                $mailService->sendCourseAssignedMail($assignmentFields, $course->name, $course->due_date);
+                $mailService->sendCourseAssignedMail([], $assignmentFields, $course->name, $course->due_date);
             }
+
+            //course assigned event
+            event(new CourseAssignedEvent($request));
+
+            //update certificate for normal users
             try {
                 if (($user->hasRole('normal-user') || $user->hasRole('supervisor'))  && $request->certificate_path && $request->completed_date) {
                     $course_user = CourseUser::where('course_id', $course->id)->where('user_id', $user->id)->firstOrFail();
@@ -219,7 +204,6 @@ class CourseController extends BaseController
                 $data['message'] = $e->getMessage();
             }
             $data['error'] = false;
-
             $data['message'] = 'Course Created successfully';
         } catch (Exception $e) {
             $data['error'] = true;

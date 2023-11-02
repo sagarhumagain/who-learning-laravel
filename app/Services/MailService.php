@@ -13,6 +13,8 @@ use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 
+use function PHPUnit\Framework\isEmpty;
+
 class MailService
 {
     // Build out service class
@@ -121,39 +123,15 @@ class MailService
 
     public function sendCourseAssignedMail($old_course_assignment, $data, $course_name, $due_date)
     {
-        $old_users = User::leftJoin(\DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
-            $join->on('users.id', '=', 't2.user_id');
-        })
-        ->where(function ($q) use ($old_course_assignment) {
-            $q->where(function ($q) use ($old_course_assignment) {
-                $q->whereHas('pillars', function ($q) use ($old_course_assignment) {
-                    $q->whereIn('pillar_id', $old_course_assignment['pillar_ids']);
-                })
-                ->orWhereIn('staff_type_id', $old_course_assignment['staff_type_ids'])
-                ->orWhereIn('contract_type_id', $old_course_assignment['contract_type_ids'])
-                ->orWhereIn('staff_category_id', $old_course_assignment['staff_category_ids'])
-                ->orWhereIn('designation_id', $old_course_assignment['staff_designation_ids']);
-            });
-        })->select('users.id as id', 'email')->get();
+        if (!isEmpty($old_course_assignment)) {
+            $old_users = $this->buildUserQuery($old_course_assignment)->get();
+            $users = $this->buildUserQuery($data)->get();
 
-
-        $users =  User::leftJoin(\DB::raw('(SELECT * FROM contracts A WHERE created_at = (SELECT MAX(created_at)  FROM contracts B WHERE A.user_id=B.user_id)) AS t2'), function ($join) {
-            $join->on('users.id', '=', 't2.user_id');
-        })
-        ->where(function ($q) use ($data) {
-            $q->where(function ($q) use ($data) {
-                $q->whereHas('pillars', function ($q) use ($data) {
-                    $q->whereIn('pillar_id', $data['pillar_ids']);
-                })
-                ->orWhereIn('staff_type_id', $data['staff_type_ids'])
-                ->orWhereIn('contract_type_id', $data['contract_type_ids'])
-                ->orWhereIn('staff_category_id', $data['staff_category_ids'])
-                ->orWhereIn('designation_id', $data['staff_designation_ids']);
-            });
-        })->select('users.id as id', 'email')->get();
-
-        //get unique users by comparing old and new users
-        $users = $users->diff($old_users);
+            // Get unique users by comparing old and new users
+            $users = $users->diff($old_users);
+        } else {
+            $users = $this->buildUserQuery($data)->get();
+        }
 
         $mail_data = [
             'subject' => 'Course Assigned',
@@ -163,6 +141,25 @@ class MailService
         $cc_users = $users->pluck('email')->toArray();
 
         Mail::cc($cc_users)->send(new CourseMail($mail_data));
+    }
+
+    public function buildUserQuery($data)
+    {
+        return User::leftJoin('contracts AS t2', function ($join) {
+            $join->on('users.id', '=', 't2.user_id');
+        })
+            ->where(function ($q) use ($data) {
+                $q->where(function ($q) use ($data) {
+                    $q->whereHas('pillars', function ($q) use ($data) {
+                        $q->whereIn('pillar_id', $data['pillar_ids']);
+                    })
+                    ->orWhereIn('staff_type_id', $data['staff_type_ids'])
+                    ->orWhereIn('contract_type_id', $data['contract_type_ids'])
+                    ->orWhereIn('staff_category_id', $data['staff_category_ids'])
+                    ->orWhereIn('designation_id', $data['staff_designation_ids']);
+                });
+            })
+            ->select('users.id as id', 'email');
     }
 
 
