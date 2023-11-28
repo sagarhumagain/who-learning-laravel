@@ -165,7 +165,9 @@ class CourseController extends BaseController
 
             $assignmentFields = $this->prepareAssignmentFields($request, $course, $user);
 
+
             $users = $this->getUsersForAssignment($assignmentFields);
+
 
             //attached course to users
             $course->users()->attach($users);
@@ -185,7 +187,11 @@ class CourseController extends BaseController
             //update certificate for normal users
             try {
                 if (($user->hasRole('normal-user') || $user->hasRole('supervisor'))  && $request->certificate_path && $request->completed_date) {
+                    $course->users()->attach($user->id);
+
                     $course_user = CourseUser::where('course_id', $course->id)->where('user_id', $user->id)->firstOrFail();
+
+
 
                     $path =  $this->folder_path . DIRECTORY_SEPARATOR . auth()->user()->id;
                     parent::checkFolderExist($path);
