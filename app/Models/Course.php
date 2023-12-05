@@ -57,4 +57,18 @@ class Course extends Model implements Auditable
             });
         });
     }
+    public function scopeFilterEnrolled($query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where(DB::raw('UPPER(name)'), 'LIKE', DB::raw("UPPER('%{$search}%')"))
+                    ->orWhere(DB::raw('UPPER(url)'), 'LIKE', DB::raw("UPPER('%{$search}%')"))
+                    ->orWhere(DB::raw('UPPER(source)'), 'LIKE', DB::raw("UPPER('%{$search}%')"))
+                    ->orWhereYear('course_user.completed_date', '=', $search)
+                    ->orWhereHas('courseCategories', function ($q) use ($search) {
+                        $q->where(DB::raw('UPPER(name)'), 'LIKE', DB::raw("UPPER('%{$search}%')"));
+                    });
+            });
+        });
+    }
 }
