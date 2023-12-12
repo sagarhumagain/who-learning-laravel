@@ -79,7 +79,7 @@ class ContractController extends Controller
 
             //send contract approval mail
             $data = $this->getProfile($request->user_id);
-            $this->mailService->sendContractApproveMail($data);
+            // $this->mailService->sendContractApproveMail($data);
 
             $data['error'] = false;
             $data['message'] = 'Contract Info! Has Been Updated';

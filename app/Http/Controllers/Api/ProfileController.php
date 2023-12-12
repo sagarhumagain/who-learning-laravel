@@ -22,7 +22,7 @@ class ProfileController extends BaseController
     {
         $this->model = $model;
         $this->mailService = $mailService;
-        $this->folder_path = 'images'.DIRECTORY_SEPARATOR.$this->folder;
+        $this->folder_path = 'images' . DIRECTORY_SEPARATOR . $this->folder;
     }
 
     /**
@@ -72,7 +72,7 @@ class ProfileController extends BaseController
     public function update(ProfileUpdateRequest $request, $id)
     {
 
-        $path =  $this->folder_path.DIRECTORY_SEPARATOR.$request->user_id;
+        $path =  $this->folder_path . DIRECTORY_SEPARATOR . $request->user_id;
         parent::checkFolderExist($path);
 
         try {
@@ -80,7 +80,7 @@ class ProfileController extends BaseController
                 $request->merge(['profile' => parent::makeImageWithThumb($request->user_id, $request->profile, $path)]);
             }
             if (strlen($request->signature) > 50) {
-                $request->merge(['signature' => parent::makeImageWithThumb('signature_'.$request->user_id, $request->signature, $path)]);
+                $request->merge(['signature' => parent::makeImageWithThumb('signature_' . $request->user_id, $request->signature, $path)]);
             }
             if (!$request->emp_code) {
                 $request['emp_code'] = parent::getRandId();
@@ -89,16 +89,16 @@ class ProfileController extends BaseController
             $user = User::find($request->user_id);
 
             if ($user->is_first_time_login == 1 && $user->hasRole('normal-user')) {
-                $this->mailService->sendProfileApprovalMail($request);
-                $data['message']='Your Profile Info! Has Been Updated Successfully. An email has been sent to your supervisor for approval. Please update your contract details.';
+                // $this->mailService->sendProfileApprovalMail($request);
+                $data['message'] = 'Your Profile Info! Has Been Updated Successfully. An email has been sent to your supervisor for approval. Please update your contract details.';
             }
 
-            $data['error']='false';
-            $data['message']='Profile Info! Has Been Updated';
+            $data['error'] = 'false';
+            $data['message'] = 'Profile Info! Has Been Updated';
 
         } catch (\Exception $e) {
-            $data['error']='true';
-            $data['message']=$e->getMessage();
+            $data['error'] = 'true';
+            $data['message'] = $e->getMessage();
         }
         return $data;
     }
@@ -132,7 +132,7 @@ class ProfileController extends BaseController
                 $response['message'] = 'Pleae enter new password';
                 return $response;
             }
-            $user->update(['password'=> $newpass]);
+            $user->update(['password' => $newpass]);
             $response['result'] = 'success!';
             $response['type'] = 'success';
             $response['message'] = 'Password updated successfully';
@@ -147,7 +147,7 @@ class ProfileController extends BaseController
 
     public function adminUpdatedProfile(Request $request, $id)
     {
-        $path =  $this->folder_path.DIRECTORY_SEPARATOR.$request->user_id;
+        $path =  $this->folder_path . DIRECTORY_SEPARATOR . $request->user_id;
         parent::checkFolderExist($path);
         try {
             if (!$request->emp_code) {
@@ -159,11 +159,11 @@ class ProfileController extends BaseController
                 return response()->json(['error' => $e->getMessage()], 500);
             }
 
-            $data['error']='false';
-            $data['message']='Your Profile Info! Has Been Updated';
+            $data['error'] = 'false';
+            $data['message'] = 'Your Profile Info! Has Been Updated';
         } catch (\Exception $e) {
-            $data['error']='true';
-            $data['message']=$e->getMessage();
+            $data['error'] = 'true';
+            $data['message'] = $e->getMessage();
         }
         return $data;
     }
